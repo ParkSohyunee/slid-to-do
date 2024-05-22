@@ -2,32 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+@font-face {
+  font-family: "Pretendard";
+  font-style: bold;
+  font-weight: 700;
+  font-display: swap;
+  src: url(/public/fonts/Pretendard-Bold.woff) format("woff2");
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+@font-face {
+  font-family: "Pretendard";
+  font-style: semibold;
+  font-weight: 600;
+  font-display: swap;
+  src: url(/public/fonts/Pretendard-SemiBold.woff) format("woff2");
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@font-face {
+  font-family: "Pretendard";
+  font-style: medium;
+  font-weight: 500;
+  font-display: swap;
+  src: url(/public/fonts/Pretendard-Medium.woff) format("woff2");
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+@font-face {
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(/public/fonts/Pretendard-Regular.woff) format("woff2");
+}
+
+@font-face {
+  font-family: "Pretendard";
+  font-style: light;
+  font-weight: 300;
+  font-display: swap;
+  src: url(/public/fonts/Pretendard-Light.woff) format("woff2");
 }
