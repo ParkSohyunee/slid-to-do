@@ -1,5 +1,6 @@
 import { ChangeEvent, MouseEvent, useState } from "react"
 import createLogin from "@/pages/api/auth/createLogin"
+import { setCookie } from "@/libs/utils/cookie"
 
 export default function LoginPage() {
   const [formValue, setFormValue] = useState({
@@ -22,8 +23,7 @@ export default function LoginPage() {
         email: formValue.email,
         password: formValue.password,
       })
-
-      console.log(result)
+      setCookie("accessToken", result.accessToken)
     } catch (error) {
       console.log(error)
     }
