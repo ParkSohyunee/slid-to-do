@@ -20,6 +20,15 @@ const config: Config = {
         "2xl": ["24px", "32px"],
         "3xl": ["30px", "36px"],
       },
+      colors: {
+        primary: "#3B82F6", // blue-500
+        error: "#B91C1C", // red
+        text: "#1E293B", // slate-800
+      },
+      borderRadius: {
+        sm: "12px",
+        md: "32px",
+      },
     },
   },
   plugins: [],
