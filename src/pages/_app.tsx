@@ -8,7 +8,9 @@ const queryClient = new QueryClient()
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <Component {...pageProps} />
+      <main className="font-pretendard">
+        <Component {...pageProps} />
+      </main>
     </QueryClientProvider>
   )
 }
