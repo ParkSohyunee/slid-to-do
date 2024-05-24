@@ -1,8 +1,10 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 
-import CheckBoxIcon from "@/components/CheckBoxIcon"
+import CheckBoxButton from "@/components/buttons/CheckBoxButton"
+
 import { todosTitleValidationRules } from "@/libs/utils/formInputValidationRules"
+import { SelectedOption } from "@/types/todos"
 
 type TodosFormVaules = {
   title: string
@@ -11,8 +13,6 @@ type TodosFormVaules = {
   goalId: number
 }
 
-type SelectedOption = "file" | "link"
-
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const {
@@ -20,11 +20,9 @@ export default function CreateTodosPage() {
     formState: { errors },
   } = useForm<TodosFormVaules>({ mode: "onBlur" })
 
-  const handleToggleSelect = (value: SelectedOption) => () => {
+  const handleToggleSelect = (value: SelectedOption) => {
     setSelectedOption(value)
   }
-
-  console.log(selectedOption)
 
   return (
     <section>
@@ -67,42 +65,16 @@ export default function CreateTodosPage() {
           자료
         </label>
         <div className="flex gap-3">
-          <button
-            className={`
-            flex gap-1 
-            py-3 pr-3 pl-2
-            rounded-button 
-            text-base font-medium 
-            ${
-              selectedOption === "file"
-                ? "bg-slate-900  text-white"
-                : "bg-slate-100  text-basic"
-            }`}
-            onClick={handleToggleSelect("file")}
-          >
-            <CheckBoxIcon
-              state={selectedOption === "file" ? "active-white" : "inactive"}
-            />
-            파일 업로드
-          </button>
-          <button
-            className={`
-            flex gap-1
-            py-3 pr-3 pl-2
-            rounded-button 
-            text-base font-medium 
-            ${
-              selectedOption === "link"
-                ? "bg-slate-900  text-white"
-                : "bg-slate-100  text-basic"
-            }`}
-            onClick={handleToggleSelect("link")}
-          >
-            <CheckBoxIcon
-              state={selectedOption === "link" ? "active-white" : "inactive"}
-            />
-            링크 첨부
-          </button>
+          <CheckBoxButton
+            option="file"
+            selectedOption={selectedOption}
+            handleToggleSelect={handleToggleSelect}
+          />
+          <CheckBoxButton
+            option="link"
+            selectedOption={selectedOption}
+            handleToggleSelect={handleToggleSelect}
+          />
         </div>
       </div>
     </section>
