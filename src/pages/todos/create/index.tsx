@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form"
 
 import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 
-import { todosTitleValidationRules } from "@/libs/utils/formInputValidationRules"
+import {
+  todosTitleValidationRules,
+  todosLinkUrlValidationRules,
+} from "@/libs/utils/formInputValidationRules"
 import { SelectedOption } from "@/types/todos"
 
 type TodosFormVaules = {
@@ -58,23 +61,46 @@ export default function CreateTodosPage() {
             {errors.title?.message}
           </p>
         </div>
-        <label
-          htmlFor="reference"
-          className="text-base font-semibold mb-3 text-basic"
-        >
-          자료
-        </label>
-        <div className="flex gap-3">
-          <CheckBoxButton
-            option="file"
-            selectedOption={selectedOption}
-            handleToggleSelect={handleToggleSelect}
+        <div>
+          <label
+            htmlFor="reference"
+            className="text-base font-semibold mb-3 text-basic"
+          >
+            자료
+          </label>
+          <div className="flex gap-3">
+            <CheckBoxButton
+              option="file"
+              selectedOption={selectedOption}
+              handleToggleSelect={handleToggleSelect}
+            />
+            <CheckBoxButton
+              option="link"
+              selectedOption={selectedOption}
+              handleToggleSelect={handleToggleSelect}
+            />
+          </div>
+          <input
+            {...register("linkUrl", todosLinkUrlValidationRules)}
+            className={`
+              px-6 py-3 
+              rounded-sm 
+              bg-slate-50 
+              text-base font-normal text-basic placeholder:text-slate-400
+              border focus:border-blue-500 focus:outline-none
+              ${
+                errors.linkUrl
+                  ? "border-error hover:border-error"
+                  : "border-slate-50 hover:border-blue-300"
+              }
+              `}
+            type="text"
+            autoComplete="off"
+            placeholder="영상이나 글, 파일의 링크를 넣어주세요"
           />
-          <CheckBoxButton
-            option="link"
-            selectedOption={selectedOption}
-            handleToggleSelect={handleToggleSelect}
-          />
+          <p className="text-sm font-normal text-error mx-4 mt-2">
+            {errors.linkUrl?.message}
+          </p>
         </div>
       </div>
     </section>
