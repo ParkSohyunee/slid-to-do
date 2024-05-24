@@ -18,7 +18,7 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitting },
     setError,
   } = useForm<LoginFormVaules>({ mode: "onBlur" })
 
@@ -63,17 +63,18 @@ export default function LoginPage() {
         onSubmit={handleSubmit(handleSubmitForm)}
         className="flex flex-col gap-12 max-w-screen-sm w-full"
       >
-        <div className="flex flex-col gap-6">
-          <div className="flex flex-col">
-            <label
-              htmlFor="email"
-              className="text-base font-semibold mb-3 text-basic"
-            >
-              아이디
-            </label>
-            <input
-              {...register("email", emailValidationRules)}
-              className={`
+        <div className="flex flex-col gap-11">
+          <div className="relative text-field">
+            <div className="flex flex-col">
+              <label
+                htmlFor="email"
+                className="text-base font-semibold mb-3 text-basic"
+              >
+                아이디
+              </label>
+              <input
+                {...register("email", emailValidationRules)}
+                className={`
               px-6 py-3 
               rounded-sm 
               bg-slate-50 
@@ -82,24 +83,26 @@ export default function LoginPage() {
               focus:border-blue-500 focus:outline-none
               ${!!errors.email ? "border-error hover:border-error" : ""}
               `}
-              type="text"
-              autoComplete="off"
-              placeholder="이메일을 입력해 주세요"
-            />
+                type="text"
+                autoComplete="off"
+                placeholder="이메일을 입력해 주세요"
+              />
+            </div>
             <p className="text-sm font-normal text-error mx-4 mt-2">
               {errors.email?.message}
             </p>
           </div>
-          <div className="flex flex-col">
-            <label
-              htmlFor="password"
-              className="text-base font-semibold mb-3 text-basic"
-            >
-              비밀번호
-            </label>
-            <input
-              {...register("password", passwordValidationRules)}
-              className={`
+          <div className="relative text-field">
+            <div className="flex flex-col">
+              <label
+                htmlFor="password"
+                className="text-base font-semibold mb-3 text-basic"
+              >
+                비밀번호
+              </label>
+              <input
+                {...register("password", passwordValidationRules)}
+                className={`
               px-6 py-3 
               rounded-sm 
               bg-slate-50 
@@ -108,10 +111,11 @@ export default function LoginPage() {
               focus:border-blue-500 focus:outline-none
               ${!!errors.password ? "border-error hover:border-error" : ""}
               `}
-              type="password"
-              autoComplete="off"
-              placeholder="비밀번호를 입력해 주세요"
-            />
+                type="password"
+                autoComplete="off"
+                placeholder="비밀번호를 입력해 주세요"
+              />
+            </div>
             <p className="text-sm font-normal text-error mx-4 mt-2">
               {errors.password?.message}
             </p>
@@ -119,12 +123,18 @@ export default function LoginPage() {
         </div>
         <div className="flex flex-col gap-10">
           <button
+            disabled={isSubmitting}
             type="submit"
             className={`
             py-3 flex 
             justify-center items-center 
-            self-stretch rounded-sm bg-slate-400 
-            text-white text-base font-semibold`}
+            self-stretch rounded-sm 
+            text-white text-base font-semibold
+            outline-none
+            hover:bg-blue-600 active:bg-blue-800
+            ${isValid ? "bg-blue-500" : "bg-slate-400"}
+            transition-colors duration-500
+            `}
           >
             로그인하기
           </button>
