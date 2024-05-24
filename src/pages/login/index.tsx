@@ -1,4 +1,6 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
+import Link from "next/link"
 import { useForm } from "react-hook-form"
 import { AxiosError } from "axios"
 
@@ -15,6 +17,7 @@ type LoginFormVaules = {
 }
 
 export default function LoginPage() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
@@ -29,6 +32,7 @@ export default function LoginPage() {
         password: data.password,
       })
       setCookie("accessToken", result.accessToken)
+      router.push("/dashboard")
     } catch (error) {
       if (error instanceof AxiosError) {
         if (error.response?.data.message === "가입되지 않은 이메일입니다.") {
@@ -140,7 +144,9 @@ export default function LoginPage() {
           </button>
           <p className="text-sm font-medium flex gap-1 justify-center">
             <span className="text-basic">슬리드 투 두가 처음이신가요?</span>
-            <span className="text-bland-blue underline">회원가입</span>
+            <span className="text-bland-blue underline">
+              <Link href={"/signup"}>회원가입</Link>
+            </span>
           </p>
         </div>
       </form>
