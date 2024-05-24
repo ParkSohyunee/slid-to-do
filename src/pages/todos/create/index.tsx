@@ -1,5 +1,8 @@
-import { todosTitleValidationRules } from "@/libs/utils/formInputValidationRules"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
+
+import CheckBoxIcon from "@/components/CheckBoxIcon"
+import { todosTitleValidationRules } from "@/libs/utils/formInputValidationRules"
 
 type TodosFormVaules = {
   title: string
@@ -8,11 +11,20 @@ type TodosFormVaules = {
   goalId: number
 }
 
+type SelectedOption = "file" | "link"
+
 export default function CreateTodosPage() {
+  const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const {
     register,
     formState: { errors },
   } = useForm<TodosFormVaules>({ mode: "onBlur" })
+
+  const handleToggleSelect = (value: SelectedOption) => () => {
+    setSelectedOption(value)
+  }
+
+  console.log(selectedOption)
 
   return (
     <section>
@@ -47,6 +59,26 @@ export default function CreateTodosPage() {
           <p className="text-sm font-normal text-error mx-4 mt-2">
             {errors.title?.message}
           </p>
+        </div>
+        <label
+          htmlFor="reference"
+          className="text-base font-semibold mb-3 text-basic"
+        >
+          자료
+        </label>
+        <div>
+          <button className="flex" onClick={handleToggleSelect("file")}>
+            <CheckBoxIcon
+              state={selectedOption === "file" ? "active-white" : "inactive"}
+            />
+            파일 업로드
+          </button>
+          <button className="flex" onClick={handleToggleSelect("link")}>
+            <CheckBoxIcon
+              state={selectedOption === "link" ? "active-white" : "inactive"}
+            />
+            링크 첨부
+          </button>
         </div>
       </div>
     </section>
