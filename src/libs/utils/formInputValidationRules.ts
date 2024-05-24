@@ -9,3 +9,11 @@ export const emailValidationRules = {
 export const passwordValidationRules = {
   required: "비밀번호를 입력해 주세요.",
 }
+
+export const todosTitleValidationRules = {
+  required: "할 일 제목을 입력해 주세요.",
+  maxLength: {
+    value: 30,
+    message: "제목은 최대 30자 이하로 작성해 주세요.",
+  },
+}
