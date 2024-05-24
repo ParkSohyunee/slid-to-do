@@ -72,8 +72,17 @@ export default function LoginPage() {
               아이디
             </label>
             <input
-              className="px-6 py-3 rounded-sm bg-slate-50 text-base font-normal text-slate-400"
               {...register("email", emailValidationRules)}
+              className={`
+              px-6 py-3 
+              rounded-sm 
+              bg-slate-50 
+              text-base font-normal text-basic placeholder:text-slate-400
+              border border-slate-50 hover:border-blue-300
+              focus:border-blue-500 focus:outline-none
+              ${!!errors.email ? "border-error hover:border-error" : ""}
+              `}
+              type="text"
               autoComplete="off"
               placeholder="이메일을 입력해 주세요"
             />
@@ -89,12 +98,23 @@ export default function LoginPage() {
               비밀번호
             </label>
             <input
-              className="px-6 py-3 rounded-sm bg-slate-50 text-base font-normal text-slate-400"
-              type="password"
               {...register("password", passwordValidationRules)}
+              className={`
+              px-6 py-3 
+              rounded-sm 
+              bg-slate-50 
+              text-base font-normal text-basic placeholder:text-slate-400
+              border border-slate-50 hover:border-blue-300
+              focus:border-blue-500 focus:outline-none
+              ${!!errors.password ? "border-error hover:border-error" : ""}
+              `}
+              type="password"
+              autoComplete="off"
               placeholder="비밀번호를 입력해 주세요"
             />
-            <p>{errors.password?.message}</p>
+            <p className="text-sm font-normal text-error mx-4 mt-2">
+              {errors.password?.message}
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-10">
