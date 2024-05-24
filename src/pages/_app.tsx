@@ -10,9 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <CookiesProvider>
-        <main className="font-pretendard">
-          <Component {...pageProps} />
-        </main>
+        <Component {...pageProps} />
       </CookiesProvider>
     </QueryClientProvider>
   )
