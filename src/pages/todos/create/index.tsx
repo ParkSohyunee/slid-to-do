@@ -66,14 +66,38 @@ export default function CreateTodosPage() {
         >
           자료
         </label>
-        <div>
-          <button className="flex" onClick={handleToggleSelect("file")}>
+        <div className="flex gap-3">
+          <button
+            className={`
+            flex gap-1 
+            py-3 pr-3 pl-2
+            rounded-button 
+            text-base font-medium 
+            ${
+              selectedOption === "file"
+                ? "bg-slate-900  text-white"
+                : "bg-slate-100  text-basic"
+            }`}
+            onClick={handleToggleSelect("file")}
+          >
             <CheckBoxIcon
               state={selectedOption === "file" ? "active-white" : "inactive"}
             />
             파일 업로드
           </button>
-          <button className="flex" onClick={handleToggleSelect("link")}>
+          <button
+            className={`
+            flex gap-1
+            py-3 pr-3 pl-2
+            rounded-button 
+            text-base font-medium 
+            ${
+              selectedOption === "link"
+                ? "bg-slate-900  text-white"
+                : "bg-slate-100  text-basic"
+            }`}
+            onClick={handleToggleSelect("link")}
+          >
             <CheckBoxIcon
               state={selectedOption === "link" ? "active-white" : "inactive"}
             />

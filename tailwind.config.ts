@@ -32,6 +32,7 @@ const config: Config = {
         basic: "#1E293B", // slate-800
       },
       borderRadius: {
+        button: "8px",
         sm: "12px",
         md: "32px",
       },
