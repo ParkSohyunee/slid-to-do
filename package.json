@@ -12,9 +12,12 @@
   },
   "dependencies": {
     "@tanstack/react-query": "^5.37.1",
+    "axios": "^1.7.2",
     "next": "14.2.3",
     "react": "18.2.0",
-    "react-dom": "18.2.0"
+    "react-cookie": "^7.1.4",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.51.5"
   },
   "devDependencies": {
     "@chromatic-com/storybook": "^1.4.0",

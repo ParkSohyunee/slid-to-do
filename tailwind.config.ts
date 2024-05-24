@@ -8,6 +8,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      screens: {
+        mobile: "376px",
+        tablet: "745px",
+        desktop: "1920px",
+      },
       fontFamily: {
         pretendard: ["Pretendard"],
       },
@@ -22,8 +27,9 @@ const config: Config = {
       },
       colors: {
         primary: "#3B82F6", // blue-500
+        "bland-blue": "#3182F6",
         error: "#B91C1C", // red
-        text: "#1E293B", // slate-800
+        basic: "#1E293B", // slate-800
       },
       borderRadius: {
         sm: "12px",

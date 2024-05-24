@@ -45,3 +45,9 @@
 body {
   font-family: "Pretendard";
 }
+
+@layer components {
+  .text-field > p {
+    @apply absolute;
+  }
+}
