@@ -30,18 +30,22 @@ export default function CreateTodosPage() {
   const handleSubmitForm = async (data: TodosFormVaules) => {
     const filteredData: Record<string, string | number> = {}
 
+    /** 파일 업로드 url 생성 */
+    if (selectedOption === "file") {
+      if (uploadFile) {
+        const uploadFileUrl = await uploadFiles({ file: uploadFile })
+        filteredData["fileUrl"] = uploadFileUrl.url
+      }
+    } else {
+      if (data.linkUrl) {
+        filteredData["linkUrl"] = data["linkUrl"]
+      }
+    }
+
     for (const key in data) {
       if (data[key] !== "") {
         filteredData[key] = data[key] as string | number
       }
-    }
-
-    /** 파일 업로드 url 생성 */
-    if (uploadFile) {
-      const uploadFileUrl = await uploadFiles({
-        file: uploadFile,
-      })
-      filteredData["fileUrl"] = uploadFileUrl.url as string
     }
 
     try {
