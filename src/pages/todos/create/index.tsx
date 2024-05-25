@@ -1,5 +1,4 @@
-import Image from "next/image"
-import { ChangeEvent, useRef, useState } from "react"
+import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 
 import {
@@ -11,11 +10,12 @@ import { SelectedOption, TodosFormVaules } from "@/types/todos"
 import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
+import UploadFile from "@/components/UploadFile"
+
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
 
 export default function CreateTodosPage() {
-  const hiddenInputRef = useRef<HTMLInputElement>(null)
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const [uploadFile, setUploadFile] = useState<File>()
   const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
@@ -24,13 +24,6 @@ export default function CreateTodosPage() {
   /** 자료 첨부(파일 또는 링크) 옵션 선택 */
   const handleToggleSelect = (value: SelectedOption) => {
     setSelectedOption(value)
-  }
-
-  /** 업로드 할 파일 url 변경 */
-  const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setUploadFile(e.target.files[0])
-    }
   }
 
   /** todos form 제출 이벤트 핸들러 */
@@ -90,34 +83,10 @@ export default function CreateTodosPage() {
               />
             </div>
             {selectedOption === "file" ? (
-              <>
-                <button
-                  type="button"
-                  onClick={() => hiddenInputRef.current?.click()}
-                  className={`
-                  h-[184px] rounded-sm bg-slate-50 
-                  text-base font-normal text-slate-400 
-                  flex flex-col items-center justify-center gap-2`}
-                >
-                  <Image
-                    src={
-                      uploadFile
-                        ? "/icons/file-uploaded.svg"
-                        : "/icons/gray-plus-large.svg"
-                    }
-                    alt="파일 업로드 버튼"
-                    width={24}
-                    height={24}
-                  />
-                  {uploadFile ? uploadFile.name : "파일을 업로드해주세요"}
-                </button>
-                <input
-                  type="file"
-                  onChange={handleChangeFile}
-                  ref={hiddenInputRef}
-                  className="hidden"
-                />
-              </>
+              <UploadFile
+                uploadFile={uploadFile}
+                setUploadFile={setUploadFile}
+              />
             ) : (
               <TextField
                 field="linkUrl"
