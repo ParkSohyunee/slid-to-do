@@ -5,6 +5,18 @@ export {
   todosLinkUrlValidationRules,
 }
 
+export type ValidationRules = {
+  required?: string
+  pattern?: {
+    value: RegExp
+    message: string
+  }
+  maxLength?: {
+    value: number
+    message: string
+  }
+}
+
 const emailValidationRules = {
   required: "이메일은 입력해 주세요.",
   pattern: {

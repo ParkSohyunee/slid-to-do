@@ -3,19 +3,18 @@ import { FormProvider, useForm } from "react-hook-form"
 
 import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 
-import { todosLinkUrlValidationRules } from "@/libs/utils/formInputValidationRules"
-import { SelectedOption, TodosFormVaules } from "@/types/todos"
+import {
+  todosLinkUrlValidationRules,
+  todosTitleValidationRules,
+} from "@/libs/utils/formInputValidationRules"
+import { SelectedOption } from "@/types/todos"
 
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
 
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
-  const methods = useForm({ mode: "onBlur" })
-  const {
-    register,
-    formState: { errors, isValid },
-  } = useForm<TodosFormVaules>({
+  const methods = useForm({
     mode: "onBlur",
     defaultValues: {
       title: "",
@@ -44,50 +43,31 @@ export default function CreateTodosPage() {
         <div className="flex flex-col gap-6">
           <div>
             <Label htmlFor="title">제목</Label>
-            <TextField field="title" placeholder="할 일의 제목을 적어주세요" />
+            <TextField
+              field="title"
+              placeholder="할 일의 제목을 적어주세요"
+              validationRules={todosTitleValidationRules}
+            />
           </div>
-          <div className="relative text-field">
-            <div className="flex flex-col">
-              <label
-                htmlFor="reference"
-                className="text-base font-semibold mb-3 text-basic"
-              >
-                자료
-              </label>
-              <div className="flex gap-3 mb-3">
-                <CheckBoxButton
-                  option="file"
-                  selectedOption={selectedOption}
-                  handleToggleSelect={handleToggleSelect}
-                />
-                <CheckBoxButton
-                  option="link"
-                  selectedOption={selectedOption}
-                  handleToggleSelect={handleToggleSelect}
-                />
-              </div>
-              <input
-                {...register("linkUrl", todosLinkUrlValidationRules)}
-                className={`
-              px-6 py-3 
-              rounded-sm 
-              bg-slate-50 
-              text-base font-normal text-basic placeholder:text-slate-400
-              border focus:border-blue-500 focus:outline-none
-              ${
-                errors.linkUrl
-                  ? "border-error hover:border-error"
-                  : "border-slate-50 hover:border-blue-300"
-              }
-              `}
-                type="text"
-                autoComplete="off"
-                placeholder="영상이나 글, 파일의 링크를 넣어주세요"
+          <div className="flex flex-col">
+            <Label htmlFor="reference">자료</Label>
+            <div className="flex gap-3 mb-3">
+              <CheckBoxButton
+                option="file"
+                selectedOption={selectedOption}
+                handleToggleSelect={handleToggleSelect}
+              />
+              <CheckBoxButton
+                option="link"
+                selectedOption={selectedOption}
+                handleToggleSelect={handleToggleSelect}
               />
             </div>
-            <p className="text-sm font-normal text-error mx-4 mt-2">
-              {errors.linkUrl?.message}
-            </p>
+            <TextField
+              field="linkUrl"
+              placeholder="영상이나 글, 파일의 링크를 넣어주세요"
+              validationRules={todosLinkUrlValidationRules}
+            />
           </div>
         </div>
         <button

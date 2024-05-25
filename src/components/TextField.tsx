@@ -1,12 +1,17 @@
 import { useFormContext } from "react-hook-form"
-import { todosTitleValidationRules } from "@/libs/utils/formInputValidationRules"
+import { ValidationRules } from "@/libs/utils/formInputValidationRules"
 
 type TextFieldProps = {
   field: string
   placeholder: string
+  validationRules: ValidationRules
 }
 
-export default function TextField({ field, placeholder }: TextFieldProps) {
+export default function TextField({
+  field,
+  placeholder,
+  validationRules,
+}: TextFieldProps) {
   const {
     register,
     formState: { errors },
@@ -15,7 +20,7 @@ export default function TextField({ field, placeholder }: TextFieldProps) {
   return (
     <div className="relative text-field">
       <input
-        {...register(field, todosTitleValidationRules)}
+        {...register(field, validationRules)}
         className={`
           w-full
           px-6 py-3 
@@ -24,7 +29,7 @@ export default function TextField({ field, placeholder }: TextFieldProps) {
           text-base font-normal text-basic placeholder:text-slate-400
           border focus:border-blue-500 focus:outline-none
           ${
-            errors.title
+            errors[`${field}`]
               ? "border-error hover:border-error"
               : "border-slate-50 hover:border-blue-300"
           }
