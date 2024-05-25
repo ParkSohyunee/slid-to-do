@@ -15,6 +15,7 @@ import uploadFiles from "@/pages/api/todos/uploadFiles"
 
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
+  const [uploadFile, setUploadFile] = useState<File>()
   const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
   const { isValid } = methods.formState
 
@@ -23,12 +24,10 @@ export default function CreateTodosPage() {
     setSelectedOption(value)
   }
 
-  const handleUploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
-    const formData = new FormData()
+  /** 업로드 할 파일 url 변경 */
+  const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      formData.append("file", e.target.files[0])
-      const result = await uploadFiles(formData)
-      console.log(result)
+      setUploadFile(e.target.files[0])
     }
   }
 
@@ -40,6 +39,14 @@ export default function CreateTodosPage() {
       if (data[key] !== "") {
         filteredData[key] = data[key] as string | number
       }
+    }
+
+    /** 파일 업로드 url 생성 */
+    if (uploadFile) {
+      const uploadFileUrl = await uploadFiles({
+        file: uploadFile,
+      })
+      filteredData["fileUrl"] = uploadFileUrl.url as string
     }
 
     try {
@@ -82,7 +89,7 @@ export default function CreateTodosPage() {
             </div>
             {selectedOption === "file" ? (
               <div>
-                <input type="file" onChange={handleUploadFile} />
+                <input type="file" onChange={handleChangeFile} />
               </div>
             ) : (
               <TextField
