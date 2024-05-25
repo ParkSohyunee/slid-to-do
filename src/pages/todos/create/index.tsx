@@ -1,7 +1,5 @@
-import { useState } from "react"
+import { ChangeEvent, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
-
-import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 
 import {
   todosLinkUrlValidationRules,
@@ -9,9 +7,11 @@ import {
 } from "@/libs/utils/formInputValidationRules"
 import { SelectedOption, TodosFormVaules } from "@/types/todos"
 
+import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
 import createTodos from "@/pages/api/todos/createTodos"
+import uploadFiles from "@/pages/api/todos/uploadFiles"
 
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
@@ -21,6 +21,15 @@ export default function CreateTodosPage() {
   /** 자료 첨부(파일 또는 링크) 옵션 선택 */
   const handleToggleSelect = (value: SelectedOption) => {
     setSelectedOption(value)
+  }
+
+  const handleUploadFile = async (e: ChangeEvent<HTMLInputElement>) => {
+    const formData = new FormData()
+    if (e.target.files) {
+      formData.append("file", e.target.files[0])
+      const result = await uploadFiles(formData)
+      console.log(result)
+    }
   }
 
   /** todos form 제출 이벤트 핸들러 */
@@ -71,11 +80,17 @@ export default function CreateTodosPage() {
                 handleToggleSelect={handleToggleSelect}
               />
             </div>
-            <TextField
-              field="linkUrl"
-              placeholder="영상이나 글, 파일의 링크를 넣어주세요"
-              validationRules={todosLinkUrlValidationRules}
-            />
+            {selectedOption === "file" ? (
+              <div>
+                <input type="file" onChange={handleUploadFile} />
+              </div>
+            ) : (
+              <TextField
+                field="linkUrl"
+                placeholder="영상이나 글, 파일의 링크를 넣어주세요"
+                validationRules={todosLinkUrlValidationRules}
+              />
+            )}
           </div>
         </div>
         <button
