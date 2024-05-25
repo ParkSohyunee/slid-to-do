@@ -14,6 +14,7 @@ export default function CheckBoxButton({
 }: CheckBoxButtonProps) {
   return (
     <button
+      type="button"
       className={`
         flex gap-1 
         py-3 pr-3 pl-2
