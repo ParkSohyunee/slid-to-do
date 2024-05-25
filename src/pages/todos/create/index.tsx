@@ -7,37 +7,45 @@ import {
   todosLinkUrlValidationRules,
   todosTitleValidationRules,
 } from "@/libs/utils/formInputValidationRules"
-import { SelectedOption } from "@/types/todos"
+import { SelectedOption, TodosFormVaules } from "@/types/todos"
 
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
+import createTodos from "@/pages/api/todos/createTodos"
 
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
-  const methods = useForm({
-    mode: "onBlur",
-    defaultValues: {
-      title: "",
-      fileUrl: "",
-      linkUrl: "",
-      goalId: 0,
-    },
-  })
+  const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
+  const { isValid } = methods.formState
 
+  /** 자료 첨부(파일 또는 링크) 옵션 선택 */
   const handleToggleSelect = (value: SelectedOption) => {
     setSelectedOption(value)
   }
 
-  const onSubmit = (data: any) => {
-    // form 제출
-    console.log(data)
+  /** todos form 제출 이벤트 핸들러 */
+  const handleSubmitForm = async (data: TodosFormVaules) => {
+    const filteredData: Record<string, string | number> = {}
+
+    for (const key in data) {
+      if (data[key] !== "") {
+        filteredData[key] = data[key] as string | number
+      }
+    }
+
+    try {
+      const result = await createTodos(filteredData)
+      console.log(result)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   return (
     <FormProvider {...methods}>
       <h2 className="text-lg font-bold text-basic mb-6">할 일 생성</h2>
       <form
-        onSubmit={methods.handleSubmit(onSubmit)}
+        onSubmit={methods.handleSubmit(handleSubmitForm)}
         className="flex flex-col gap-10"
       >
         <div className="flex flex-col gap-6">
@@ -79,6 +87,7 @@ export default function CreateTodosPage() {
             text-white text-base font-semibold
             outline-none
             hover:bg-blue-600 active:bg-blue-800
+            ${isValid ? "bg-blue-500" : "bg-slate-400"}
             transition-colors duration-500
             `}
         >
