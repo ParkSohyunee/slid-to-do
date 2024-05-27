@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { ReactNode } from "react"
 
 import { useModal } from "@/context/ModalContext"
@@ -24,11 +25,13 @@ export default function ModalContainer({ children }: ModalContainerProps) {
       bg-modal-background`}
       >
         <div className="relative w-[520px] p-6 rounded-sm bg-white">
-          <img
+          <Image
             onClick={closeModal}
             src="/icons/close-icon.svg"
             alt="닫기 버튼"
             className="absolute top-6 right-6 cursor-pointer"
+            width={13}
+            height={13}
           />
           {children}
         </div>
