@@ -37,6 +37,9 @@ const config: Config = {
         md: "32px",
       },
     },
+    maxWidth: {
+      "1200": "75rem",
+    },
   },
   plugins: [],
 }
