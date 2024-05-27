@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { MouseEvent, useRef } from "react"
 import { useDropdownContext } from "@/context/DropdownContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import { GoalDetail } from "@/types/goal"
@@ -11,6 +11,12 @@ export default function Dropdown({ list }: DropdownProps) {
   const dropdownRef = useRef(null)
   const { selectedList, changeSelected } = useDropdownContext()
   const { isOpen, toggleHandler } = useDetectClose({ ref: dropdownRef })
+
+  const changeSelectedList = (e: MouseEvent<HTMLUListElement>) => {
+    const target = (e.target as HTMLLIElement).id
+    changeSelected(target)
+    toggleHandler()
+  }
 
   return (
     <div ref={dropdownRef}>
@@ -31,9 +37,9 @@ export default function Dropdown({ list }: DropdownProps) {
         placeholder="목표를 선택해주세요"
       />
       {isOpen && (
-        <ul>
+        <ul onClick={changeSelectedList}>
           {list?.map((list) => (
-            <li key={list.id} onClick={() => changeSelected(list.title)}>
+            <li key={list.id} id={list.title}>
               {list.title}
             </li>
           ))}
