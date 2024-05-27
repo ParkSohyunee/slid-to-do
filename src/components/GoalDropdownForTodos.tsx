@@ -1,47 +1,19 @@
-// TODO API 조회해서 보여주기
+import { useQuery } from "@tanstack/react-query"
 
+import Dropdown from "@/components/Dropdown"
 import { DropdownProvider } from "@/context/DropdownContext"
-import Dropdown from "./Dropdown"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getGoalList from "@/pages/api/goal/getGoalList"
 
 export default function GoalDropdownForTodos() {
-  const GOAL_LIST = [
-    {
-      updatedAt: "2024-05-27T06:51:51.900Z",
-      createdAt: "2024-05-27T06:51:51.900Z",
-      title: "목표1",
-      id: 1,
-      userId: 6,
-      teamId: "1-01",
-    },
-    {
-      updatedAt: "2024-05-27T06:51:51.900Z",
-      createdAt: "2024-05-27T06:51:51.900Z",
-      title: "목표2",
-      id: 2,
-      userId: 6,
-      teamId: "1-01",
-    },
-    {
-      updatedAt: "2024-05-27T06:51:51.900Z",
-      createdAt: "2024-05-27T06:51:51.900Z",
-      title: "목표3",
-      id: 3,
-      userId: 6,
-      teamId: "1-01",
-    },
-    {
-      updatedAt: "2024-05-27T06:51:51.900Z",
-      createdAt: "2024-05-27T06:51:51.900Z",
-      title: "목표4",
-      id: 4,
-      userId: 6,
-      teamId: "1-01",
-    },
-  ]
+  const { data } = useQuery({
+    queryKey: [QUERY_KEYS.getGoalList],
+    queryFn: getGoalList,
+  })
 
   return (
     <DropdownProvider>
-      <Dropdown lists={GOAL_LIST} />
+      <Dropdown list={data?.goals || []} />
     </DropdownProvider>
   )
 }

@@ -1,8 +1,13 @@
 import { useRef } from "react"
 import { useDropdownContext } from "@/context/DropdownContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import { GoalDetail } from "@/types/goal"
 
-export default function Dropdown({ lists }: any) {
+type DropdownProps = {
+  list: GoalDetail[]
+}
+
+export default function Dropdown({ list }: DropdownProps) {
   const dropdownRef = useRef(null)
   const { selectedList, changeSelected } = useDropdownContext()
   const { isOpen, toggleHandler } = useDetectClose({ ref: dropdownRef })
@@ -27,8 +32,8 @@ export default function Dropdown({ lists }: any) {
       />
       {isOpen && (
         <ul>
-          {lists?.map((list: any, index: number) => (
-            <li key={index} onClick={() => changeSelected(list.title)}>
+          {list?.map((list) => (
+            <li key={list.id} onClick={() => changeSelected(list.title)}>
               {list.title}
             </li>
           ))}
