@@ -14,6 +14,7 @@ import UploadFile from "@/components/UploadFile"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
+import GoalDropdownForTodos from "@/components/GoalDropdownForTodos"
 
 export default function CreateTodosPage() {
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
@@ -98,6 +99,10 @@ export default function CreateTodosPage() {
                 validationRules={todosLinkUrlValidationRules}
               />
             )}
+          </div>
+          <div>
+            <Label htmlFor="goalId">목표</Label>
+            <GoalDropdownForTodos />
           </div>
         </div>
         <button
