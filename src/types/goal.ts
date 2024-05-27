@@ -5,8 +5,8 @@ export type GoalList = {
 }
 
 export type GoalDetail = {
-  updatedAt: Date
-  createdAt: Date
+  updatedAt: string
+  createdAt: string
   title: string
   id: number
   userId: number
