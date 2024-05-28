@@ -1,3 +1,5 @@
+import { GoalDetail } from "./goal"
+
 export type SelectedOption = "file" | "link"
 
 export type TodosFormVaules = {
@@ -6,4 +8,24 @@ export type TodosFormVaules = {
   fileUrl?: string
   linkUrl?: string
   goalId?: number
+}
+
+type Todo = {
+  noteId: number
+  done: boolean
+  linkUrl: string
+  fileUrl: string
+  title: string
+  id: number
+  goal: Pick<GoalDetail, "id" | "title">
+  userId: 0
+  teamId: string
+  updatedAt: string
+  createdAt: string
+}
+
+export type AllTodos = {
+  totalCount: number
+  nextCursor: number
+  todos: Todo[]
 }
