@@ -44,6 +44,7 @@ export default function RecentlyTodosCard() {
       bg-white border border-slate-100 
       rounded-sm h-[250px] 
       flex flex-col px-6 pt-4 pb-6
+      max-tablet:p-4
       relative`}
     >
       <div className="flex items-center justify-between pb-4">
@@ -54,7 +55,7 @@ export default function RecentlyTodosCard() {
             width={40}
             height={40}
           />
-          <span className="text-lg font-semibold text-basic">
+          <span className="text-base tablet:text-lg font-semibold text-basic">
             최근 등록한 할 일
           </span>
         </div>
