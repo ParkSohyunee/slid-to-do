@@ -10,7 +10,7 @@ export type TodosFormVaules = {
   goalId?: number
 }
 
-type Todo = {
+export type Todo = {
   noteId: number
   done: boolean
   linkUrl: string

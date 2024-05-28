@@ -3,6 +3,34 @@ import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
+import { Todo } from "@/types/todos"
+
+type RecentlyTodoListProps = {
+  todoList: Todo
+}
+
+function RecentlyTodoList({ todoList }: RecentlyTodoListProps) {
+  const iconPath = todoList.done
+    ? "/icons/checkbox-active.svg"
+    : "/icons/checkbox-inactive.svg"
+
+  return (
+    <li className={`flex items-start gap-2 `}>
+      <Image src={iconPath} alt="할 일 완료 여부" width={24} height={24} />
+      <div
+        className={`flex flex-col text-sm font-normal ${todoList.done && "line-through"}`}
+      >
+        <p className="text-basic">{todoList.title}</p>
+        {todoList.goal && (
+          <p className="flex gap-[6px] text-slate-700">
+            <Image src="/icons/goal.svg" alt="목표" width={24} height={24} />
+            {todoList.goal.title}
+          </p>
+        )}
+      </div>
+    </li>
+  )
+}
 
 export default function RecentlyTodosCard() {
   const { data } = useQuery({
@@ -10,10 +38,13 @@ export default function RecentlyTodosCard() {
     queryFn: getAllTodos,
   })
 
-  console.log(data) // 삭제 예정
-
   return (
-    <div className="bg-white border border-slate-100 rounded-sm h-[250px] flex flex-col px-6 pt-4 pb-6">
+    <div
+      className={`
+      bg-white border border-slate-100 
+      rounded-sm h-[250px] 
+      lex flex-col px-6 pt-4 pb-6`}
+    >
       <div className="flex items-center justify-between pb-4">
         <div className="flex justify-center items-center gap-2">
           <Image
@@ -39,36 +70,7 @@ export default function RecentlyTodosCard() {
       <ul className="flex flex-col justify-between gap-2 overflow-auto">
         {data?.todos
           .filter((_, index) => index < 4)
-          .map((todo) => (
-            <li key={todo.id} className={`flex items-start gap-2 `}>
-              <Image
-                src={
-                  todo.done
-                    ? "/icons/checkbox-active.svg"
-                    : "/icons/checkbox-inactive.svg"
-                }
-                alt="할 일 완료 여부"
-                width={24}
-                height={24}
-              />
-              <div
-                className={`flex flex-col text-sm font-normal ${todo.done && "line-through"}`}
-              >
-                <p className="text-basic">{todo.title}</p>
-                {todo.goal && (
-                  <p className="flex gap-[6px] text-slate-700">
-                    <Image
-                      src="/icons/goal.svg"
-                      alt="목표"
-                      width={24}
-                      height={24}
-                    />
-                    {todo.goal.title}
-                  </p>
-                )}
-              </div>
-            </li>
-          ))}
+          .map((todo) => <RecentlyTodoList key={todo.id} todoList={todo} />)}
       </ul>
       <div></div>
     </div>
