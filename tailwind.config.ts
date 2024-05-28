@@ -9,8 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       screens: {
-        mobile: "376px",
-        tablet: "745px",
+        mobile: "375px",
+        tablet: "744px",
         desktop: "1920px",
       },
       fontFamily: {
@@ -36,6 +36,9 @@ const config: Config = {
         sm: "12px",
         md: "32px",
       },
+    },
+    maxWidth: {
+      "1200": "75rem",
     },
   },
   plugins: [],
