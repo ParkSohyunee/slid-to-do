@@ -18,7 +18,7 @@ export type Todo = {
   title: string
   id: number
   goal: Pick<GoalDetail, "id" | "title">
-  userId: 0
+  userId: number
   teamId: string
   updatedAt: string
   createdAt: string
