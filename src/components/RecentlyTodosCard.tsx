@@ -43,7 +43,8 @@ export default function RecentlyTodosCard() {
       className={`
       bg-white border border-slate-100 
       rounded-sm h-[250px] 
-      lex flex-col px-6 pt-4 pb-6`}
+      flex flex-col px-6 pt-4 pb-6
+      relative`}
     >
       <div className="flex items-center justify-between pb-4">
         <div className="flex justify-center items-center gap-2">
@@ -71,8 +72,8 @@ export default function RecentlyTodosCard() {
         {data?.todos
           .filter((_, index) => index < 4)
           .map((todo) => <RecentlyTodoList key={todo.id} todoList={todo} />)}
+        <div className="absolute inset-x-0 h-[51px] bottom-5 bg-custom-gradient"></div>
       </ul>
-      <div></div>
     </div>
   )
 }

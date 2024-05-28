@@ -8,6 +8,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "custom-gradient":
+          "linear-gradient(0deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%)",
+      },
       screens: {
         mobile: "375px",
         tablet: "744px",
