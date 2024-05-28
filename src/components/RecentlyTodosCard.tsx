@@ -13,8 +13,8 @@ export default function RecentlyTodosCard() {
   console.log(data) // 삭제 예정
 
   return (
-    <div className="bg-white border border-slate-100 rounded-sm h-[250px] flex flex-col gap-4 px-6 pt-4 pb-6">
-      <div className="flex items-center justify-between">
+    <div className="bg-white border border-slate-100 rounded-sm h-[250px] flex flex-col px-6 pt-4 pb-6">
+      <div className="flex items-center justify-between pb-4">
         <div className="flex justify-center items-center gap-2">
           <Image
             src="/icons/todo-recently.svg"
@@ -36,26 +36,41 @@ export default function RecentlyTodosCard() {
           />
         </button>
       </div>
-      <ul className="pb-3 flex flex-col justify-between gap-2">
-        {data?.todos.map((todo) => (
-          <li
-            key={todo.id}
-            className={`flex gap-2 text-sm font-normal text-basic ${todo.done && "line-through"}`}
-          >
-            <Image
-              src={
-                todo.done
-                  ? "/icons/checkbox-active.svg"
-                  : "/icons/checkbox-inactive.svg"
-              }
-              alt="할 일 완료 여부"
-              width={24}
-              height={24}
-            />
-            {todo.title}
-          </li>
-        ))}
+      <ul className="flex flex-col justify-between gap-2 overflow-auto">
+        {data?.todos
+          .filter((_, index) => index < 4)
+          .map((todo) => (
+            <li key={todo.id} className={`flex items-start gap-2 `}>
+              <Image
+                src={
+                  todo.done
+                    ? "/icons/checkbox-active.svg"
+                    : "/icons/checkbox-inactive.svg"
+                }
+                alt="할 일 완료 여부"
+                width={24}
+                height={24}
+              />
+              <div
+                className={`flex flex-col text-sm font-normal ${todo.done && "line-through"}`}
+              >
+                <p className="text-basic">{todo.title}</p>
+                {todo.goal && (
+                  <p className="flex gap-[6px] text-slate-700">
+                    <Image
+                      src="/icons/goal.svg"
+                      alt="목표"
+                      width={24}
+                      height={24}
+                    />
+                    {todo.goal.title}
+                  </p>
+                )}
+              </div>
+            </li>
+          ))}
       </ul>
+      <div></div>
     </div>
   )
 }
