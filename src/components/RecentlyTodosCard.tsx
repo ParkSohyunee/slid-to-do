@@ -15,7 +15,7 @@ function RecentlyTodoList({ todoList }: RecentlyTodoListProps) {
     : "/icons/checkbox-inactive.svg"
 
   return (
-    <li className={`flex items-start gap-2 `}>
+    <li className={`flex items-center gap-2 `}>
       <Image src={iconPath} alt="할 일 완료 여부" width={24} height={24} />
       <div
         className={`flex flex-col text-sm font-normal ${todoList.done && "line-through"}`}
@@ -33,7 +33,7 @@ function RecentlyTodoList({ todoList }: RecentlyTodoListProps) {
 }
 
 export default function RecentlyTodosCard() {
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.getAllTodos],
     queryFn: getAllTodos,
   })
@@ -68,12 +68,30 @@ export default function RecentlyTodosCard() {
           />
         </button>
       </div>
-      <ul className="flex flex-col justify-between gap-2 overflow-auto">
-        {data?.todos
-          .filter((_, index) => index < 4)
-          .map((todo) => <RecentlyTodoList key={todo.id} todoList={todo} />)}
-        <div className="absolute inset-x-0 h-[51px] bottom-5 bg-custom-gradient"></div>
-      </ul>
+      {isLoading ? (
+        <div
+          className={`
+          text-sm font-normal text-slate-500 
+          flex justify-center items-center grow`}
+        >
+          로딩중
+        </div>
+      ) : data?.todos ? (
+        <ul className="flex flex-col justify-between gap-2 overflow-auto">
+          {data?.todos
+            .filter((_, index) => index < 4)
+            .map((todo) => <RecentlyTodoList key={todo.id} todoList={todo} />)}
+          <div className="absolute inset-x-0 h-[51px] bottom-5 bg-custom-gradient"></div>
+        </ul>
+      ) : (
+        <div
+          className={`
+          text-sm font-normal text-slate-500 
+          flex justify-center items-center grow`}
+        >
+          최근에 등록한 할 일이 없어요
+        </div>
+      )}
     </div>
   )
 }
