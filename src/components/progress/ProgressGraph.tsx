@@ -9,7 +9,11 @@ export default function ProgressGraph({ progress = 0 }: ProgressGraphProps) {
 
   return (
     <svg
-      className="absolute right-[20%] top-[42px]"
+      className={`
+      absolute right-[20%] top-[42px] 
+      max-lg:right-6 transition-[right] 
+      ease-in-out duration-300
+      `}
       xmlns="http://www.w3.org/2000/svg"
       width="166"
       height="166"
