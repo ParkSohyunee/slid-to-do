@@ -5,7 +5,7 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import ProgressGraph from "./progress/ProgressGraph"
 
-export default function ProgressForTodos() {
+export default function ProgressForTodosCard() {
   const { data } = useQuery({
     queryKey: [QUERY_KEYS.getProgressForTodos],
     queryFn: getProgressForTodos,
@@ -30,7 +30,9 @@ export default function ProgressForTodos() {
         <div className="flex flex-col items-start gap-1 text-white">
           <span className="text-lg font-semibold">내 진행 상황</span>
           <div className="flex gap-1 items-center">
-            <span className="text-3xl font-bold">{data?.progress}</span>
+            <span className="text-3xl font-bold">
+              {data?.progress ? data.progress : 0}
+            </span>
             <span className="text-base font-semibold">%</span>
           </div>
         </div>
