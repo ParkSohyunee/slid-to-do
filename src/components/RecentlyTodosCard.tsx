@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -33,6 +34,7 @@ function RecentlyTodoList({ todoList }: RecentlyTodoListProps) {
 }
 
 export default function RecentlyTodosCard() {
+  const router = useRouter()
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.getAllTodos],
     queryFn: getAllTodos,
@@ -59,7 +61,10 @@ export default function RecentlyTodosCard() {
             최근 등록한 할 일
           </span>
         </div>
-        <button className="flex items-center text-sm font-medium text-slate-600">
+        <button
+          onClick={() => router.push("/todos-list")}
+          className="flex items-center text-sm font-medium text-slate-600"
+        >
           모두 보기
           <Image
             src="/icons/arrow-right.svg"
