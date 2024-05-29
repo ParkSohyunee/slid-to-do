@@ -53,5 +53,5 @@ body {
 }
 
 .progress-ring {
-  transition: stroke-dashoffset 0.35s ease-in-out;
+  transition: stroke-dashoffset 0.5s ease-in-out;
 }
