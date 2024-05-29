@@ -18,6 +18,7 @@ export default function ProgressGraph({ progress = 0 }: ProgressGraphProps) {
     >
       <circle cx="83" cy="83" r={radius} stroke="#F8FAFC" strokeWidth="32" />
       <circle
+        className="progress-ring"
         strokeDasharray={circumference}
         strokeDashoffset={offset}
         cx="83"
