@@ -26,7 +26,7 @@ export default function Layout({ children }: LayoutProps) {
       <main
         className={`
         w-full grow 
-        ${!isHiddenSideBar && "p-4 xl:pl-[360px] tablet:p-6 tablet:pl-[81px]"}`}
+        ${!isHiddenSideBar && "p-4 xl:pl-[360px] tablet:p-6 tablet:pl-[80px]"}`}
       >
         {children}
       </main>
