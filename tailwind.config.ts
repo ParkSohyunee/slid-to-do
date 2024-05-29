@@ -38,6 +38,7 @@ const config: Config = {
       borderRadius: {
         button: "8px",
         sm: "12px",
+        basic: "16px",
         md: "32px",
       },
     },
