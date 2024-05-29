@@ -37,7 +37,7 @@ export default function RecentlyTodosCard() {
   const router = useRouter()
   const { data, isLoading } = useQuery({
     queryKey: [QUERY_KEYS.getAllTodos],
-    queryFn: getAllTodos,
+    queryFn: () => getAllTodos(),
   })
 
   return (

@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useQuery } from "@tanstack/react-query"
+import { useQueries, useQuery } from "@tanstack/react-query"
 
 import getGoalList from "@/pages/api/goal/getGoalList"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
@@ -12,13 +12,17 @@ type TodosAboutGoalCardProps = {
 }
 
 function TodosAboutGoalCard({ goalId, title }: TodosAboutGoalCardProps) {
-  const { data: todosAboutGoal } = useQuery({
-    queryKey: [QUERY_KEYS.getAllTodos, goalId],
-    queryFn: () =>
-      getAllTodos({
-        goalId,
-      }),
-    enabled: !!goalId,
+  const isDone = [true, false]
+  const [{ data: doneTodo }, { data: progressTodo }] = useQueries({
+    queries: isDone.map((done) => ({
+      queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
+      queryFn: () =>
+        getAllTodos({
+          goalId,
+          done,
+        }),
+      enabled: !!goalId,
+    })),
   })
 
   return (
@@ -44,11 +48,16 @@ function TodosAboutGoalCard({ goalId, title }: TodosAboutGoalCardProps) {
         </div>
         <div>프로그래스바</div>
       </div>
-      <ul>
-        {todosAboutGoal?.todos.map((todo) => (
-          <li key={todo.id}>{todo.title}</li>
-        ))}
-      </ul>
+      <div>
+        <ul>
+          {doneTodo?.todos.map((todo) => <li key={todo.id}>{todo.title}</li>)}
+        </ul>
+        <ul>
+          {progressTodo?.todos.map((todo) => (
+            <li key={todo.id}>{todo.title}</li>
+          ))}
+        </ul>
+      </div>
       <button
         className={`
         flex gap-[2px] items-center justify-center
