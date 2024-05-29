@@ -6,9 +6,35 @@ import getAllTodos from "@/pages/api/todos/getAllTodos"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
+type TodosAboutGoalCardProps = {
+  goalId: number
+  title: string
+}
+
+function TodosAboutGoalCard({ goalId, title }: TodosAboutGoalCardProps) {
+  const { data: todosAboutGoal } = useQuery({
+    queryKey: [QUERY_KEYS.getAllTodos, goalId],
+    queryFn: () =>
+      getAllTodos({
+        goalId,
+      }),
+    enabled: !!goalId,
+  })
+
+  return (
+    <ul className="p-6">
+      <div>{title}</div>
+      <ul>
+        {todosAboutGoal?.todos.map((todo) => (
+          <li key={todo.id}>{todo.title}</li>
+        ))}
+      </ul>
+      <button>더보기</button>
+    </ul>
+  )
+}
+
 export default function TodosAboutGoalContainer() {
-  // 1. 내 모든 목표 리스트 조회
-  // 2. 목표별 할 일 리스트 조회
   // 3. 목표별 진행률 계산해서 UI 보여주기
   // 4. 목표 무한스크롤 구현 (stale time 등 캐시 적용 고려)
 
@@ -16,19 +42,6 @@ export default function TodosAboutGoalContainer() {
     queryKey: [QUERY_KEYS.getGoalList],
     queryFn: getGoalList,
   })
-
-  const goalId = 2 // 특정 아이디 전달하기
-
-  const { data: todosAboutGoal } = useQuery({
-    queryKey: [QUERY_KEYS.getAllTodos, goalId],
-    queryFn: () =>
-      getAllTodos({
-        goalId: 2,
-      }),
-    enabled: !!goalList?.goals, // 특정 아이디 전달하기
-  })
-
-  console.log(todosAboutGoal)
 
   return (
     <div
@@ -53,7 +66,13 @@ export default function TodosAboutGoalContainer() {
         </div>
       </div>
       <div>
-        {goalList?.goals.map((goal) => <div key={goal.id}>{goal.title}</div>)}
+        {goalList?.goals.map((goal) => (
+          <TodosAboutGoalCard
+            key={goal.id}
+            goalId={goal.id}
+            title={goal.title}
+          />
+        ))}
       </div>
     </div>
   )
