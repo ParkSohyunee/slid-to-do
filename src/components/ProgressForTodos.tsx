@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
+import ProgressGraph from "./progress/ProgressGraph"
 
 export default function ProgressForTodos() {
   const { data } = useQuery({
@@ -17,7 +18,7 @@ export default function ProgressForTodos() {
       className={`
         bg-blue-500 border border-slate-100 
         rounded-sm h-[250px] 
-        flex flex-col px-6 pt-4 pb-6
+        px-6 pt-4 pb-6
         max-tablet:p-4
         relative`}
     >
@@ -35,14 +36,15 @@ export default function ProgressForTodos() {
             <span className="text-base font-semibold">%</span>
           </div>
         </div>
-        <Image
-          className="absolute right-0 bottom-0"
-          src="/icons/progress-card-image.svg"
-          alt="카드 이미지"
-          width={224}
-          height={223}
-        />
       </div>
+      <ProgressGraph progress={data?.progress} />
+      <Image
+        className="absolute right-0 bottom-0"
+        src="/icons/progress-card-image.svg"
+        alt="카드 이미지"
+        width={224}
+        height={223}
+      />
     </div>
   )
 }
