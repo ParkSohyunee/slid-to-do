@@ -11,8 +11,6 @@ export default function ProgressForTodos() {
     queryFn: getProgressForTodos,
   })
 
-  console.log(data)
-
   return (
     <div
       className={`
@@ -20,7 +18,7 @@ export default function ProgressForTodos() {
         rounded-sm h-[250px] 
         px-6 pt-4 pb-6
         max-tablet:p-4
-        relative`}
+        relative z-0`}
     >
       <div className="flex flex-col items-start gap-4">
         <Image
@@ -39,7 +37,7 @@ export default function ProgressForTodos() {
       </div>
       <ProgressGraph progress={data?.progress} />
       <Image
-        className="absolute right-0 bottom-0"
+        className="absolute right-0 bottom-0 -z-[1]"
         src="/icons/progress-card-image.svg"
         alt="카드 이미지"
         width={224}
