@@ -29,3 +29,7 @@ export type AllTodos = {
   nextCursor: number
   todos: Todo[]
 }
+
+export type ProgressForTodos = {
+  progress: number
+}
