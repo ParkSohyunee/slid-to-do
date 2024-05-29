@@ -1,5 +1,6 @@
 import ProgressForTodosCard from "@/components/ProgressForTodosCard"
 import RecentlyTodosCard from "@/components/RecentlyTodosCard"
+import TodosAboutGoalCard from "@/components/TodosAboutGoalCard"
 
 export default function DashboardPage() {
   return (
@@ -8,7 +9,9 @@ export default function DashboardPage() {
       <div className="grid grid-cols-2 gap-6">
         <RecentlyTodosCard />
         <ProgressForTodosCard />
-        <div className="bg-blue-400 col-span-2">목표 별 할 일</div>
+        <div className="col-span-2">
+          <TodosAboutGoalCard />
+        </div>
       </div>
     </div>
   )
