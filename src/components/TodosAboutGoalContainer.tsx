@@ -6,7 +6,7 @@ import getAllTodos from "@/pages/api/todos/getAllTodos"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
-export default function TodosAboutGoalCard() {
+export default function TodosAboutGoalContainer() {
   // 1. 내 모든 목표 리스트 조회
   // 2. 목표별 할 일 리스트 조회
   // 3. 목표별 진행률 계산해서 UI 보여주기
@@ -52,7 +52,9 @@ export default function TodosAboutGoalCard() {
           </span>
         </div>
       </div>
-      <div></div>
+      <div>
+        {goalList?.goals.map((goal) => <div key={goal.id}>{goal.title}</div>)}
+      </div>
     </div>
   )
 }

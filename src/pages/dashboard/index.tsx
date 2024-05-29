@@ -1,6 +1,6 @@
 import ProgressForTodosCard from "@/components/ProgressForTodosCard"
 import RecentlyTodosCard from "@/components/RecentlyTodosCard"
-import TodosAboutGoalCard from "@/components/TodosAboutGoalCard"
+import TodosAboutGoalContainer from "@/components/TodosAboutGoalContainer"
 
 export default function DashboardPage() {
   return (
@@ -10,7 +10,7 @@ export default function DashboardPage() {
         <RecentlyTodosCard />
         <ProgressForTodosCard />
         <div className="col-span-2">
-          <TodosAboutGoalCard />
+          <TodosAboutGoalContainer />
         </div>
       </div>
     </div>
