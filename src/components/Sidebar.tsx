@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ChangeEvent, useState, KeyboardEvent } from "react"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getUser from "@/pages/api/user/getUser"
@@ -9,6 +9,7 @@ import createGoal from "@/pages/api/goal/createGoal"
 import getGoalList from "@/pages/api/goal/getGoalList"
 
 export default function Sidebar() {
+  const queryClient = useQueryClient()
   const [isVisibleInput, setIsVisibleInput] = useState(false)
   const [newGoal, setNewGoal] = useState("")
 
@@ -23,6 +24,20 @@ export default function Sidebar() {
     staleTime: 1000 * 60 * 5,
   })
 
+  const createGoalMutation = useMutation({
+    mutationFn: createGoal,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getGoalList],
+      })
+      setNewGoal("")
+      setIsVisibleInput(false)
+    },
+    onError: () => {
+      alert("목표를 다시 생성해주세요")
+    },
+  })
+
   const handleVisibleInput = () => {
     setIsVisibleInput((prev) => !prev)
   }
@@ -31,14 +46,14 @@ export default function Sidebar() {
     setNewGoal(e.target.value)
   }
 
-  // TODO 목표 리스트 조회해서 UI 그리기
   // TODO 목표 생성 후, 리스트 업데이트되도록 - Optimistic UI로 리팩토링 해보기
   // TODO 리액트 훅 폼으로 변경 고려 - 리팩토링
   const onSubmit = async (e: KeyboardEvent) => {
     if (e.code === "Enter") {
       if (!newGoal) return
-      const result = await createGoal({ title: newGoal })
-      console.log(result)
+      createGoalMutation.mutate({
+        title: newGoal,
+      })
     }
   }
 
