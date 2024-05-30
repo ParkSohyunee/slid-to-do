@@ -8,7 +8,7 @@ import ProgressGraph from "./progress/ProgressGraph"
 export default function ProgressForTodosCard() {
   const { data } = useQuery({
     queryKey: [QUERY_KEYS.getProgressForTodos],
-    queryFn: getProgressForTodos,
+    queryFn: () => getProgressForTodos(),
   })
 
   return (

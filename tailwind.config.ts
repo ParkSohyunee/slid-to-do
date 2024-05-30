@@ -38,11 +38,18 @@ const config: Config = {
       borderRadius: {
         button: "8px",
         sm: "12px",
+        basic: "16px",
         md: "32px",
       },
     },
     maxWidth: {
       "1200": "75rem",
+    },
+    boxShadow: {
+      "2xl": "0px 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    },
+    gridTemplateRows: {
+      cards: "250px 1fr",
     },
   },
   plugins: [],

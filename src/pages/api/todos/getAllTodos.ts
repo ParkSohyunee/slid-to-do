@@ -1,7 +1,23 @@
 import axiosInstance from "@/libs/axios/axiosInstance"
 import { AllTodos } from "@/types/todos"
 
-export default async function getAllTodos() {
-  const response = await axiosInstance.get<AllTodos>("/todos")
+type getAllTodosProps = {
+  [key: string]: unknown
+  goalId?: number
+  done?: boolean
+  cursor?: number
+  size?: number
+}
+
+export default async function getAllTodos(data?: getAllTodosProps) {
+  const queryParams = new URLSearchParams()
+
+  for (const params in data) {
+    if (data[params] !== null) {
+      queryParams.append(params, (data[params] as number | boolean).toString())
+    }
+  }
+
+  const response = await axiosInstance.get<AllTodos>(`/todos?${queryParams}`)
   return response.data
 }
