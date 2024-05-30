@@ -1,7 +1,10 @@
+import Image from "next/image"
+import { useQueries, useQuery } from "@tanstack/react-query"
+
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
-import { useQueries } from "@tanstack/react-query"
-import Image from "next/image"
+import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
+import ProgressBar from "./progress/ProgressBar"
 
 type TodosAboutGoalCardProps = {
   goalId: number
@@ -23,6 +26,12 @@ export default function TodosAboutGoalCard({
         }),
       enabled: !!goalId,
     })),
+  })
+
+  const { data: progressForGoal } = useQuery({
+    queryKey: [QUERY_KEYS.getProgressForTodos, goalId],
+    queryFn: () => getProgressForTodos(goalId),
+    enabled: !!goalId,
   })
 
   /**
@@ -54,7 +63,7 @@ export default function TodosAboutGoalCard({
             </span>
           </button>
         </div>
-        <div>프로그래스바</div>
+        <ProgressBar progress={progressForGoal?.progress} />
       </div>
       <div className="flex gap-6 self-stretch">
         {results.map(({ data, isLoading }, index) => (

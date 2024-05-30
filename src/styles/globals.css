@@ -55,3 +55,7 @@ body {
 .progress-ring {
   transition: stroke-dashoffset 0.5s ease-in-out;
 }
+
+.progress-bar {
+  transition: all 0.4s linear;
+}
