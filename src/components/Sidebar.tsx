@@ -1,13 +1,15 @@
 import Image from "next/image"
-import { useState } from "react"
+import { ChangeEvent, useState, KeyboardEvent } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getUser from "@/pages/api/user/getUser"
 import Link from "next/link"
+import createGoal from "@/pages/api/goal/createGoal"
 
 export default function Sidebar() {
   const [isVisibleInput, setIsVisibleInput] = useState(false)
+  const [newGoal, setNewGoal] = useState("")
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
     queryFn: getUser,
@@ -16,7 +18,20 @@ export default function Sidebar() {
   const handleVisibleInput = () => {
     setIsVisibleInput((prev) => !prev)
   }
-  console.log(user)
+
+  const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
+    setNewGoal(e.target.value)
+  }
+
+  // TODO 목표 생성 후, 리스트 업데이트되도록
+  // TODO 리액트 훅 폼으로 변경 고려
+  const onSubmit = async (e: KeyboardEvent) => {
+    if (e.code === "Enter") {
+      if (!newGoal) return
+      const result = await createGoal({ title: newGoal })
+      console.log(result)
+    }
+  }
 
   return (
     <article
@@ -91,6 +106,8 @@ export default function Sidebar() {
                     autoFocus={isVisibleInput}
                     placeholder="목표를 입력해주세요"
                     className="outline-none placeholder:text-slate-400 placeholder:font-normal"
+                    onChange={handleChangeInput}
+                    onKeyUp={onSubmit}
                   />
                 </li>
               )}
