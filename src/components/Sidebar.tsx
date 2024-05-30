@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -6,11 +7,15 @@ import getUser from "@/pages/api/user/getUser"
 import Link from "next/link"
 
 export default function Sidebar() {
+  const [isVisibleInput, setIsVisibleInput] = useState(false)
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
     queryFn: getUser,
   })
 
+  const handleVisibleInput = () => {
+    setIsVisibleInput((prev) => !prev)
+  }
   console.log(user)
 
   return (
@@ -76,8 +81,24 @@ export default function Sidebar() {
             <span className="text-lg font-medium text-basic">목표</span>
           </div>
           <div className="flex flex-col gap-6">
-            <ul></ul>
-            <button className="w-full flex h-12 rounded-sm gap-1 justify-center items-center border border-blue-500">
+            <ul className="list-disc list-inside text-sm font-medium text-slate-700">
+              <li className="p-2">가나다</li>
+              {isVisibleInput && (
+                <li className="p-2">
+                  <input
+                    type="text"
+                    autoComplete="off"
+                    autoFocus={isVisibleInput}
+                    placeholder="목표를 입력해주세요"
+                    className="outline-none placeholder:text-slate-400 placeholder:font-normal"
+                  />
+                </li>
+              )}
+            </ul>
+            <button
+              onClick={handleVisibleInput}
+              className="w-full flex h-12 rounded-sm gap-1 justify-center items-center border border-blue-500"
+            >
               <Image
                 src="/icons/plus-blue-large.svg"
                 alt="새 목표 추가하기 버튼"
