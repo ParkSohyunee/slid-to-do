@@ -27,9 +27,7 @@ export default function TodosAboutGoalCard({
 
   /**
    * TODO
-   * - [x] 노트 아이콘 추가, hover 디자인
    * - [ ] 반응형 디자인
-   * - [x] 할 일 없음, 로딩중 UI
    * - [ ] 더보기 버튼 클릭시 더 보여주기
    * - [ ] 새 할 일 버튼을 클릭 시, 할일 생성 페이지로 이동하고, 목표란은 해당 목표로 자동 입력
    */
