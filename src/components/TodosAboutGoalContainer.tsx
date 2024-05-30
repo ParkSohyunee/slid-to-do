@@ -34,15 +34,25 @@ export default function TodosAboutGoalContainer() {
           </span>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-4">
-        {goalList?.goals.map((goal) => (
-          <TodosAboutGoalCard
-            key={goal.id}
-            goalId={goal.id}
-            title={goal.title}
-          />
-        ))}
-      </div>
+      {goalList?.goals ? (
+        <div className="grid grid-cols-2 gap-4">
+          {goalList?.goals.map((goal) => (
+            <TodosAboutGoalCard
+              key={goal.id}
+              goalId={goal.id}
+              title={goal.title}
+            />
+          ))}
+        </div>
+      ) : (
+        <div
+          className={`
+          flex flex-col items-center justify-center 
+          text-sm font-normal text-slate-500 h-full`}
+        >
+          등록한 목표가 없어요
+        </div>
+      )}
     </div>
   )
 }

@@ -48,6 +48,9 @@ const config: Config = {
     boxShadow: {
       "2xl": "0px 25px 50px -12px rgba(0, 0, 0, 0.25)",
     },
+    gridTemplateRows: {
+      cards: "250px 1fr",
+    },
   },
   plugins: [],
 }
