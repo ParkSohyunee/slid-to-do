@@ -9,11 +9,13 @@ import ProgressBar from "./progress/ProgressBar"
 type TodosAboutGoalCardProps = {
   goalId: number
   title: string
+  cardStyle: boolean
 }
 
 export default function TodosAboutGoalCard({
   goalId,
   title,
+  cardStyle,
 }: TodosAboutGoalCardProps) {
   const isDone = [true, false]
   const results = useQueries({
@@ -46,6 +48,7 @@ export default function TodosAboutGoalCard({
       className={`
         p-6 rounded-md bg-blue-50 
         flex flex-col items-center gap-4 hover:shadow-2xl
+        ${cardStyle && "col-span-2"}
         `}
     >
       <div className="flex flex-col items-start gap-2 self-stretch">

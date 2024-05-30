@@ -6,8 +6,7 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodosAboutGoalCard from "./TodosAboutGoalCard"
 
 export default function TodosAboutGoalContainer() {
-  // 3. 목표별 진행률 계산해서 UI 보여주기
-  // 4. 목표 무한스크롤 구현 (stale time 등 캐시 적용 고려)
+  // TODO 목표 무한스크롤 구현 (stale time 등 캐시 적용 고려)
 
   const { data: goalList } = useQuery({
     queryKey: [QUERY_KEYS.getGoalList],
@@ -36,11 +35,12 @@ export default function TodosAboutGoalContainer() {
       </div>
       {goalList?.goals ? (
         <div className="grid grid-cols-2 gap-4">
-          {goalList?.goals.map((goal) => (
+          {goalList?.goals.map((goal, index) => (
             <TodosAboutGoalCard
               key={goal.id}
               goalId={goal.id}
               title={goal.title}
+              cardStyle={(index + 1) % 3 === 0}
             />
           ))}
         </div>
