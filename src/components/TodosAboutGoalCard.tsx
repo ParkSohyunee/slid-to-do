@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -44,7 +45,8 @@ export default function TodosAboutGoalCard({
    */
 
   return (
-    <ul
+    <Link
+      href={`/goal/${goalId}`}
       className={`
         p-6 rounded-md bg-blue-50 
         flex flex-col items-center gap-4 hover:shadow-2xl
@@ -136,6 +138,6 @@ export default function TodosAboutGoalCard({
           height={24}
         />
       </button>
-    </ul>
+    </Link>
   )
 }
