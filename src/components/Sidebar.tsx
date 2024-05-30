@@ -1,17 +1,23 @@
+// TODO Optimistic UI로 리팩토링 해보기
+// TODO 리액트 훅 폼으로 리팩토링 해보기
+
 import Image from "next/image"
 import Link from "next/link"
-import { ChangeEvent, useState, KeyboardEvent } from "react"
+import { ChangeEvent, useState, KeyboardEvent, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import { useDetectClose } from "@/hooks/useDetectClose"
+
 import getUser from "@/pages/api/user/getUser"
 import createGoal from "@/pages/api/goal/createGoal"
 import getGoalList from "@/pages/api/goal/getGoalList"
 
 export default function Sidebar() {
   const queryClient = useQueryClient()
-  const [isVisibleInput, setIsVisibleInput] = useState(false)
+  const buttonRef = useRef(null)
   const [newGoal, setNewGoal] = useState("")
+  const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
@@ -31,23 +37,17 @@ export default function Sidebar() {
         queryKey: [QUERY_KEYS.getGoalList],
       })
       setNewGoal("")
-      setIsVisibleInput(false)
+      toggleHandler()
     },
     onError: () => {
       alert("목표를 다시 생성해주세요")
     },
   })
 
-  const handleVisibleInput = () => {
-    setIsVisibleInput((prev) => !prev)
-  }
-
   const handleChangeInput = (e: ChangeEvent<HTMLInputElement>) => {
     setNewGoal(e.target.value)
   }
 
-  // TODO 목표 생성 후, 리스트 업데이트되도록 - Optimistic UI로 리팩토링 해보기
-  // TODO 리액트 훅 폼으로 변경 고려 - 리팩토링
   const onSubmit = async (e: KeyboardEvent) => {
     if (e.code === "Enter") {
       if (!newGoal) return
@@ -126,12 +126,12 @@ export default function Sidebar() {
                   {goal.title}
                 </li>
               ))}
-              {isVisibleInput && (
+              {isOpen && (
                 <li className="p-2">
                   <input
                     type="text"
                     autoComplete="off"
-                    autoFocus={isVisibleInput}
+                    autoFocus={isOpen}
                     placeholder="목표를 입력해주세요"
                     className="outline-none placeholder:text-slate-400 placeholder:font-normal"
                     onChange={handleChangeInput}
@@ -141,7 +141,8 @@ export default function Sidebar() {
               )}
             </ul>
             <button
-              onClick={handleVisibleInput}
+              ref={buttonRef}
+              onClick={toggleHandler}
               className="w-full flex h-12 rounded-sm gap-1 justify-center items-center border border-blue-500"
             >
               <Image

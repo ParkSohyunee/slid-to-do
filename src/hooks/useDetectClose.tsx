@@ -1,6 +1,6 @@
 import { RefObject, useEffect, useState } from "react"
 
-export function useDetectClose({ ref }: { ref: RefObject<HTMLDivElement> }) {
+export function useDetectClose({ ref }: { ref: RefObject<HTMLElement> }) {
   const [isOpen, setIsOpen] = useState(false)
 
   const toggleHandler = () => {
