@@ -13,7 +13,7 @@ export default function TodosAboutGoalCard({
   title,
 }: TodosAboutGoalCardProps) {
   const isDone = [true, false]
-  const [{ data: doneTodo }, { data: progressTodo }] = useQueries({
+  const results = useQueries({
     queries: isDone.map((done) => ({
       queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
       queryFn: () =>
@@ -48,15 +48,38 @@ export default function TodosAboutGoalCard({
         </div>
         <div>프로그래스바</div>
       </div>
-      <div>
-        <ul>
-          {doneTodo?.todos.map((todo) => <li key={todo.id}>{todo.title}</li>)}
-        </ul>
-        <ul>
-          {progressTodo?.todos.map((todo) => (
-            <li key={todo.id}>{todo.title}</li>
-          ))}
-        </ul>
+      <div className="flex gap-6 self-stretch">
+        {results.map(({ data }, index) => (
+          <ul key={index} className="flex flex-col gap-3 grow-[1]">
+            <p className="text-sm font-semibold text-basic">
+              {index === 0 ? "To do" : "Done"}
+            </p>
+            <div className="flex flex-col items-start gap-2 self-stretch">
+              {data?.todos.map((todo) => (
+                <li
+                  key={todo.id}
+                  className={`
+                  text-sm font-normal text-basic 
+                  flex items-center gap-2 
+                  ${todo.done && "line-through"}
+                  `}
+                >
+                  <Image
+                    src={
+                      todo.done
+                        ? "/icons/checkbox-active.svg"
+                        : "/icons/checkbox-inactive.svg"
+                    }
+                    alt="할 일 완료 여부"
+                    width={24}
+                    height={24}
+                  />
+                  {todo.title}
+                </li>
+              ))}
+            </div>
+          </ul>
+        ))}
       </div>
       <button
         className={`
