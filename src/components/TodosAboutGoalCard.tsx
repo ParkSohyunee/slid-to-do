@@ -25,11 +25,21 @@ export default function TodosAboutGoalCard({
     })),
   })
 
+  /**
+   * TODO
+   * - [x] 노트 아이콘 추가, hover 디자인
+   * - [ ] 반응형 디자인
+   * - [ ] 할 일 없음, 로딩중 UI
+   * - [ ] 더보기 버튼 클릭시 더 보여주기
+   * - [ ] 새 할 일 버튼을 클릭 시, 할일 생성 페이지로 이동하고, 목표란은 해당 목표로 자동 입력
+   */
+
   return (
     <ul
       className={`
         p-6 rounded-md bg-blue-50 
-        flex flex-col items-center gap-4`}
+        flex flex-col items-center gap-4 hover:shadow-2xl
+        `}
     >
       <div className="flex flex-col items-start gap-2 self-stretch">
         <div className="flex justify-between items-center self-stretch">
@@ -60,7 +70,7 @@ export default function TodosAboutGoalCard({
                   key={todo.id}
                   className={`
                   text-sm font-normal text-basic 
-                  flex items-center gap-2 
+                  flex items-center justify-between gap-2 
                   ${todo.done && "line-through"}
                   `}
                 >
@@ -75,6 +85,14 @@ export default function TodosAboutGoalCard({
                     height={24}
                   />
                   {todo.title}
+                  {todo.noteId && (
+                    <Image
+                      src="/icons/note-view.svg"
+                      alt="할 일 완료 여부"
+                      width={24}
+                      height={24}
+                    />
+                  )}
                 </li>
               ))}
             </div>
