@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getUser from "@/pages/api/user/getUser"
+import Link from "next/link"
 
 export default function Sidebar() {
   const { data: user } = useQuery({
@@ -53,15 +54,15 @@ export default function Sidebar() {
         </button>
       </div>
       <div className="px-6 py-4  border-b border-slate-200">
-        <button className="flex items-center gap-2">
+        <Link href="/dashboard" className="flex items-center gap-2">
           <Image
             src="/icons/sidebar-home.svg"
-            alt="대시보드로 이동하기 버튼"
+            alt="대시보드로 이동하기"
             width={24}
             height={24}
           />
           <span className="text-lg font-medium text-basic">대시보드</span>
-        </button>
+        </Link>
       </div>
       <div className="px-6 py-4">
         <div className="flex flex-col gap-4">
