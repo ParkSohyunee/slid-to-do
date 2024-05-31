@@ -8,9 +8,13 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        "custom-gradient":
+          "linear-gradient(0deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%)",
+      },
       screens: {
-        mobile: "376px",
-        tablet: "745px",
+        mobile: "375px",
+        tablet: "744px",
         desktop: "1920px",
       },
       fontFamily: {
@@ -35,8 +39,18 @@ const config: Config = {
       borderRadius: {
         button: "8px",
         sm: "12px",
+        basic: "16px",
         md: "32px",
       },
+    },
+    maxWidth: {
+      "1200": "75rem",
+    },
+    boxShadow: {
+      "2xl": "0px 25px 50px -12px rgba(0, 0, 0, 0.25)",
+    },
+    gridTemplateRows: {
+      cards: "250px 1fr",
     },
   },
   plugins: [],
