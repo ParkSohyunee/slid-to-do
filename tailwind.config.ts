@@ -34,6 +34,7 @@ const config: Config = {
         "bland-blue": "#3182F6",
         error: "#B91C1C", // red
         basic: "#1E293B", // slate-800
+        "modal-background": "rgba(0, 0, 0, 0.80)",
       },
       borderRadius: {
         button: "8px",
