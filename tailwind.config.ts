@@ -35,6 +35,7 @@ const config: Config = {
         error: "#B91C1C", // red
         basic: "#1E293B", // slate-800
         "modal-background": "rgba(0, 0, 0, 0.80)",
+        "popup-background": "rgba(0, 0, 0, 0.50)",
       },
       borderRadius: {
         button: "8px",

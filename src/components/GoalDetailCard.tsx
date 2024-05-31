@@ -6,6 +6,8 @@ import { useDetectClose } from "@/hooks/useDetectClose"
 import getGoalDetail from "@/pages/api/goal/getGoalDetail"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import patchGoal from "@/pages/api/goal/patchGoal"
+import { useModal } from "@/context/ModalContext"
+import PopupContainer from "./modal/PopupContainer"
 
 type GoalDetailCardProps = {
   goalId: number
@@ -13,9 +15,10 @@ type GoalDetailCardProps = {
 
 type PopupMenuProps = {
   onClickEdit: () => void
+  openModal: () => unknown
 }
 
-function PopupMenu({ onClickEdit }: PopupMenuProps) {
+function PopupMenu({ onClickEdit, openModal }: PopupMenuProps) {
   return (
     <div
       className={`
@@ -31,7 +34,10 @@ function PopupMenu({ onClickEdit }: PopupMenuProps) {
       >
         수정하기
       </button>
-      <button className="rounded-b-sm px-4 pb-2 pt-[6px] hover:bg-slate-50">
+      <button
+        onClick={openModal}
+        className="rounded-b-sm px-4 pb-2 pt-[6px] hover:bg-slate-50"
+      >
         삭제하기
       </button>
     </div>
@@ -42,6 +48,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   const queryClient = useQueryClient()
   const popupRef = useRef(null)
   const { isOpen, toggleHandler } = useDetectClose({ ref: popupRef })
+  const { openModal } = useModal()
   const [title, setTitle] = useState("")
   const [isEdit, setIsEdit] = useState(false)
 
@@ -106,38 +113,47 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   }, [goal])
 
   return (
-    <div className="bg-white px-6 py-4 border border-slate-100 rounded-sm relative">
-      <div className="flex justify-between items-center pb-6">
-        <div className="flex items-center gap-2 w-full">
-          <span>이미지</span>
-          {isEdit ? (
-            <input
-              type="text"
-              className="text-lg font-semibold text-basic outline-none grow"
-              value={title}
-              placeholder="목표를 입력해주세요"
-              autoFocus
-              onChange={handleChangeTitle}
-              onKeyUp={handleEditGoalTitle}
-            />
-          ) : (
-            <h3 className="text-lg font-semibold text-basic outline-none grow">
-              {goal?.title}
-            </h3>
-          )}
+    <div>
+      <div className="bg-white px-6 py-4 border border-slate-100 rounded-sm relative">
+        <div className="flex justify-between items-center pb-6">
+          <div className="flex items-center gap-2 w-full">
+            <span>이미지</span>
+            {isEdit ? (
+              <input
+                type="text"
+                className="text-lg font-semibold text-basic outline-none grow"
+                value={title}
+                placeholder="목표를 입력해주세요"
+                autoFocus
+                onChange={handleChangeTitle}
+                onKeyUp={handleEditGoalTitle}
+              />
+            ) : (
+              <h3 className="text-lg font-semibold text-basic outline-none grow">
+                {goal?.title}
+              </h3>
+            )}
+          </div>
+          <Image
+            ref={popupRef}
+            src="/icons/meatballs-menu.svg"
+            alt="목표 수정 및 삭제 버튼"
+            width={24}
+            height={24}
+            className="cursor-pointer hover:bg-slate-50 rounded-full"
+            onClick={toggleHandler}
+          />
         </div>
-        <Image
-          ref={popupRef}
-          src="/icons/meatballs-menu.svg"
-          alt="목표 수정 및 삭제 버튼"
-          width={24}
-          height={24}
-          className="cursor-pointer hover:bg-slate-50 rounded-full"
-          onClick={toggleHandler}
-        />
+        {isOpen && (
+          <PopupMenu onClickEdit={handleEditInput} openModal={openModal} />
+        )}
+        <div>프로그래스바</div>
       </div>
-      {isOpen && <PopupMenu onClickEdit={handleEditInput} />}
-      <div>프로그래스바</div>
+      <PopupContainer onClick={() => {}}>
+        <p className="text-center text-base font-medium text-basic">
+          목표를 삭제할까요?
+        </p>
+      </PopupContainer>
     </div>
   )
 }
