@@ -1,8 +1,14 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
+import { useQuery } from "@tanstack/react-query"
+
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getGoalDetail from "@/pages/api/goal/getGoalDetail"
 
 /**
  * TODO
- * [ ] 목표 상세 조회 API 연동 (title, progress, todo, done)
+ * [x] 목표 상세 조회 API 연동 (title)
+ * [ ] 목표 ID를 가지고, 할 일, 진행률 API 연동 (progress, todo, done)
  * [x] UI 구현
  * [ ] 목표 수정, 삭제 기능 구현
  * [ ] 수정, 삭제 팝업 메뉴 구현
@@ -13,6 +19,17 @@ import Image from "next/image"
  * [ ] 각 할 일 카드 무한스크롤 적용
  */
 export default function GoalDetailPage() {
+  const router = useRouter()
+  const goalId = Number(router.query.goalId)
+
+  const { data: goal } = useQuery({
+    queryKey: [QUERY_KEYS.getGoalDetail, goalId],
+    queryFn: () => getGoalDetail(goalId),
+    enabled: !!goalId,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
+  })
+
   return (
     <section className="h-full max-w-1200 flex flex-col">
       <h1 className="mb-4 text-lg font-semibold text-slate-900">목표</h1>
@@ -22,7 +39,7 @@ export default function GoalDetailPage() {
             <div className="flex items-center gap-2">
               <span>이미지</span>
               <h3 className="text-lg font-semibold text-basic">
-                자바스크립트로 웹 서비스 만들기
+                {goal?.title}
               </h3>
             </div>
             <Image
