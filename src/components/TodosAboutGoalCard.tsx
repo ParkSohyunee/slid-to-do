@@ -50,7 +50,7 @@ export default function TodosAboutGoalCard({
       className={`
         p-6 rounded-md bg-blue-50 
         flex flex-col items-center gap-4 hover:shadow-2xl
-        ${cardStyle && "col-span-2"}
+        ${cardStyle && "lg:col-span-2"}
         `}
     >
       <div className="flex flex-col items-start gap-2 self-stretch">
@@ -70,7 +70,7 @@ export default function TodosAboutGoalCard({
         </div>
         <ProgressBar progress={progressForGoal?.progress} />
       </div>
-      <div className="flex gap-6 self-stretch">
+      <div className="flex max-sm:flex-col gap-6 self-stretch">
         {results.map(({ data, isLoading }, index) => (
           <ul key={index} className="flex flex-col gap-3 grow-[1]">
             <p className="text-sm font-semibold text-basic">

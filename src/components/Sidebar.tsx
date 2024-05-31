@@ -61,15 +61,32 @@ export default function Sidebar() {
     <article
       className={`
       bg-white border border-r-slate-200
-        w-[280px] absolute h-full 
-        max-tablet:relative 
-        max-tablet:h-12`}
+        w-[60px]
+        xl:w-[280px]
+        max-mobile:h-12
+        `}
     >
-      <div className="p-6 border-b border-slate-200">
+      <div className="flex flex-col p-4 gap-4 items-center xl:hidden">
+        <Image src="/logo/logo-small.svg" alt="logo" width={32} height={32} />
+        <button>
+          <Image
+            src="/icons/expand-ic.svg"
+            alt="사이드바 열기"
+            width={32}
+            height={32}
+          />
+        </button>
+      </div>
+      <div className="p-6 border-b border-slate-200 max-xl:hidden">
         <div className="flex justify-between items-center">
           <Image src="/logo/img_logo.svg" alt="logo" width={96} height={19} />
           <button>
-            <Image src="/icons/fold-ic.svg" alt="logo" width={24} height={24} />
+            <Image
+              src="/icons/fold-ic.svg"
+              alt="사이드바 닫기"
+              width={24}
+              height={24}
+            />
           </button>
         </div>
         <div className="flex gap-3 pt-[18px] pb-6">
@@ -97,7 +114,7 @@ export default function Sidebar() {
           <span className="text-base font-semibold text-white">새 할일</span>
         </button>
       </div>
-      <div className="px-6 py-4  border-b border-slate-200">
+      <div className="px-6 py-4  border-b border-slate-200 max-xl:hidden">
         <Link href="/dashboard" className="flex items-center gap-2">
           <Image
             src="/icons/sidebar-home.svg"
@@ -108,7 +125,7 @@ export default function Sidebar() {
           <span className="text-lg font-medium text-basic">대시보드</span>
         </Link>
       </div>
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 max-xl:hidden">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <Image
@@ -161,4 +178,3 @@ export default function Sidebar() {
     </article>
   )
 }
-// xl:w-[280px] tablet:w-[60px]
