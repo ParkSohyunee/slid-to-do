@@ -139,8 +139,10 @@ export default function Sidebar() {
           <div className="flex flex-col gap-6">
             <ul className="list-disc list-inside text-sm font-medium text-slate-700">
               {data?.goals.map((goal) => (
-                <li key={goal.id} className="p-2">
-                  {goal.title}
+                <li key={goal.id} className="p-2 flex">
+                  <Link href={`/goal/${goal.id}`} className="w-full list-item">
+                    {goal.title}
+                  </Link>
                 </li>
               ))}
               {isOpen && (
