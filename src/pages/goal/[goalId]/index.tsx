@@ -1,23 +1,14 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { useQueries } from "@tanstack/react-query"
 
 import GoalDetailCard from "@/components/GoalDetailCard"
-import { useQueries } from "@tanstack/react-query"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 
 /**
  * TODO
- * [x] 목표 상세 조회 API 연동 (title)
- * [x] 목표 ID를 가지고, 할 일, 진행률 API 연동 (progress, todo, done)
- * [x] UI 구현
- * [x] 목표 수정, 삭제 기능 구현
- * [x] 수정, 삭제 팝업 메뉴 구현
- * [x] 목표 수정시 사이드바에 반영
- * [x] 목표 삭제의 경우 확인 모달 띄우기
- * [x] 할 일 없음 UI, 로딩 UI
- * [x] 기타 애니메이션 적용
  * [ ] 각 할 일 카드 무한스크롤 적용
  */
 export default function GoalDetailPage() {
