@@ -1,9 +1,10 @@
 /**
  * TODO
  * [x] 모든 할 일 조회 API 연동
- * [ ] 카테고리 컴포넌트 구현
+ * [x] 카테고리(필터링) 컴포넌트 구현
  * [x] 카테고리 클릭 시 API 쿼리 로직
  * [ ] 수정, 삭제 팝업 메뉴
+ * [ ] 수정, 삭제 기능
  * [ ] 노트보기 클릭시 우측 노트 사이드메뉴
  * [ ] 무한스크롤 기능
  * [ ] 반응형 UI
@@ -17,6 +18,7 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodoItem from "@/components/item/TodoItem"
 
 const DEFAULT_VALUE = "All"
+const STATUS_OF_TODO = ["All", "To do", "Done"]
 
 export default function TodosPage() {
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_VALUE)
@@ -68,15 +70,21 @@ export default function TodosPage() {
       </div>
       <div className="rounded-sm border border-slate-100 bg-white p-6 grow flex flex-col gap-4">
         <div className="flex gap-2" onClick={handleTodoListOfStatus}>
-          <button className="px-3 py-1 rounded-[17px] border text-sm font-medium">
-            All
-          </button>
-          <button className="px-3 py-1 rounded-[17px] border text-sm font-medium">
-            To do
-          </button>
-          <button className="px-3 py-1 rounded-[17px] border text-sm font-medium">
-            Done
-          </button>
+          {STATUS_OF_TODO.map((status) => (
+            <button
+              key={status}
+              className={`
+              px-3 py-1 rounded-[17px] border  text-sm font-medium
+              ${
+                status === selectedCategory
+                  ? "text-white border-blue-500 bg-blue-500"
+                  : "text-basic border-slate-200"
+              }
+              `}
+            >
+              {status}
+            </button>
+          ))}
         </div>
         {isLoading ? (
           <div>로딩 중</div>
