@@ -35,7 +35,12 @@ export default function GoalDetailPage() {
           "
         >
           <div className="flex items-center gap-2">
-            <span>이미지</span>
+            <Image
+              src="/icons/note.svg"
+              alt="노트 모아보기"
+              width={24}
+              height={24}
+            />
             <h3 className="text-lg font-bold text-basic">노트 모아보기</h3>
           </div>
           <Image

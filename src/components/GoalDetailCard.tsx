@@ -30,7 +30,7 @@ function PopupMenu({ onClickEdit, openModal }: PopupMenuProps) {
       flex flex-col 
       rounded-sm shadow-lg 
       text-sm font-normal text-slate-700 
-      bg-white`}
+      bg-white z-10`}
     >
       <button
         onClick={onClickEdit}
@@ -147,7 +147,13 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
       <div className="bg-white px-6 py-4 border border-slate-100 rounded-sm relative">
         <div className="flex justify-between items-center pb-6">
           <div className="flex items-center gap-2 w-full">
-            <span>이미지</span>
+            <Image
+              className="w-10 h-10 rounded-[15px] bg-slate-800 p-2"
+              src="/icons/flag-white.svg"
+              alt="목표"
+              width={24}
+              height={24}
+            />
             {isEdit ? (
               <input
                 type="text"
@@ -164,15 +170,18 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
               </h3>
             )}
           </div>
-          <Image
-            ref={popupRef}
-            src="/icons/meatballs-menu.svg"
-            alt="목표 수정 및 삭제 버튼"
-            width={24}
-            height={24}
-            className="cursor-pointer hover:bg-slate-50 rounded-full"
+          <div
             onClick={toggleHandler}
-          />
+            className="cursor-pointer hover:bg-slate-50 rounded-full w-10 h-10 p-2"
+          >
+            <Image
+              ref={popupRef}
+              src="/icons/meatballs-menu.svg"
+              alt="목표 수정 및 삭제 버튼"
+              width={24}
+              height={24}
+            />
+          </div>
         </div>
         {isOpen && (
           <PopupMenu onClickEdit={handleEditInput} openModal={openModal} />

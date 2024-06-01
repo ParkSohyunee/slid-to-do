@@ -129,7 +129,7 @@ export default function Sidebar() {
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
             <Image
-              src="/icons/sidebar-flag.svg"
+              src="/icons/flag-slate.svg"
               alt="목표 리스트"
               width={24}
               height={24}
