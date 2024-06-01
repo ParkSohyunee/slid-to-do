@@ -1,7 +1,7 @@
 import axiosInstance from "@/libs/axios/axiosInstance"
 import { AllTodos } from "@/types/todos"
 
-type getAllTodosProps = {
+type AllTodosDataProps = {
   [key: string]: unknown
   goalId?: number
   done?: boolean
@@ -9,7 +9,7 @@ type getAllTodosProps = {
   size?: number
 }
 
-export default async function getAllTodos(data?: getAllTodosProps) {
+export default async function getAllTodos(data?: AllTodosDataProps) {
   const queryParams = new URLSearchParams()
 
   for (const params in data) {
