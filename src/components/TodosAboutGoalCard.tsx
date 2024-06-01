@@ -35,6 +35,7 @@ export default function TodosAboutGoalCard({
     queryKey: [QUERY_KEYS.getProgressForTodos, goalId],
     queryFn: () => getProgressForTodos(goalId),
     enabled: !!goalId,
+    staleTime: 1000 * 60 * 5,
   })
 
   /**

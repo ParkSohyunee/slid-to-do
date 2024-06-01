@@ -5,11 +5,13 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import getGoalDetail from "@/pages/api/goal/getGoalDetail"
 import patchGoal from "@/pages/api/goal/patchGoal"
+import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import axiosInstance from "@/libs/axios/axiosInstance"
 import { useModal } from "@/context/ModalContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import PopupContainer from "@/components/modal/PopupContainer"
+import ProgressBar from "@/components/progress/ProgressBar"
 
 type GoalDetailCardProps = {
   goalId: number
@@ -60,6 +62,13 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     queryFn: () => getGoalDetail(goalId),
     enabled: !!goalId,
     retry: 1,
+  })
+
+  const { data: progressForGoal } = useQuery({
+    queryKey: [QUERY_KEYS.getProgressForTodos, goalId],
+    queryFn: () => getProgressForTodos(goalId),
+    enabled: !!goalId,
+    staleTime: 1000 * 60 * 5,
   })
 
   const editGoalMutation = useMutation({
@@ -168,7 +177,10 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
         {isOpen && (
           <PopupMenu onClickEdit={handleEditInput} openModal={openModal} />
         )}
-        <div>프로그래스바</div>
+        <div className="flex flex-col gap-2">
+          <p className="text-xs font-semibold text-slate-900">Progress</p>
+          <ProgressBar progress={progressForGoal?.progress} />
+        </div>
       </div>
       <PopupContainer onClick={handleDeleteGoal(goalId)}>
         <p className="text-center text-base font-medium text-basic">
