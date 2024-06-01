@@ -17,7 +17,7 @@ import getAllTodos from "@/pages/api/todos/getAllTodos"
  * [x] 목표 수정시 사이드바에 반영
  * [x] 목표 삭제의 경우 확인 모달 띄우기
  * [x] 할 일 없음 UI, 로딩 UI
- * [ ] 기타 애니메이션 적용
+ * [x] 기타 애니메이션 적용
  * [ ] 각 할 일 카드 무한스크롤 적용
  */
 export default function GoalDetailPage() {
@@ -48,7 +48,7 @@ export default function GoalDetailPage() {
           className="
           flex items-center justify-between
           bg-blue-100 px-6 py-4 border border-bule-100 rounded-sm
-          cursor-pointer
+          cursor-pointer hover:shadow-2xl
           "
         >
           <div className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export default function GoalDetailPage() {
             <ul
               key={index}
               className={`
-              px-6 py-4 rounded-sm border h-[228px]
+              px-6 py-4 rounded-sm border h-[228px] hover:shadow-2xl
               ${index === 0 ? "bg-white border-slate-100" : "bg-slate-200 border-slate-100"}
               flex flex-col gap-4
             `}
