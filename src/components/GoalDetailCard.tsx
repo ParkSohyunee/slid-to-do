@@ -1,13 +1,15 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
-import { useDetectClose } from "@/hooks/useDetectClose"
 import getGoalDetail from "@/pages/api/goal/getGoalDetail"
-import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import patchGoal from "@/pages/api/goal/patchGoal"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import axiosInstance from "@/libs/axios/axiosInstance"
 import { useModal } from "@/context/ModalContext"
-import PopupContainer from "./modal/PopupContainer"
+import { useDetectClose } from "@/hooks/useDetectClose"
+import PopupContainer from "@/components/modal/PopupContainer"
 
 type GoalDetailCardProps = {
   goalId: number
@@ -46,16 +48,18 @@ function PopupMenu({ onClickEdit, openModal }: PopupMenuProps) {
 
 export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   const queryClient = useQueryClient()
+  const router = useRouter()
   const popupRef = useRef(null)
   const { isOpen, toggleHandler } = useDetectClose({ ref: popupRef })
-  const { openModal } = useModal()
+  const { openModal, closeModal } = useModal()
   const [title, setTitle] = useState("")
   const [isEdit, setIsEdit] = useState(false)
 
-  const { data: goal } = useQuery({
+  const { data: goal, isError } = useQuery({
     queryKey: [QUERY_KEYS.getGoalDetail, goalId],
     queryFn: () => getGoalDetail(goalId),
     enabled: !!goalId,
+    retry: 1,
   })
 
   const editGoalMutation = useMutation({
@@ -104,6 +108,17 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     }
   }
 
+  /** 목표 삭제 이벤트 핸들러 */
+  const handleDeleteGoal = (goalId: number) => async () => {
+    try {
+      await axiosInstance.delete(`/goals/${goalId}`)
+      router.back()
+      closeModal()
+    } catch (error) {
+      alert("목표 삭제에 실패했어요. 다시 시도해주세요.")
+    }
+  }
+
   /** 각 목표 상세 페이지가 mount될 때마다 상태 초기화 */
   useEffect(() => {
     if (goal) {
@@ -111,6 +126,12 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
       setIsEdit(false)
     }
   }, [goal])
+
+  if (isError) {
+    alert("목표를 찾을 수 없어요.")
+    router.push("/dashboard")
+    return
+  }
 
   return (
     <div>
@@ -149,7 +170,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
         )}
         <div>프로그래스바</div>
       </div>
-      <PopupContainer onClick={() => {}}>
+      <PopupContainer onClick={handleDeleteGoal(goalId)}>
         <p className="text-center text-base font-medium text-basic">
           목표를 삭제할까요?
         </p>
