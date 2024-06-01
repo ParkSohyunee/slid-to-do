@@ -6,6 +6,7 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import ProgressBar from "./progress/ProgressBar"
+import TodoItem from "./list/TodoItem"
 
 type TodosAboutGoalCardProps = {
   goalId: number
@@ -84,34 +85,7 @@ export default function TodosAboutGoalCard({
             ) : data?.todos.length !== 0 ? (
               <div className="flex flex-col items-start gap-2 self-stretch">
                 {data?.todos.map((todo) => (
-                  <li
-                    key={todo.id}
-                    className={`
-                  text-sm font-normal text-basic 
-                  flex items-center justify-between gap-2 
-                  ${todo.done && "line-through"}
-                  `}
-                  >
-                    <Image
-                      src={
-                        todo.done
-                          ? "/icons/checkbox-active.svg"
-                          : "/icons/checkbox-inactive.svg"
-                      }
-                      alt="할 일 완료 여부"
-                      width={24}
-                      height={24}
-                    />
-                    {todo.title}
-                    {todo.noteId && (
-                      <Image
-                        src="/icons/note-view.svg"
-                        alt="할 일 완료 여부"
-                        width={24}
-                        height={24}
-                      />
-                    )}
-                  </li>
+                  <TodoItem todo={todo} key={todo.id} />
                 ))}
               </div>
             ) : (
