@@ -35,6 +35,7 @@ const config: Config = {
         error: "#B91C1C", // red
         basic: "#1E293B", // slate-800
         "modal-background": "rgba(0, 0, 0, 0.80)",
+        "popup-background": "rgba(0, 0, 0, 0.50)",
       },
       borderRadius: {
         button: "8px",
@@ -47,6 +48,7 @@ const config: Config = {
       "1200": "75rem",
     },
     boxShadow: {
+      lg: "0px 4px 6px -2px rgba(0, 0, 0, 0.05)",
       "2xl": "0px 25px 50px -12px rgba(0, 0, 0, 0.25)",
     },
     gridTemplateRows: {
