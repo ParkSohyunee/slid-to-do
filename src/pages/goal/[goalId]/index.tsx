@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useQueries } from "@tanstack/react-query"
 
 import GoalDetailCard from "@/components/GoalDetailCard"
-import TodoItem from "@/components/list/TodoItem"
+import TodoItem from "@/components/item/TodoItem"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 

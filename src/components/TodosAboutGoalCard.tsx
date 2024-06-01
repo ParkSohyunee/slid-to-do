@@ -6,7 +6,7 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import ProgressBar from "./progress/ProgressBar"
-import TodoItem from "./list/TodoItem"
+import TodoItem from "./item/TodoItem"
 
 type TodosAboutGoalCardProps = {
   goalId: number
