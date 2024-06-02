@@ -1,7 +1,9 @@
 import Image from "next/image"
-import { MouseEvent, useRef, useState } from "react"
+import { MouseEvent, useRef } from "react"
+
 import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import useToggle from "@/hooks/useToggle"
 import { useModal } from "@/context/ModalContext"
 import PopupContainer from "./modal/PopupContainer"
 import RightSidebarContainer from "./modal/RightSidebarContainer"
@@ -56,39 +58,20 @@ function TodoItem({ todo }: TodoItemProps) {
     ref: popupRef,
   })
   const { openModal } = useModal()
-  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false)
-  const [isOpenRightSidebar, setIsOpenRightSidebar] = useState(false)
-
-  const handleOpenConfirmModal = () => {
-    setIsOpenConfirmModal(true)
-  }
-
-  const handleCloseConfirmModal = () => {
-    setIsOpenConfirmModal(false)
-  }
-
-  const handleOpenRightSidebar = () => {
-    setIsOpenRightSidebar(true)
-  }
-
-  const handleCloseRightSidebar = () => {
-    setIsOpenRightSidebar(false)
-  }
+  const confirmModal = useToggle()
+  const rightSidebar = useToggle()
 
   return (
     <>
-      {isOpenConfirmModal && (
-        <PopupContainer
-          onClickClose={handleCloseConfirmModal}
-          onClick={() => {}}
-        >
+      {confirmModal.isOpen && (
+        <PopupContainer onClickClose={confirmModal.close} onClick={() => {}}>
           <p className="text-center text-base font-medium text-basic">
             할 일을 삭제할까요?
           </p>
         </PopupContainer>
       )}
-      {isOpenRightSidebar && (
-        <RightSidebarContainer onClickClose={handleCloseRightSidebar}>
+      {rightSidebar.isOpen && (
+        <RightSidebarContainer onClickClose={rightSidebar.close}>
           <div className="bg-slate-100 h-full">사이드바</div>
         </RightSidebarContainer>
       )}
@@ -141,7 +124,7 @@ function TodoItem({ todo }: TodoItemProps) {
         >
           {!todo.noteId && (
             <div
-              onClick={handleOpenRightSidebar}
+              onClick={rightSidebar.open}
               className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer"
             >
               <Image
@@ -167,7 +150,7 @@ function TodoItem({ todo }: TodoItemProps) {
           {popupIsOpen && (
             <PopupMenu
               onClickEdit={openModal}
-              onClickDelete={handleOpenConfirmModal}
+              onClickDelete={confirmModal.open}
             />
           )}
         </div>
