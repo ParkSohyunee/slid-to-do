@@ -18,12 +18,14 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodoListCard from "@/components/TodoListCard"
 import ModalContainer from "@/components/modal/ModalContainer"
 import CreateTodos from "@/components/CreateTodos"
+import { useModal } from "@/context/ModalContext"
 
 const DEFAULT_VALUE = "All"
 
 export default function TodosPage() {
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_VALUE)
   const [isDone, setIsDone] = useState(false)
+  const { openModal } = useModal()
   const { data, isLoading } = useQuery({
     queryKey:
       selectedCategory === DEFAULT_VALUE
@@ -63,7 +65,7 @@ export default function TodosPage() {
           <h1 className="text-lg font-semibold text-slate-900">
             모든 할 일 {data?.totalCount ? `(${data.totalCount})` : ""}
           </h1>
-          <button className="flex gap-1 items-center">
+          <button onClick={openModal} className="flex gap-1 items-center">
             <Image
               src="/icons/plus-blue-small.svg"
               alt="할 일 추가 버튼"
