@@ -3,7 +3,7 @@
  * [x] 모든 할 일 조회 API 연동
  * [x] 카테고리(필터링) 컴포넌트 구현
  * [x] 카테고리 클릭 시 API 쿼리 로직
- * [ ] 수정, 삭제 팝업 메뉴
+ * [x] 수정, 삭제 팝업 메뉴
  * [ ] 수정, 삭제 기능
  * [x] 노트보기 클릭시 우측 노트 사이드메뉴
  * [ ] 무한스크롤 기능
@@ -15,14 +15,14 @@ import { useQuery } from "@tanstack/react-query"
 
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
-import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
-import { useModal } from "@/context/ModalContext"
+// import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import TodoListCard from "@/components/TodoListCard"
+import ModalContainer from "@/components/modal/ModalContainer"
+import CreateTodos from "@/components/CreateTodos"
 
 const DEFAULT_VALUE = "All"
 
 export default function TodosPage() {
-  const { openModal } = useModal()
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_VALUE)
   const [isDone, setIsDone] = useState(false)
   const { data, isLoading } = useQuery({
@@ -56,9 +56,12 @@ export default function TodosPage() {
 
   return (
     <>
-      <RightSidebarContainer>
+      {/* <RightSidebarContainer>
         <div className="bg-slate-100 h-full">사이드바</div>
-      </RightSidebarContainer>
+      </RightSidebarContainer> */}
+      <ModalContainer>
+        <CreateTodos />
+      </ModalContainer>
       <section className="h-full max-w-[792px] flex flex-col">
         <div className="flex justify-between items-center self-stretch mb-4">
           <h1 className="text-lg font-semibold text-slate-900">
@@ -82,7 +85,6 @@ export default function TodosPage() {
           handleTodoListOfStatus={handleTodoListOfStatus}
           selectedCategory={selectedCategory}
         />
-        <button onClick={openModal}>노트보기</button>
       </section>
     </>
   )
