@@ -15,7 +15,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
-// import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import TodoListCard from "@/components/TodoListCard"
 import ModalContainer from "@/components/modal/ModalContainer"
 import CreateTodos from "@/components/CreateTodos"
@@ -56,9 +55,6 @@ export default function TodosPage() {
 
   return (
     <>
-      {/* <RightSidebarContainer>
-        <div className="bg-slate-100 h-full">사이드바</div>
-      </RightSidebarContainer> */}
       <ModalContainer>
         <CreateTodos />
       </ModalContainer>

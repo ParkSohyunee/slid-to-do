@@ -4,6 +4,7 @@ import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import { useModal } from "@/context/ModalContext"
 import PopupContainer from "./modal/PopupContainer"
+import RightSidebarContainer from "./modal/RightSidebarContainer"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -56,6 +57,7 @@ function TodoItem({ todo }: TodoItemProps) {
   })
   const { openModal } = useModal()
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false)
+  const [isOpenRightSidebar, setIsOpenRightSidebar] = useState(false)
 
   const handleOpenConfirmModal = () => {
     setIsOpenConfirmModal(true)
@@ -63,6 +65,14 @@ function TodoItem({ todo }: TodoItemProps) {
 
   const handleCloseConfirmModal = () => {
     setIsOpenConfirmModal(false)
+  }
+
+  const handleOpenRightSidebar = () => {
+    setIsOpenRightSidebar(true)
+  }
+
+  const handleCloseRightSidebar = () => {
+    setIsOpenRightSidebar(false)
   }
 
   return (
@@ -76,6 +86,11 @@ function TodoItem({ todo }: TodoItemProps) {
             할 일을 삭제할까요?
           </p>
         </PopupContainer>
+      )}
+      {isOpenRightSidebar && (
+        <RightSidebarContainer onClickClose={handleCloseRightSidebar}>
+          <div className="bg-slate-100 h-full">사이드바</div>
+        </RightSidebarContainer>
       )}
       <li
         className={`
@@ -125,7 +140,10 @@ function TodoItem({ todo }: TodoItemProps) {
         transition-opacity duration-300`}
         >
           {!todo.noteId && (
-            <div className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer">
+            <div
+              onClick={handleOpenRightSidebar}
+              className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer"
+            >
               <Image
                 src="/icons/note-view.svg"
                 alt="노트 보기"
