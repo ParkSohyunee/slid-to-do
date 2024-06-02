@@ -15,12 +15,11 @@ import { useQuery } from "@tanstack/react-query"
 
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
-import TodoItem from "@/components/item/TodoItem"
 import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import { useModal } from "@/context/ModalContext"
+import TodoListCard from "@/components/TodoListCard"
 
 const DEFAULT_VALUE = "All"
-const STATUS_OF_TODO = ["All", "To do", "Done"]
 
 export default function TodosPage() {
   const { openModal } = useModal()
@@ -77,36 +76,12 @@ export default function TodosPage() {
             </span>
           </button>
         </div>
-        <div className="rounded-sm border border-slate-100 bg-white p-6 grow flex flex-col gap-4">
-          <div className="flex gap-2" onClick={handleTodoListOfStatus}>
-            {STATUS_OF_TODO.map((status) => (
-              <button
-                key={status}
-                className={`
-              px-3 py-1 rounded-[17px] border  text-sm font-medium
-              ${
-                status === selectedCategory
-                  ? "text-white border-blue-500 bg-blue-500"
-                  : "text-basic border-slate-200"
-              }
-              `}
-              >
-                {status}
-              </button>
-            ))}
-          </div>
-          {isLoading ? (
-            <div>로딩 중</div>
-          ) : data?.todos ? (
-            <ul className="flex flex-col justify-between gap-2 overflow-auto">
-              {data.todos.map((todo) => (
-                <TodoItem key={todo.id} todo={todo} />
-              ))}
-            </ul>
-          ) : (
-            <div>데이터가 없어요.</div>
-          )}
-        </div>
+        <TodoListCard
+          todos={data?.todos}
+          isLoading={isLoading}
+          handleTodoListOfStatus={handleTodoListOfStatus}
+          selectedCategory={selectedCategory}
+        />
         <button onClick={openModal}>노트보기</button>
       </section>
     </>
