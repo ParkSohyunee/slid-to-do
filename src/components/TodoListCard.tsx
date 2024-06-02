@@ -20,7 +20,7 @@ function TodoItem({ todo }: TodoItemProps) {
     <li
       className={`
       text-sm font-normal text-basic 
-      flex items-center justify-between 
+      flex items-center justify-between group
       `}
     >
       <div
@@ -37,23 +37,48 @@ function TodoItem({ todo }: TodoItemProps) {
           height={24}
         />
         <div className="flex flex-col gap-1">
-          <p className={`${todo.done && "line-through"}`}>{todo.title}</p>
+          <p
+            className={`
+            ${todo.done && "line-through"} 
+            group-hover:text-blue-500 
+            transition-all duration-300
+            `}
+          >
+            {todo.title}
+          </p>
           {todo.goal && (
-            <p className="flex gap-1 items-center text-slate-700">
+            <p className="flex gap-1 items-center text-slate-70 group-hover:text-blue-500">
               <Image src="/icons/goal.svg" alt="목표" width={24} height={24} />
               {todo.goal.title}
             </p>
           )}
         </div>
       </div>
-      {todo.noteId && (
-        <Image
-          src="/icons/note-view.svg"
-          alt="노트 보기"
-          width={24}
-          height={24}
-        />
-      )}
+      <div
+        className={`
+        opacity-0 group-hover:opacity-100 
+        flex gap-[10px] 
+        transition-opacity duration-300`}
+      >
+        {!todo.noteId && (
+          <div className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer">
+            <Image
+              src="/icons/note-view.svg"
+              alt="노트 보기"
+              width={24}
+              height={24}
+            />
+          </div>
+        )}
+        <div className="bg-slate-50 rounded-full w-6 h-6 p-[5px] cursor-pointer">
+          <Image
+            src="/icons/meatballs-menu.svg"
+            alt="목표 수정 및 삭제 버튼"
+            width={14}
+            height={14}
+          />
+        </div>
+      </div>
     </li>
   )
 }
