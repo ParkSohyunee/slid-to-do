@@ -32,6 +32,7 @@ export default function LoginPage() {
         password: data.password,
       })
       setCookie("accessToken", result.accessToken)
+      setCookie("refreshToken", result.refreshToken)
       router.push("/dashboard")
     } catch (error) {
       if (error instanceof AxiosError) {
