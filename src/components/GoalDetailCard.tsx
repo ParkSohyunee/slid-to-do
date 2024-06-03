@@ -8,7 +8,6 @@ import patchGoal from "@/pages/api/goal/patchGoal"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import axiosInstance from "@/libs/axios/axiosInstance"
-import { useModal } from "@/context/ModalContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import PopupContainer from "@/components/modal/PopupContainer"
 import ProgressBar from "@/components/progress/ProgressBar"
@@ -19,10 +18,10 @@ type GoalDetailCardProps = {
 
 type PopupMenuProps = {
   onClickEdit: () => void
-  openModal: () => unknown
+  onClickDelete: () => void
 }
 
-function PopupMenu({ onClickEdit, openModal }: PopupMenuProps) {
+function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
   return (
     <div
       className={`
@@ -39,7 +38,7 @@ function PopupMenu({ onClickEdit, openModal }: PopupMenuProps) {
         수정하기
       </button>
       <button
-        onClick={openModal}
+        onClick={onClickDelete}
         className="rounded-b-sm px-4 pb-2 pt-[6px] hover:bg-slate-50"
       >
         삭제하기
@@ -53,9 +52,18 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   const router = useRouter()
   const popupRef = useRef(null)
   const { isOpen, toggleHandler } = useDetectClose({ ref: popupRef })
-  const { openModal, closeModal } = useModal()
   const [title, setTitle] = useState("")
   const [isEdit, setIsEdit] = useState(false)
+
+  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false)
+
+  const handleOpenConfirmModal = () => {
+    setIsOpenConfirmModal(true)
+  }
+
+  const handleCloseConfirmModal = () => {
+    setIsOpenConfirmModal(false)
+  }
 
   const { data: goal, isError } = useQuery({
     queryKey: [QUERY_KEYS.getGoalDetail, goalId],
@@ -122,7 +130,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     try {
       await axiosInstance.delete(`/goals/${goalId}`)
       router.back()
-      closeModal()
+      handleCloseConfirmModal()
     } catch (error) {
       alert("목표 삭제에 실패했어요. 다시 시도해주세요.")
     }
@@ -184,18 +192,26 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
           </div>
         </div>
         {isOpen && (
-          <PopupMenu onClickEdit={handleEditInput} openModal={openModal} />
+          <PopupMenu
+            onClickEdit={handleEditInput}
+            onClickDelete={handleOpenConfirmModal}
+          />
         )}
         <div className="flex flex-col gap-2">
           <p className="text-xs font-semibold text-slate-900">Progress</p>
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
       </div>
-      <PopupContainer onClick={handleDeleteGoal(goalId)}>
-        <p className="text-center text-base font-medium text-basic">
-          목표를 삭제할까요?
-        </p>
-      </PopupContainer>
+      {isOpenConfirmModal && (
+        <PopupContainer
+          onClick={handleDeleteGoal(goalId)}
+          onClickClose={handleCloseConfirmModal}
+        >
+          <p className="text-center text-base font-medium text-basic">
+            목표를 삭제할까요?
+          </p>
+        </PopupContainer>
+      )}
     </div>
   )
 }

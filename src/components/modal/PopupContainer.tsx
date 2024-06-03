@@ -1,24 +1,19 @@
 import Image from "next/image"
 import { ReactNode } from "react"
 
-import { useModal } from "@/context/ModalContext"
 import ModalPortal from "@/components/ModalPortal"
 
 type PopupContainerProps = {
   children: ReactNode
+  onClickClose: () => void
   onClick: () => void
 }
 
 export default function PopupContainer({
   children,
+  onClickClose,
   onClick,
 }: PopupContainerProps) {
-  const { isOpen, closeModal } = useModal()
-
-  if (!isOpen) {
-    return null
-  }
-
   return (
     <ModalPortal>
       <section
@@ -30,7 +25,7 @@ export default function PopupContainer({
       >
         <div className="max-w-[450px] min-w-[300px] w-full p-6 rounded-[8px] bg-white flex flex-col gap-6">
           <Image
-            onClick={closeModal}
+            onClick={onClickClose}
             src="/icons/close-icon.svg"
             alt="닫기 버튼"
             className="cursor-pointer self-end"
@@ -40,7 +35,7 @@ export default function PopupContainer({
           {children}
           <div className="flex gap-2 justify-center mt-[26px]">
             <button
-              onClick={closeModal}
+              onClick={onClickClose}
               className="rounded-sm border border-blue-500 w-[120px] text-base font-semibold text-blue-500 h-12"
             >
               취소

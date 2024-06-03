@@ -14,7 +14,7 @@ export default function Layout({ children }: LayoutProps) {
   return (
     <section className="flex wrapper bg-slate-100 max-mobile:flex-col min-h-screen">
       {!isHiddenSideBar && <Sidebar />}
-      <main className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 xl:p-20"}`}>
+      <main className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 xl:pl-20"}`}>
         {children}
       </main>
     </section>
