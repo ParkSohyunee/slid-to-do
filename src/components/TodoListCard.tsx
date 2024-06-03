@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { MouseEvent, useRef } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
@@ -7,6 +8,8 @@ import useToggle from "@/hooks/useToggle"
 import { useModal } from "@/context/ModalContext"
 import PopupContainer from "./modal/PopupContainer"
 import RightSidebarContainer from "./modal/RightSidebarContainer"
+import deleteTodo from "@/pages/api/todos/deleteTodo"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -53,6 +56,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
 }
 
 function TodoItem({ todo }: TodoItemProps) {
+  const queryClient = useQueryClient()
   const popupRef = useRef(null)
   const { isOpen: popupIsOpen, toggleHandler } = useDetectClose({
     ref: popupRef,
@@ -61,10 +65,25 @@ function TodoItem({ todo }: TodoItemProps) {
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
 
+  const deleteTodoMutation = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos],
+      })
+    },
+    onSettled: () => {
+      alert("삭제가 완료되었습니다.")
+    },
+  })
+
   return (
     <>
       {confirmModal.isOpen && (
-        <PopupContainer onClickClose={confirmModal.close} onClick={() => {}}>
+        <PopupContainer
+          onClickClose={confirmModal.close}
+          onClick={() => deleteTodoMutation.mutate(todo.id)}
+        >
           <p className="text-center text-base font-medium text-basic">
             할 일을 삭제할까요?
           </p>
