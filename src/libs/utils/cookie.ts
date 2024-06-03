@@ -15,6 +15,6 @@ export const getCookie = (name: TokenType) => {
   return cookies.get(name)
 }
 
-export const removeCookie = (name: string) => {
+export const removeCookie = (name: TokenType) => {
   return cookies.remove(name, { path: "/" })
 }
