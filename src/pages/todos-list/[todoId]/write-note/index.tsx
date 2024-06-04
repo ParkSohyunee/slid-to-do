@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
+import DefaultEditor from "@/components/editor/DefaultEditor"
 
 export default function WriteNoteForTodoPage() {
   const router = useRouter()
@@ -37,7 +38,9 @@ export default function WriteNoteForTodoPage() {
             </span>
           </div>
         </div>
-        <div>에디터</div>
+        <div>
+          <DefaultEditor />
+        </div>
       </div>
     </section>
   )
