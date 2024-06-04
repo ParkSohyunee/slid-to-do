@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { useState } from "react"
-import { EditorState, convertToRaw } from "draft-js"
+import { useEffect, useState } from "react"
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 
@@ -20,6 +20,18 @@ export default function WriteNoteForTodoPage() {
     const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
     localStorage.setItem("contents", JSON.stringify(raw))
   }
+
+  /** 임시 저장된 데이터가 있다면 불러오기 */
+  useEffect(() => {
+    const raw = localStorage.getItem("contents")
+    if (raw) {
+      const contentState = convertFromRaw(JSON.parse(raw)) // convert raw state to a ContentState
+      console.log(JSON.parse(raw)) // 삭제 예정
+      const newEditorState = EditorState.createWithContent(contentState)
+      console.log(newEditorState) // 삭제 예정
+      setEditorState(newEditorState)
+    }
+  }, [])
 
   return (
     <section className="h-full max-w-1200 flex flex-col bg-white">
