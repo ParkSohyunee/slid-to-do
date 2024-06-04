@@ -1,5 +1,10 @@
 import { useState } from "react"
-import { Editor, EditorState } from "draft-js"
+import { EditorState } from "draft-js"
+import dynamic from "next/dynamic"
+
+const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
+  ssr: false,
+})
 
 export default function DefaultEditor() {
   const [editorState, setEditorState] = useState(() =>
