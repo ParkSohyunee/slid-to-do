@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react"
-import { EditorState, RichUtils } from "draft-js"
+import { Dispatch, MouseEvent, SetStateAction } from "react"
+import { EditorState, Modifier, RichUtils } from "draft-js"
 import dynamic from "next/dynamic"
 
 type DefaultEditorProps = {
@@ -17,14 +17,15 @@ export default function DefaultEditor({
   editorState,
   setEditorState,
 }: DefaultEditorProps) {
-  const toggleInlineStyle = (type: string) => {
+  const toggleInlineStyle = (type: string) => (e: MouseEvent) => {
+    e.preventDefault()
     setEditorState(RichUtils.toggleInlineStyle(editorState, type))
   }
 
   return (
     <>
-      <button onClick={() => toggleInlineStyle("BOLD")}>Bold</button>
-      <button onClick={() => toggleInlineStyle("ITALIC")}>Italic</button>
+      <button onMouseDown={toggleInlineStyle("BOLD")}>Bold</button>
+      <button onMouseDown={toggleInlineStyle("ITALIC")}>Italic</button>
       <Editor
         editorState={editorState}
         onChange={setEditorState}
