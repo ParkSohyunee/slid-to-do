@@ -1,19 +1,32 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
+import { useState } from "react"
+import { EditorState, convertToRaw } from "draft-js"
+
 import DefaultEditor from "@/components/editor/DefaultEditor"
 
 export default function WriteNoteForTodoPage() {
   const router = useRouter()
   const { title: todoTitle, done, goal: goalTitle } = router.query
 
-  console.log(todoTitle, done, goalTitle) // 삭제 예정
+  /** editor state */
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty(),
+  )
+
+  /** 에디터 콘텐츠를 로컬스토리지에 임시 저장하기 */
+  const onClickSaveContents = () => {
+    const contentState = editorState.getCurrentContent() // editor의 현재 contents를 반환
+    const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
+    localStorage.setItem("contents", JSON.stringify(raw))
+  }
 
   return (
     <section className="h-full max-w-1200 flex flex-col bg-white">
       <div className="flex justify-between items-center">
         <h1 className="mb-4 text-lg font-semibold text-slate-900">노트 작성</h1>
         <div>
-          <button>임시저장</button>
+          <button onClick={onClickSaveContents}>임시저장</button>
           <button>작성 완료</button>
         </div>
       </div>
@@ -39,7 +52,10 @@ export default function WriteNoteForTodoPage() {
           </div>
         </div>
         <div>
-          <DefaultEditor />
+          <DefaultEditor
+            setEditorState={setEditorState}
+            editorState={editorState}
+          />
         </div>
       </div>
     </section>
