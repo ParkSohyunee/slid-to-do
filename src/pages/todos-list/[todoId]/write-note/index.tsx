@@ -15,12 +15,21 @@ export default function WriteNoteForTodoPage() {
     register,
     formState: { errors },
     watch,
-  } = useForm<NoteFormData>({ mode: "onBlur" })
+    handleSubmit,
+    trigger,
+    setValue,
+  } = useForm<NoteFormData>({ mode: "onBlur" }) // TODO useContextForm 사용해서 리팩토링 하기
 
   /** editor state */
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty(),
   )
+
+  /** 노트 작성하기 */
+  const onSubmitNote = (data: NoteFormData) => {
+    console.log(editorState) // 삭제 예정
+    console.log(data) // 삭제 예정
+  }
 
   /** 에디터 콘텐츠를 로컬스토리지에 임시 저장하기 */
   const onClickSaveContents = () => {
@@ -42,17 +51,24 @@ export default function WriteNoteForTodoPage() {
   }, [])
 
   return (
-    <section className="h-full max-w-1200 flex flex-col bg-white">
+    <form
+      onSubmit={handleSubmit(onSubmitNote)}
+      className="h-full max-w-1200 flex flex-col bg-white"
+    >
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-lg font-semibold text-slate-900">노트 작성</h1>
         <div className="flex gap-2">
           <button
+            type="button"
             onClick={onClickSaveContents}
             className="text-sm font-semibold text-blue-500 py-3 px-6"
           >
             임시저장
           </button>
-          <button className="text-sm font-semibold text-white py-3 px-6 rounded-sm bg-slate-400">
+          <button
+            type="submit"
+            className="text-sm font-semibold text-white py-3 px-6 rounded-sm bg-slate-400"
+          >
             작성 완료
           </button>
         </div>
@@ -91,7 +107,7 @@ export default function WriteNoteForTodoPage() {
             />
             <div className="flex text-xs font-medium px-1 py-[2px]">
               <span className={errors.title ? "text-error" : ""}>
-                {watch("title").length}
+                {watch("title")?.length ? watch("title").length : 0}
               </span>
               <span className="text-blue-500">{"/30"}</span>
             </div>
@@ -100,9 +116,11 @@ export default function WriteNoteForTodoPage() {
           <DefaultEditor
             setEditorState={setEditorState}
             editorState={editorState}
+            trigger={trigger}
+            setValue={setValue}
           />
         </div>
       </div>
-    </section>
+    </form>
   )
 }
