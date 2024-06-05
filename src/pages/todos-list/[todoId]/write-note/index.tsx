@@ -7,10 +7,12 @@ import { useForm } from "react-hook-form"
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
 import { NoteFormData } from "@/types/note"
+// import axiosInstance from "@/libs/axios/axiosInstance"
 
 export default function WriteNoteForTodoPage() {
   const router = useRouter()
-  const { title: todoTitle, done, goal: goalTitle } = router.query
+  const { title: todoTitle, done, goal: goalTitle, todoId } = router.query
+
   const {
     register,
     formState: { errors },
@@ -26,9 +28,18 @@ export default function WriteNoteForTodoPage() {
   )
 
   /** 노트 작성하기 */
-  const onSubmitNote = (data: NoteFormData) => {
-    console.log(editorState) // 삭제 예정
-    console.log(data) // 삭제 예정
+  const onSubmitNote = async (data: NoteFormData) => {
+    /** 서버측에서 API 확인 중으로 로직만 구현하고 추후 test 진행 예정으로 코드 주석처리 해둠 */
+    // try {
+    //   await axiosInstance.post("/notes", {
+    //     todoId: Number(todoId),
+    //     title: data.title,
+    //     content: data.content,
+    //     linkUrl: "",
+    //   })
+    // } catch (error) {
+    //   console.log(error)
+    // }
   }
 
   /** 에디터 콘텐츠를 로컬스토리지에 임시 저장하기 */
@@ -43,9 +54,7 @@ export default function WriteNoteForTodoPage() {
     const raw = localStorage.getItem("contents")
     if (raw) {
       const contentState = convertFromRaw(JSON.parse(raw)) // convert raw state to a ContentState
-      console.log(JSON.parse(raw)) // 삭제 예정
       const newEditorState = EditorState.createWithContent(contentState)
-      console.log(newEditorState) // 삭제 예정
       setEditorState(newEditorState)
     }
   }, [])
