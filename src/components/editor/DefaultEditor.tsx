@@ -44,7 +44,17 @@ export default function DefaultEditor({
   return (
     <div className="flex flex-col gap-4 justify-between grow">
       <div className="grow flex flex-col gap-2">
-        <p>공백포함 : 979자 | 공백제외 : 총 754자</p>
+        <p className="text-xs font-medium text-basic">
+          {`공백포함 : 총 ${editorState.getCurrentContent().getPlainText("").length}자 
+          | 공백제외 : 총 ${
+            editorState
+              .getCurrentContent()
+              .getPlainText("")
+              .trim()
+              .split(" ")
+              .join("").length
+          }자`}
+        </p>
         <Editor
           editorState={editorState}
           onChange={handleChangeEditor}
