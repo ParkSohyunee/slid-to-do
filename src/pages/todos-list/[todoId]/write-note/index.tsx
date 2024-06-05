@@ -2,12 +2,20 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
+import { useForm } from "react-hook-form"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
+import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
+import { NoteFormData } from "@/types/note"
 
 export default function WriteNoteForTodoPage() {
   const router = useRouter()
   const { title: todoTitle, done, goal: goalTitle } = router.query
+  const {
+    register,
+    formState: { errors },
+    watch,
+  } = useForm<NoteFormData>({ mode: "onBlur" })
 
   /** editor state */
   const [editorState, setEditorState] = useState(() =>
@@ -73,18 +81,22 @@ export default function WriteNoteForTodoPage() {
         <div className="flex flex-col gap-3 grow justify-between">
           <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
             <input
+              {...register("title", noteTitleValidationRules)}
               placeholder="노트의 제목을 입력해주세요"
               autoFocus
               className={`
-              text-lg font-medium text-basic 
+              text-lg font-medium text-basic w-full
               placeholder:text-slate-400 outline-none
               `}
             />
             <div className="flex text-xs font-medium px-1 py-[2px]">
-              <span>0</span>
+              <span className={errors.title ? "text-error" : ""}>
+                {watch("title").length}
+              </span>
               <span className="text-blue-500">{"/30"}</span>
             </div>
           </div>
+          <p className="text-error">{errors.title && errors.title.message}</p>
           <DefaultEditor
             setEditorState={setEditorState}
             editorState={editorState}
