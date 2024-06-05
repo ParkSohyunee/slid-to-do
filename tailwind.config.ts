@@ -48,6 +48,7 @@ const config: Config = {
       "1200": "75rem",
     },
     boxShadow: {
+      sm: "0px 1px 2px 0px rgba(0, 0, 0, 0.05)",
       lg: "0px 4px 6px -2px rgba(0, 0, 0, 0.05)",
       "2xl": "0px 25px 50px -12px rgba(0, 0, 0, 0.25)",
     },

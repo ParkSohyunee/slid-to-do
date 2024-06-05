@@ -35,11 +35,18 @@ export default function WriteNoteForTodoPage() {
 
   return (
     <section className="h-full max-w-1200 flex flex-col bg-white">
-      <div className="flex justify-between items-center">
-        <h1 className="mb-4 text-lg font-semibold text-slate-900">노트 작성</h1>
-        <div>
-          <button onClick={onClickSaveContents}>임시저장</button>
-          <button>작성 완료</button>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-lg font-semibold text-slate-900">노트 작성</h1>
+        <div className="flex gap-2">
+          <button
+            onClick={onClickSaveContents}
+            className="text-sm font-semibold text-blue-500 py-3 px-6"
+          >
+            임시저장
+          </button>
+          <button className="text-sm font-semibold text-white py-3 px-6 rounded-sm bg-slate-400">
+            작성 완료
+          </button>
         </div>
       </div>
       <div className="flex flex-col gap-6 h-full">
@@ -63,7 +70,21 @@ export default function WriteNoteForTodoPage() {
             </span>
           </div>
         </div>
-        <div>
+        <div className="flex flex-col gap-3 grow justify-between">
+          <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
+            <input
+              placeholder="노트의 제목을 입력해주세요"
+              autoFocus
+              className={`
+              text-lg font-medium text-basic 
+              placeholder:text-slate-400 outline-none
+              `}
+            />
+            <div className="flex text-xs font-medium px-1 py-[2px]">
+              <span>0</span>
+              <span className="text-blue-500">{"/30"}</span>
+            </div>
+          </div>
           <DefaultEditor
             setEditorState={setEditorState}
             editorState={editorState}
