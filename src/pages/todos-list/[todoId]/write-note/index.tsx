@@ -57,7 +57,7 @@ export default function WriteNoteForTodoPage() {
     const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
     localStorage.setItem(`note-${todoId}-content`, JSON.stringify(raw))
     localStorage.setItem(`note-${todoId}-title`, getValues("title").trim())
-    alert("임시 저장되었습니다.")
+    alert("임시 저장되었습니다.") // TODO 토스트 메세지로 변경하기
   }
 
   /** 임시 저장된 데이터가 있다면 불러오기 */
