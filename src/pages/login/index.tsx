@@ -54,9 +54,9 @@ export default function LoginPage() {
   return (
     <section
       className={`
-      h-dvh 
+      h-full
       flex flex-col items-center 
-      pt-[120px] 
+      py-[120px] 
       max-tablet:pt-[64px] max-mobile:pt-[48px] 
       px-[52px] max-tablet:px-4
     `}
@@ -66,7 +66,7 @@ export default function LoginPage() {
       </div>
       <form
         onSubmit={handleSubmit(handleSubmitForm)}
-        className="flex flex-col gap-12 max-w-screen-sm w-full"
+        className="flex flex-col gap-12 max-w-[640px] w-full"
       >
         <div className="flex flex-col gap-11">
           <div className="relative text-field">
