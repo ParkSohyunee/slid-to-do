@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { Dispatch, MouseEvent, SetStateAction } from "react"
 import { EditorState, RichUtils, convertToRaw } from "draft-js"
 import dynamic from "next/dynamic"
@@ -15,8 +16,6 @@ type DefaultEditorProps = {
 const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
   ssr: false,
 })
-
-export const inlineStyles = ["BOLD", "ITALIC"] // 삭제 예정
 
 export default function DefaultEditor({
   editorState,
@@ -61,13 +60,33 @@ export default function DefaultEditor({
           placeholder="이 곳을 클릭해 노트 작성을 시작해주세요"
         />
       </div>
-      <div className="flex px-[10px] py-4 items-start gap-[10px] rounded-[21.5px] border border-slate-200 shadow-sm">
-        <button type="button" onMouseDown={toggleInlineStyle("BOLD")}>
-          Bold
-        </button>
-        <button type="button" onMouseDown={toggleInlineStyle("ITALIC")}>
-          Italic
-        </button>
+      <div className="flex py-[10px] px-4 items-start gap-4 rounded-[21.5px] border border-slate-200 shadow-sm">
+        <div className="flex gap-1">
+          <button type="button" onMouseDown={toggleInlineStyle("BOLD")}>
+            <Image
+              src="/icons/editor-bold.svg"
+              alt="bold"
+              width={24}
+              height={24}
+            />
+          </button>
+          <button type="button" onMouseDown={toggleInlineStyle("ITALIC")}>
+            <Image
+              src="/icons/editor-italic.svg"
+              alt="italic"
+              width={24}
+              height={24}
+            />
+          </button>
+          <button type="button" onMouseDown={toggleInlineStyle("UNDERLINE")}>
+            <Image
+              src="/icons/editor-underline.svg"
+              alt="underline"
+              width={24}
+              height={24}
+            />
+          </button>
+        </div>
       </div>
     </div>
   )
