@@ -3,6 +3,8 @@ export {
   passwordValidationRules,
   todosTitleValidationRules,
   todosLinkUrlValidationRules,
+  nameValidationRules,
+  passwordForSignUpValidationRules,
 }
 
 export type ValidationRules = {
@@ -11,10 +13,18 @@ export type ValidationRules = {
     value: RegExp
     message: string
   }
+  minLength?: {
+    value: number
+    message: string
+  }
   maxLength?: {
     value: number
     message: string
   }
+}
+
+const nameValidationRules = {
+  required: "이름을 입력해 주세요.",
 }
 
 const emailValidationRules = {
@@ -27,6 +37,18 @@ const emailValidationRules = {
 
 const passwordValidationRules = {
   required: "비밀번호를 입력해 주세요.",
+}
+
+const passwordForSignUpValidationRules = {
+  required: "비밀번호를 입력해 주세요.",
+  minLength: {
+    value: 8,
+    message: "비밀번호는 최소 8자 이상으로 작성해 주세요.",
+  },
+  maxLength: {
+    value: 20,
+    message: "비밀번호는 최대 20자 이하로 작성해 주세요.",
+  },
 }
 
 const todosTitleValidationRules = {
