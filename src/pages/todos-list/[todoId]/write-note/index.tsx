@@ -20,6 +20,7 @@ export default function WriteNoteForTodoPage() {
     handleSubmit,
     trigger,
     setValue,
+    getValues,
   } = useForm<NoteFormData>({ mode: "onBlur" }) // TODO useContextForm 사용해서 리팩토링 하기
 
   /** editor state */
@@ -44,20 +45,34 @@ export default function WriteNoteForTodoPage() {
 
   /** 에디터 콘텐츠를 로컬스토리지에 임시 저장하기 */
   const onClickSaveContents = () => {
+    const titleValidation =
+      !!getValues("title") && getValues("title").trim().length > 0
+
+    if (!titleValidation) {
+      alert("노트 제목을 입력해주세요")
+      return
+    }
+
     const contentState = editorState.getCurrentContent() // editor의 현재 contents를 반환
     const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
-    localStorage.setItem("contents", JSON.stringify(raw))
+    localStorage.setItem(`note-${todoId}-content`, JSON.stringify(raw))
+    localStorage.setItem(`note-${todoId}-title`, getValues("title").trim())
+    alert("임시 저장되었습니다.")
   }
 
   /** 임시 저장된 데이터가 있다면 불러오기 */
   useEffect(() => {
-    const raw = localStorage.getItem("contents")
-    if (raw) {
-      const contentState = convertFromRaw(JSON.parse(raw)) // convert raw state to a ContentState
+    const rawContent = localStorage.getItem(`note-${todoId}-content`)
+    if (rawContent) {
+      const contentState = convertFromRaw(JSON.parse(rawContent)) // convert raw state to a ContentState
       const newEditorState = EditorState.createWithContent(contentState)
       setEditorState(newEditorState)
     }
-  }, [])
+    const title = localStorage.getItem(`note-${todoId}-title`)
+    if (title) {
+      setValue("title", title)
+    }
+  }, [todoId, setValue])
 
   return (
     <form
