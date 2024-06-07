@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form"
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
 import { NoteFormData } from "@/types/note"
-// import axiosInstance from "@/libs/axios/axiosInstance"
+import axiosInstance from "@/libs/axios/axiosInstance"
 
 export default function WriteNoteForTodoPage() {
   const router = useRouter()
@@ -30,17 +30,17 @@ export default function WriteNoteForTodoPage() {
 
   /** 노트 작성하기 */
   const onSubmitNote = async (data: NoteFormData) => {
-    /** 서버측에서 API 확인 중으로 로직만 구현하고 추후 test 진행 예정으로 코드 주석처리 해둠 */
-    // try {
-    //   await axiosInstance.post("/notes", {
-    //     todoId: Number(todoId),
-    //     title: data.title,
-    //     content: data.content,
-    //     linkUrl: "",
-    //   })
-    // } catch (error) {
-    //   console.log(error)
-    // }
+    /** linkUrl은 추후 Optional 값이 될 예정이므로 지금은 하드코딩으로 넣어둔 상태 */
+    try {
+      await axiosInstance.post("/notes", {
+        todoId: Number(todoId),
+        title: data.title,
+        content: data.content,
+        linkUrl: "https://www.npmjs.com/",
+      })
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   /** 에디터 콘텐츠를 로컬스토리지에 임시 저장하기 */
