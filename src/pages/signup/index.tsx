@@ -1,5 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { useForm } from "react-hook-form"
 
 import {
@@ -7,6 +8,8 @@ import {
   nameValidationRules,
   passwordForSignUpValidationRules,
 } from "@/libs/utils/formInputValidationRules"
+import axiosInstance from "@/libs/axios/axiosInstance"
+import { AxiosError } from "axios"
 
 type SignUpFormVaules = {
   email: string
@@ -16,14 +19,33 @@ type SignUpFormVaules = {
 }
 
 export default function SignUpPage() {
+  const router = useRouter()
   const {
     register,
     handleSubmit,
+    setError,
+    watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<SignUpFormVaules>({ mode: "onBlur" })
 
   const handleSubmitForm = async (data: SignUpFormVaules) => {
-    // 회원가입 API
+    try {
+      await axiosInstance.post("/user", {
+        email: data.email,
+        name: data.name,
+        password: data.password,
+      })
+      router.push("/login") // TODO 가입 완료 토스트메세지
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        if (error.response?.data.message === "이미 사용 중인 이메일입니다.") {
+          setError("email", {
+            type: "custom",
+            message: error.response?.data.message,
+          })
+        }
+      }
+    }
   }
 
   return (
@@ -143,10 +165,14 @@ export default function SignUpPage() {
                 비밀번호 확인
               </label>
               <input
-                {...register(
-                  "passwordConfirm",
-                  passwordForSignUpValidationRules,
-                )}
+                {...register("passwordConfirm", {
+                  required: "비밀번호를 입력해 주세요.",
+                  validate: (value) => {
+                    if (watch("password") !== value) {
+                      return "비밀번호가 일치하지 않습니다."
+                    }
+                  },
+                })}
                 className={`
               px-6 py-3 
               rounded-sm 
