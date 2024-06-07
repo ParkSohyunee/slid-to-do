@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 
 import {
@@ -20,6 +21,8 @@ type SignUpFormVaules = {
 
 export default function SignUpPage() {
   const router = useRouter()
+  const [visiblePassword, setVisiblePassword] = useState(false)
+  const [visiblePasswordConfirm, setVisiblePasswordConfirm] = useState(false)
   const {
     register,
     handleSubmit,
@@ -27,6 +30,15 @@ export default function SignUpPage() {
     watch,
     formState: { errors, isValid, isSubmitting },
   } = useForm<SignUpFormVaules>({ mode: "onBlur" })
+
+  const handleVisiblePassword =
+    (value: "password" | "passwordConfirm") => () => {
+      if (value === "password") {
+        setVisiblePassword((prev) => !prev)
+      } else {
+        setVisiblePasswordConfirm((prev) => !prev)
+      }
+    }
 
   const handleSubmitForm = async (data: SignUpFormVaules) => {
     try {
@@ -136,10 +148,11 @@ export default function SignUpPage() {
               >
                 비밀번호
               </label>
-              <input
-                {...register("password", passwordForSignUpValidationRules)}
-                className={`
-              px-6 py-3 
+              <div className="relative">
+                <input
+                  {...register("password", passwordForSignUpValidationRules)}
+                  className={`
+              px-6 py-3 w-full
               rounded-sm 
               bg-slate-50 
               text-base font-normal text-basic placeholder:text-slate-400
@@ -147,10 +160,19 @@ export default function SignUpPage() {
               focus:border-blue-500 focus:outline-none
               ${!!errors.password ? "border-error hover:border-error" : ""}
               `}
-                type="password"
-                autoComplete="off"
-                placeholder="비밀번호를 입력해 주세요"
-              />
+                  type={visiblePassword ? "text" : "password"}
+                  autoComplete="off"
+                  placeholder="비밀번호를 입력해 주세요"
+                />
+                <Image
+                  onClick={handleVisiblePassword("password")}
+                  className="absolute top-1/2 right-6 transform -translate-y-1/2 cursor-pointer"
+                  src={`/icons/visibility-${visiblePassword ? "on" : "off"}.svg`}
+                  alt="비밀번호 보기"
+                  width={24}
+                  height={24}
+                />
+              </div>
             </div>
             <p className="text-sm font-normal text-error mx-4 mt-2">
               {errors.password?.message}
@@ -164,17 +186,18 @@ export default function SignUpPage() {
               >
                 비밀번호 확인
               </label>
-              <input
-                {...register("passwordConfirm", {
-                  required: "비밀번호를 입력해 주세요.",
-                  validate: (value) => {
-                    if (watch("password") !== value) {
-                      return "비밀번호가 일치하지 않습니다."
-                    }
-                  },
-                })}
-                className={`
-              px-6 py-3 
+              <div className="relative">
+                <input
+                  {...register("passwordConfirm", {
+                    required: "비밀번호를 입력해 주세요.",
+                    validate: (value) => {
+                      if (watch("password") !== value) {
+                        return "비밀번호가 일치하지 않습니다."
+                      }
+                    },
+                  })}
+                  className={`
+              px-6 py-3 w-full
               rounded-sm 
               bg-slate-50 
               text-base font-normal text-basic placeholder:text-slate-400
@@ -182,10 +205,19 @@ export default function SignUpPage() {
               focus:border-blue-500 focus:outline-none
               ${!!errors.passwordConfirm ? "border-error hover:border-error" : ""}
               `}
-                type="password"
-                autoComplete="off"
-                placeholder="비밀번호를 다시 한 번 입력해 주세요"
-              />
+                  type={visiblePasswordConfirm ? "text" : "password"}
+                  autoComplete="off"
+                  placeholder="비밀번호를 다시 한 번 입력해 주세요"
+                />
+                <Image
+                  onClick={handleVisiblePassword("passwordConfirm")}
+                  className="absolute top-1/2 right-6 transform -translate-y-1/2 cursor-pointer"
+                  src={`/icons/visibility-${visiblePasswordConfirm ? "on" : "off"}.svg`}
+                  alt="비밀번호 보기"
+                  width={24}
+                  height={24}
+                />
+              </div>
             </div>
             <p className="text-sm font-normal text-error mx-4 mt-2">
               {errors.passwordConfirm?.message}
