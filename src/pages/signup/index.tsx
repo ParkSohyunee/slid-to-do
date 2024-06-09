@@ -2,7 +2,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { useState } from "react"
-import { useForm } from "react-hook-form"
+import { FormProvider, useForm } from "react-hook-form"
 
 import {
   emailValidationRules,
@@ -11,6 +11,9 @@ import {
 } from "@/libs/utils/formInputValidationRules"
 import axiosInstance from "@/libs/axios/axiosInstance"
 import { AxiosError } from "axios"
+
+import Label from "@/components/Label"
+import TextField from "@/components/TextField"
 
 type SignUpFormVaules = {
   email: string
@@ -23,13 +26,13 @@ export default function SignUpPage() {
   const router = useRouter()
   const [visiblePassword, setVisiblePassword] = useState(false)
   const [visiblePasswordConfirm, setVisiblePasswordConfirm] = useState(false)
+  const methods = useForm<SignUpFormVaules>({ mode: "onBlur" })
   const {
-    register,
     handleSubmit,
-    setError,
     watch,
-    formState: { errors, isValid, isSubmitting },
-  } = useForm<SignUpFormVaules>({ mode: "onBlur" })
+    setError,
+    formState: { isValid, isSubmitting },
+  } = methods
 
   const handleVisiblePassword =
     (value: "password" | "passwordConfirm") => () => {
@@ -79,91 +82,36 @@ export default function SignUpPage() {
           priority
         />
       </div>
-      <form
-        onSubmit={handleSubmit(handleSubmitForm)}
-        className="flex flex-col gap-12 max-w-[640px] w-full"
-      >
-        <div className="flex flex-col gap-11">
-          <div className="relative text-field">
-            <div className="flex flex-col">
-              <label
-                htmlFor="name"
-                className="text-base font-semibold mb-3 text-basic"
-              >
-                이름
-              </label>
-              <input
-                {...register("name", nameValidationRules)}
-                className={`
-              px-6 py-3 
-              rounded-sm 
-              bg-slate-50 
-              text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.name ? "border-error hover:border-error" : ""}
-              `}
-                type="text"
-                autoComplete="off"
+      <FormProvider {...methods}>
+        <form
+          onSubmit={handleSubmit(handleSubmitForm)}
+          className="flex flex-col gap-12 max-w-[640px] w-full"
+        >
+          <div className="flex flex-col gap-11">
+            <div>
+              <Label htmlFor="name">이름</Label>
+              <TextField
+                field="name"
                 placeholder="이름을 입력해 주세요"
+                validationRules={nameValidationRules}
               />
             </div>
-            <p className="text-sm font-normal text-error mx-4 mt-2">
-              {errors.name?.message}
-            </p>
-          </div>
-          <div className="relative text-field">
-            <div className="flex flex-col">
-              <label
-                htmlFor="email"
-                className="text-base font-semibold mb-3 text-basic"
-              >
-                이메일
-              </label>
-              <input
-                {...register("email", emailValidationRules)}
-                className={`
-              px-6 py-3 
-              rounded-sm 
-              bg-slate-50 
-              text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.email ? "border-error hover:border-error" : ""}
-              `}
-                type="text"
-                autoComplete="off"
+            <div>
+              <Label htmlFor="email">이메일</Label>
+              <TextField
+                field="email"
                 placeholder="이메일을 입력해 주세요"
+                validationRules={emailValidationRules}
               />
             </div>
-            <p className="text-sm font-normal text-error mx-4 mt-2">
-              {errors.email?.message}
-            </p>
-          </div>
-          <div className="relative text-field">
-            <div className="flex flex-col">
-              <label
-                htmlFor="password"
-                className="text-base font-semibold mb-3 text-basic"
+            <div>
+              <Label htmlFor="password">비밀번호</Label>
+              <TextField
+                field="password"
+                placeholder="비밀번호를 입력해 주세요"
+                validationRules={passwordForSignUpValidationRules}
+                textInputType={visiblePassword}
               >
-                비밀번호
-              </label>
-              <div className="relative">
-                <input
-                  {...register("password", passwordForSignUpValidationRules)}
-                  className={`
-              px-6 py-3 w-full
-              rounded-sm 
-              bg-slate-50 
-              text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.password ? "border-error hover:border-error" : ""}
-              `}
-                  type={visiblePassword ? "text" : "password"}
-                  autoComplete="off"
-                  placeholder="비밀번호를 입력해 주세요"
-                />
                 <Image
                   onClick={handleVisiblePassword("password")}
                   className="absolute top-1/2 right-6 transform -translate-y-1/2 cursor-pointer"
@@ -172,43 +120,24 @@ export default function SignUpPage() {
                   width={24}
                   height={24}
                 />
-              </div>
+              </TextField>
             </div>
-            <p className="text-sm font-normal text-error mx-4 mt-2">
-              {errors.password?.message}
-            </p>
-          </div>
-          <div className="relative text-field">
-            <div className="flex flex-col">
-              <label
-                htmlFor="passwordConfirm"
-                className="text-base font-semibold mb-3 text-basic"
+            <div>
+              <Label htmlFor="passwordConfirm">비밀번호 확인</Label>
+              <TextField
+                field="passwordConfirm"
+                placeholder="비밀번호를 다시 한 번 입력해 주세요"
+                validationRules={{
+                  required: "비밀번호를 다시 한 번 입력해 주세요.",
+                  validate: (value) => {
+                    if (watch("password") !== value) {
+                      return "비밀번호가 일치하지 않습니다."
+                    }
+                    return true
+                  },
+                }}
+                textInputType={visiblePasswordConfirm}
               >
-                비밀번호 확인
-              </label>
-              <div className="relative">
-                <input
-                  {...register("passwordConfirm", {
-                    required: "비밀번호를 입력해 주세요.",
-                    validate: (value) => {
-                      if (watch("password") !== value) {
-                        return "비밀번호가 일치하지 않습니다."
-                      }
-                    },
-                  })}
-                  className={`
-              px-6 py-3 w-full
-              rounded-sm 
-              bg-slate-50 
-              text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.passwordConfirm ? "border-error hover:border-error" : ""}
-              `}
-                  type={visiblePasswordConfirm ? "text" : "password"}
-                  autoComplete="off"
-                  placeholder="비밀번호를 다시 한 번 입력해 주세요"
-                />
                 <Image
                   onClick={handleVisiblePassword("passwordConfirm")}
                   className="absolute top-1/2 right-6 transform -translate-y-1/2 cursor-pointer"
@@ -217,18 +146,14 @@ export default function SignUpPage() {
                   width={24}
                   height={24}
                 />
-              </div>
+              </TextField>
             </div>
-            <p className="text-sm font-normal text-error mx-4 mt-2">
-              {errors.passwordConfirm?.message}
-            </p>
           </div>
-        </div>
-        <div className="flex flex-col gap-10">
-          <button
-            disabled={isSubmitting}
-            type="submit"
-            className={`
+          <div className="flex flex-col gap-10">
+            <button
+              disabled={isSubmitting}
+              type="submit"
+              className={`
             py-3 flex 
             justify-center items-center 
             self-stretch rounded-sm 
@@ -238,17 +163,18 @@ export default function SignUpPage() {
             ${isValid ? "bg-blue-500" : "bg-slate-400"}
             transition-colors duration-500
             `}
-          >
-            회원가입하기
-          </button>
-          <p className="text-sm font-medium flex gap-1 justify-center">
-            <span className="text-basic">이미 회원이신가요?</span>
-            <span className="text-bland-blue underline">
-              <Link href={"/login"}>로그인</Link>
-            </span>
-          </p>
-        </div>
-      </form>
+            >
+              회원가입하기
+            </button>
+            <p className="text-sm font-medium flex gap-1 justify-center">
+              <span className="text-basic">이미 회원이신가요?</span>
+              <span className="text-bland-blue underline">
+                <Link href={"/login"}>로그인</Link>
+              </span>
+            </p>
+          </div>
+        </form>
+      </FormProvider>
     </section>
   )
 }

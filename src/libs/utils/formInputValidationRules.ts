@@ -21,6 +21,7 @@ export type ValidationRules = {
     value: number
     message: string
   }
+  validate?: (value: string) => string | boolean
 }
 
 const nameValidationRules = {
