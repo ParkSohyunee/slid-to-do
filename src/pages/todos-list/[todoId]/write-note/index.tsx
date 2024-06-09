@@ -99,16 +99,19 @@ export default function WriteNoteForTodoPage() {
       </div>
       <div className="flex flex-col gap-6 h-full">
         <div className="flex flex-col gap-3">
-          <h3 className="flex gap-[6px] text-base font-medium text-basic items-center">
-            <Image
-              className="w-6 h-6 rounded-[6px] bg-slate-800 p-1"
-              src="/icons/flag-white.svg"
-              alt="목표"
-              width={16}
-              height={16}
-            />
-            {goalTitle}
-          </h3>
+          {goalTitle && (
+            <h3 className="flex gap-[6px] text-base font-medium text-basic items-center">
+              <Image
+                className="w-6 h-6 rounded-[6px] bg-slate-800 p-1"
+                src="/icons/flag-white.svg"
+                alt="목표"
+                width={16}
+                height={16}
+              />
+              {goalTitle}
+            </h3>
+          )}
+
           <div className="flex gap-2 items-center">
             <div className="text-xs font-medium text-slate-700 rounded-[4px] bg-slate-100 px-[3px] py-[2px]">
               {done ? "Done" : "To do"}
