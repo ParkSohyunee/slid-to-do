@@ -3,6 +3,7 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import { useForm } from "react-hook-form"
+import { AxiosError } from "axios"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import Toast from "@/components/popup/Toast"
@@ -17,7 +18,7 @@ export default function WriteNoteForTodoPage() {
 
   const {
     register,
-    formState: { errors },
+    formState: { errors, isValid },
     watch,
     handleSubmit,
     trigger,
@@ -37,6 +38,13 @@ export default function WriteNoteForTodoPage() {
 
   /** 노트 작성하기 */
   const onSubmitNote = async (data: NoteFormData) => {
+    const isContent =
+      editorState.getCurrentContent().getPlainText("").trim().length > 0
+    if (!isContent) {
+      alert("노트를 작성해주세요")
+      return
+    }
+
     /** linkUrl은 추후 Optional 값이 될 예정이므로 지금은 하드코딩으로 넣어둔 상태 */
     try {
       await axiosInstance.post("/notes", {
@@ -45,8 +53,11 @@ export default function WriteNoteForTodoPage() {
         content: data.content,
         linkUrl: "https://www.npmjs.com/",
       })
+      router.push(`/todos-list/${todoId}`)
     } catch (error) {
-      console.log(error)
+      if (error instanceof AxiosError) {
+        alert(error.message) // TODO 토스트 메세지로 변경하기
+      }
     }
   }
 
@@ -107,7 +118,15 @@ export default function WriteNoteForTodoPage() {
           </button>
           <button
             type="submit"
-            className="text-sm font-semibold text-white py-3 px-6 rounded-sm bg-slate-400"
+            className={`
+            text-sm font-semibold text-white py-3 px-6 rounded-sm 
+            ${
+              isValid &&
+              editorState.getCurrentContent().getPlainText("").trim().length > 0
+                ? "bg-blue-500"
+                : "bg-slate-400"
+            }
+            `}
           >
             작성 완료
           </button>
