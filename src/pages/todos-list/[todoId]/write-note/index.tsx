@@ -10,6 +10,7 @@ import { NoteFormData } from "@/types/note"
 import axiosInstance from "@/libs/axios/axiosInstance"
 
 export default function WriteNoteForTodoPage() {
+  const [isShowToast, setIsShowToast] = useState(false)
   const router = useRouter()
   const { title: todoTitle, done, goal: goalTitle, todoId } = router.query
 
@@ -60,8 +61,8 @@ export default function WriteNoteForTodoPage() {
     alert("임시 저장되었습니다.") // TODO 토스트 메세지로 변경하기
   }
 
-  /** 임시 저장된 데이터가 있다면 불러오기 */
-  useEffect(() => {
+  /** 임시 저장된 데이터 불러오기 */
+  const onClickGetSavedContents = () => {
     const rawContent = localStorage.getItem(`note-${todoId}-content`)
     if (rawContent) {
       const contentState = convertFromRaw(JSON.parse(rawContent)) // convert raw state to a ContentState
@@ -72,7 +73,16 @@ export default function WriteNoteForTodoPage() {
     if (title) {
       setValue("title", title)
     }
-  }, [todoId, setValue])
+    setIsShowToast(false)
+  }
+
+  /** 임시 저장된 데이터가 있다면 토스트메세지 띄우기 */
+  useEffect(() => {
+    const rawContent = localStorage.getItem(`note-${todoId}-content`)
+    if (rawContent) {
+      setIsShowToast(true)
+    }
+  }, [todoId])
 
   return (
     <form
@@ -111,7 +121,6 @@ export default function WriteNoteForTodoPage() {
               {goalTitle}
             </h3>
           )}
-
           <div className="flex gap-2 items-center">
             <div className="text-xs font-medium text-slate-700 rounded-[4px] bg-slate-100 px-[3px] py-[2px]">
               {done ? "Done" : "To do"}
@@ -120,6 +129,12 @@ export default function WriteNoteForTodoPage() {
               {todoTitle}
             </span>
           </div>
+          {isShowToast && (
+            <div>
+              임시 저장된 노트가 있어요. 저장된 노트를 불러오시겠어요?
+              <button onClick={onClickGetSavedContents}>불러오기</button>
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-3 grow justify-between">
           <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
