@@ -130,9 +130,25 @@ export default function WriteNoteForTodoPage() {
             </span>
           </div>
           {isShowToast && (
-            <div>
-              임시 저장된 노트가 있어요. 저장된 노트를 불러오시겠어요?
-              <button onClick={onClickGetSavedContents}>불러오기</button>
+            <div className="rounded-[28px] bg-blue-50 py-[10px] pr-3 pl-4 flex justify-between items-center">
+              <div className="flex gap-4 items-center">
+                <Image
+                  className="bg-blue-500 rounded-full rotate-45 cursor-pointer"
+                  src="/icons/close-small-white.svg"
+                  alt="닫기 버튼"
+                  width={18}
+                  height={18}
+                />
+                <span className="text-sm font-semibold text-blue-500">
+                  임시 저장된 노트가 있어요. 저장된 노트를 불러오시겠어요?
+                </span>
+              </div>
+              <button
+                onClick={onClickGetSavedContents}
+                className="rounded-[24px] border border-blue-500 text-sm font-semibold text-blue-500 py-2 px-[17.5px] bg-white"
+              >
+                불러오기
+              </button>
             </div>
           )}
         </div>
