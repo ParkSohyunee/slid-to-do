@@ -53,7 +53,7 @@ export default function WriteNoteForTodoPage() {
         content: data.content,
         linkUrl: "https://www.npmjs.com/",
       })
-      router.push(`/todos-list/${todoId}`)
+      router.push("/todos-list")
     } catch (error) {
       if (error instanceof AxiosError) {
         alert(error.message) // TODO 토스트 메세지로 변경하기
