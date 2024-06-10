@@ -55,6 +55,9 @@ const config: Config = {
     gridTemplateRows: {
       cards: "250px 1fr",
     },
+    transitionProperty: {
+      "max-width": "max-width",
+    },
   },
   plugins: [],
 }
