@@ -8,7 +8,7 @@ export type NoteFormData = {
   linkUrl?: string
 }
 
-type CardAboutNoteList = {
+export type CardAboutNoteList = {
   id: number
   title: string
   createdAt: string
