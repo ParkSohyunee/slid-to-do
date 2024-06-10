@@ -4,4 +4,5 @@ export const QUERY_KEYS = {
   getAllTodos: "getAllTodos",
   getProgressForTodos: "getProgressForTodos",
   getUser: "getUser",
+  getNoteDetail: "getNoteDetail",
 }

@@ -1,13 +1,26 @@
 import Image from "next/image"
+import { useQuery } from "@tanstack/react-query"
+
 import { Todo } from "@/types/todos"
 import getDateFormat from "@/libs/utils/getDateFormat"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getNoteDetail from "@/pages/api/note/getNoteDetail"
+import { NoteDetail } from "@/types/note"
 
 type DetailNoteProps = {
   todo: Todo
 }
 
 export default function DetailNote({ todo }: DetailNoteProps) {
-  const { createdAt, done, goal, title } = todo
+  const { done, goal, title, noteId } = todo
+
+  const { data: note } = useQuery<NoteDetail>({
+    queryKey: [QUERY_KEYS.getNoteDetail, noteId],
+    queryFn: () => getNoteDetail(noteId),
+    staleTime: 1000 * 60 * 5,
+  })
+
+  console.log(note) // 삭제 예정
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -32,15 +45,13 @@ export default function DetailNote({ todo }: DetailNoteProps) {
             <span className="text-sm font-normal text-slate-700">{title}</span>
           </div>
           <span className="text-xs font-normal text-slate-500">
-            {getDateFormat(createdAt)}
+            {getDateFormat(note?.createdAt as string)}
           </span>
         </div>
       </div>
       <div className="flex flex-col gap-3 grow justify-between">
         <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
-          <p className="text-lg font-medium text-basic w-full">
-            프로그래밍과 데이터 in JavaScript
-          </p>
+          <p className="text-lg font-medium text-basic w-full">{note?.title}</p>
         </div>
       </div>
     </div>
