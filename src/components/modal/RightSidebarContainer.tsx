@@ -21,7 +21,7 @@ export default function RightSidebarContainer({
         flex flex-col justify-center items-center 
         bg-popup-background`}
       >
-        <div className="fixed top-0 right-0 w-[800px] h-full p-6 bg-white flex flex-col gap-4">
+        <div className="fixed top-0 right-0 w-[800px] h-full p-6 bg-white flex flex-col gap-4 overflow-y-auto">
           <Image
             onClick={onClickClose}
             src="/icons/close-icon.svg"
