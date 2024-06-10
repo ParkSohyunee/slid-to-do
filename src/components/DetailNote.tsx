@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Todo } from "@/types/todos"
+import getDateFormat from "@/libs/utils/getDateFormat"
 
 type DetailNoteProps = {
   todo: Todo
@@ -31,7 +32,7 @@ export default function DetailNote({ todo }: DetailNoteProps) {
             <span className="text-sm font-normal text-slate-700">{title}</span>
           </div>
           <span className="text-xs font-normal text-slate-500">
-            {createdAt}
+            {getDateFormat(createdAt)}
           </span>
         </div>
       </div>
