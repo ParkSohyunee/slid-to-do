@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { MouseEvent, useRef } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -141,7 +142,7 @@ function TodoItem({ todo }: TodoItemProps) {
         flex gap-[10px] opacity-0 group-hover:opacity-100
         transition-opacity duration-300`}
         >
-          {!todo.noteId && (
+          {todo.noteId ? (
             <div
               onClick={rightSidebar.open}
               className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer"
@@ -153,6 +154,25 @@ function TodoItem({ todo }: TodoItemProps) {
                 height={24}
               />
             </div>
+          ) : (
+            <Link
+              href={{
+                pathname: `todos-list/${todo.id}/write-note`,
+                query: {
+                  title: todo.title,
+                  done: todo.done,
+                  goal: todo.goal ? todo.goal.title : "",
+                },
+              }}
+              className="bg-slate-50 rounded-full w-6 h-6 cursor-pointer"
+            >
+              <Image
+                src="/icons/note-write.svg"
+                alt="노트 작성하기"
+                width={24}
+                height={24}
+              />
+            </Link>
           )}
           <div
             ref={popupRef}
