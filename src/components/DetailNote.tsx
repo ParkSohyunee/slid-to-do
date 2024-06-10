@@ -20,6 +20,7 @@ const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
 })
 
 export default function DetailNote({ todo }: DetailNoteProps) {
+  const [visibleLink, setVisibleLink] = useState(true)
   const { done, goal, title, noteId } = todo
 
   const { data: note, isLoading } = useQuery<NoteDetail>({
@@ -78,7 +79,7 @@ export default function DetailNote({ todo }: DetailNoteProps) {
         <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
           <p className="text-lg font-medium text-basic w-full">{note?.title}</p>
         </div>
-        {note?.linkUrl && (
+        {note?.linkUrl && visibleLink && (
           <div className="rounded-[20px] bg-slate-200 flex justify-between items-center py-1 px-4 gap-1">
             <Link
               className="text-base font-normal text-basic hover:text-blue-500 truncate"
@@ -88,6 +89,7 @@ export default function DetailNote({ todo }: DetailNoteProps) {
               {note.linkUrl}
             </Link>
             <Image
+              onClick={() => setVisibleLink(false)}
               className="bg-slate-500 rounded-full rotate-45 cursor-pointer"
               src="/icons/close-small-white.svg"
               alt="닫기 버튼"
