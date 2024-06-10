@@ -1,6 +1,7 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { AxiosError } from "axios"
 
@@ -18,12 +19,17 @@ type LoginFormVaules = {
 
 export default function LoginPage() {
   const router = useRouter()
+  const [visiblePassword, setVisiblePassword] = useState(false)
   const {
     register,
     handleSubmit,
     formState: { errors, isValid, isSubmitting },
     setError,
   } = useForm<LoginFormVaules>({ mode: "onBlur" })
+
+  const handleVisiblePassword = () => {
+    setVisiblePassword((prev) => !prev)
+  }
 
   const handleSubmitForm = async (data: LoginFormVaules) => {
     try {
@@ -54,9 +60,9 @@ export default function LoginPage() {
   return (
     <section
       className={`
-      h-dvh 
+      h-full
       flex flex-col items-center 
-      pt-[120px] 
+      py-[120px] 
       max-tablet:pt-[64px] max-mobile:pt-[48px] 
       px-[52px] max-tablet:px-4
     `}
@@ -66,7 +72,7 @@ export default function LoginPage() {
       </div>
       <form
         onSubmit={handleSubmit(handleSubmitForm)}
-        className="flex flex-col gap-12 max-w-screen-sm w-full"
+        className="flex flex-col gap-12 max-w-[640px] w-full"
       >
         <div className="flex flex-col gap-11">
           <div className="relative text-field">
@@ -105,10 +111,11 @@ export default function LoginPage() {
               >
                 비밀번호
               </label>
-              <input
-                {...register("password", passwordValidationRules)}
-                className={`
-              px-6 py-3 
+              <div className="relative">
+                <input
+                  {...register("password", passwordValidationRules)}
+                  className={`
+              px-6 py-3 w-full
               rounded-sm 
               bg-slate-50 
               text-base font-normal text-basic placeholder:text-slate-400
@@ -116,10 +123,19 @@ export default function LoginPage() {
               focus:border-blue-500 focus:outline-none
               ${!!errors.password ? "border-error hover:border-error" : ""}
               `}
-                type="password"
-                autoComplete="off"
-                placeholder="비밀번호를 입력해 주세요"
-              />
+                  type={visiblePassword ? "text" : "password"}
+                  autoComplete="off"
+                  placeholder="비밀번호를 입력해 주세요"
+                />
+                <Image
+                  onClick={handleVisiblePassword}
+                  className="absolute top-1/2 right-6 transform -translate-y-1/2 cursor-pointer"
+                  src={`/icons/visibility-${visiblePassword ? "on" : "off"}.svg`}
+                  alt="비밀번호 보기"
+                  width={24}
+                  height={24}
+                />
+              </div>
             </div>
             <p className="text-sm font-normal text-error mx-4 mt-2">
               {errors.password?.message}
