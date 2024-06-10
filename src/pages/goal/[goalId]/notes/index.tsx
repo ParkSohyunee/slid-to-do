@@ -1,6 +1,27 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
+import { useQuery } from "@tanstack/react-query"
+
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getNoteList from "@/pages/api/note/getNoteList"
+import { NoteList } from "@/types/note"
 
 export default function NoteListAboutGoalPage() {
+  const { query } = useRouter()
+  const goalId = Number(query.goalId)
+
+  const { data } = useQuery<NoteList>({
+    queryKey: [QUERY_KEYS.getNoteList, goalId],
+    queryFn: () =>
+      getNoteList({
+        goalId,
+      }),
+    enabled: !!goalId,
+    staleTime: 1000 * 60 * 5,
+  })
+
+  console.log(data?.notes.length) // 삭제 예정
+
   return (
     <section className="h-full max-w-1200 flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-slate-900">노트 모아보기</h1>

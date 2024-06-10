@@ -8,6 +8,23 @@ export type NoteFormData = {
   linkUrl?: string
 }
 
+type CardAboutNoteList = {
+  id: number
+  title: string
+  createdAt: string
+  updatedAt: string
+  todo: Pick<Todo, "done" | "title" | "id">
+  goal: Pick<GoalDetail, "id" | "title">
+  userId: number
+  teamId: string
+}
+
+export type NoteList = {
+  nextCursor: number
+  totalCount: number
+  notes: CardAboutNoteList[]
+}
+
 export type NoteDetail = {
   id: number
   title: string
