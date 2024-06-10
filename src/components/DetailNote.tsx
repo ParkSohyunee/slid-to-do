@@ -21,7 +21,7 @@ const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
 export default function DetailNote({ todo }: DetailNoteProps) {
   const { done, goal, title, noteId } = todo
 
-  const { data: note } = useQuery<NoteDetail>({
+  const { data: note, isLoading } = useQuery<NoteDetail>({
     queryKey: [QUERY_KEYS.getNoteDetail, noteId],
     queryFn: () => getNoteDetail(noteId),
     staleTime: 1000 * 60 * 5,
@@ -33,8 +33,6 @@ export default function DetailNote({ todo }: DetailNoteProps) {
     EditorState.createEmpty(),
   )
 
-  console.log(editorState) // 삭제 예정
-
   /** 노트 내용을 에디터로 보여주기 */
   useEffect(() => {
     if (note) {
@@ -43,6 +41,10 @@ export default function DetailNote({ todo }: DetailNoteProps) {
       setEditorState(newEditorState)
     }
   }, [note])
+
+  if (isLoading) {
+    return <div>로딩중</div> // TODO 스켈레톤 UI로 변경하기
+  }
 
   return (
     <div className="flex flex-col gap-6 h-full">
