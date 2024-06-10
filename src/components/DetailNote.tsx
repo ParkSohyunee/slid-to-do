@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import dynamic from "next/dynamic"
 import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw } from "draft-js"
@@ -77,6 +78,24 @@ export default function DetailNote({ todo }: DetailNoteProps) {
         <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
           <p className="text-lg font-medium text-basic w-full">{note?.title}</p>
         </div>
+        {note?.linkUrl && (
+          <div className="rounded-[20px] bg-slate-200 flex justify-between items-center py-1 px-4 gap-1">
+            <Link
+              className="text-base font-normal text-basic hover:text-blue-500 truncate"
+              href={note.linkUrl}
+              target="_blank"
+            >
+              {note.linkUrl}
+            </Link>
+            <Image
+              className="bg-slate-500 rounded-full rotate-45 cursor-pointer"
+              src="/icons/close-small-white.svg"
+              alt="닫기 버튼"
+              width={18}
+              height={18}
+            />
+          </div>
+        )}
         <Editor readOnly onChange={setEditorState} editorState={editorState} />
       </div>
     </div>
