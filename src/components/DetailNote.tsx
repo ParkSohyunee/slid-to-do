@@ -1,4 +1,7 @@
 import Image from "next/image"
+import dynamic from "next/dynamic"
+import { useEffect, useState } from "react"
+import { EditorState, convertFromRaw } from "draft-js"
 import { useQuery } from "@tanstack/react-query"
 
 import { Todo } from "@/types/todos"
@@ -11,6 +14,10 @@ type DetailNoteProps = {
   todo: Todo
 }
 
+const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
+  ssr: false,
+})
+
 export default function DetailNote({ todo }: DetailNoteProps) {
   const { done, goal, title, noteId } = todo
 
@@ -18,9 +25,24 @@ export default function DetailNote({ todo }: DetailNoteProps) {
     queryKey: [QUERY_KEYS.getNoteDetail, noteId],
     queryFn: () => getNoteDetail(noteId),
     staleTime: 1000 * 60 * 5,
+    enabled: !!noteId,
   })
 
-  console.log(note) // 삭제 예정
+  /** editor state */
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty(),
+  )
+
+  console.log(editorState) // 삭제 예정
+
+  /** 노트 내용을 에디터로 보여주기 */
+  useEffect(() => {
+    if (note) {
+      const contentState = convertFromRaw(JSON.parse(note.content))
+      const newEditorState = EditorState.createWithContent(contentState)
+      setEditorState(newEditorState)
+    }
+  }, [note])
 
   return (
     <div className="flex flex-col gap-6 h-full">
@@ -49,10 +71,11 @@ export default function DetailNote({ todo }: DetailNoteProps) {
           </span>
         </div>
       </div>
-      <div className="flex flex-col gap-3 grow justify-between">
+      <div className="flex flex-col gap-4">
         <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
           <p className="text-lg font-medium text-basic w-full">{note?.title}</p>
         </div>
+        <Editor readOnly onChange={setEditorState} editorState={editorState} />
       </div>
     </div>
   )
