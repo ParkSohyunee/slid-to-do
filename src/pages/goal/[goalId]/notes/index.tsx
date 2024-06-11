@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { useMemo } from "react"
-import { useInfiniteQuery } from "@tanstack/react-query"
+import { useEffect, useMemo } from "react"
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteList from "@/pages/api/note/getNoteList"
@@ -10,16 +10,17 @@ import NoteListCards from "@/components/card/NoteListCards"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 
 export default function NoteListAboutGoalPage() {
+  const queryClient = useQueryClient()
   const { query } = useRouter()
   const goalId = Number(query.goalId)
 
-  const { data, hasNextPage, isLoading, isFetching, fetchNextPage } =
+  const { data, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery<NoteList>({
       queryKey: [QUERY_KEYS.getNoteList, goalId],
       queryFn: ({ pageParam }) =>
         getNoteList({
           goalId,
-          size: 2,
+          size: 5,
           cursor: pageParam as number,
         }),
       getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
@@ -29,7 +30,7 @@ export default function NoteListAboutGoalPage() {
     })
 
   const ref = useIntersectionObserver(() => {
-    if (hasNextPage && !isFetching) {
+    if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage()
     }
   })
@@ -38,7 +39,12 @@ export default function NoteListAboutGoalPage() {
     return data ? data?.pages.flatMap((data) => data.notes) : []
   }, [data])
 
-  console.log(notes) // 삭제 예정
+  /** 마운트 될 때 기존 캐시를 삭제하여 무한스크롤이 실행되도록 */
+  useEffect(() => {
+    return () => {
+      queryClient.removeQueries({ queryKey: [QUERY_KEYS.getNoteList, goalId] })
+    }
+  }, [goalId, queryClient])
 
   return (
     <section className="h-full max-w-1200 flex flex-col gap-4">
@@ -65,6 +71,7 @@ export default function NoteListAboutGoalPage() {
             <NoteListCards key={note.id} note={note} />
           ))}
           <div ref={ref} className="h-[1px]"></div>
+          {isFetchingNextPage && <div>로딩중</div>}
         </>
       ) : (
         <div className="text-sm font-normal text-slate-500 h-full flex items-center justify-center">
