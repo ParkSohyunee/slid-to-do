@@ -94,7 +94,7 @@ export default function NoteListAboutGoalPage() {
           height={24}
         />
         <h3 className="text-sm font-semibold text-basic">
-          자바스크립트로 웹 서비스 만들기
+          {data?.notes[0].goal.title}
         </h3>
       </div>
       {isLoading ? (
