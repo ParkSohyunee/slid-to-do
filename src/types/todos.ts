@@ -10,6 +10,13 @@ export type TodosFormVaules = {
   goalId?: number
 }
 
+export type SimpleTodo = {
+  id: number
+  title: string
+  done: boolean
+  goal: Pick<GoalDetail, "id" | "title">
+}
+
 export type Todo = {
   noteId: number
   done: boolean

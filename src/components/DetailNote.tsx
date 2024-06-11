@@ -5,23 +5,24 @@ import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw } from "draft-js"
 import { useQuery } from "@tanstack/react-query"
 
-import { Todo } from "@/types/todos"
+import { SimpleTodo } from "@/types/todos"
 import getDateFormat from "@/libs/utils/getDateFormat"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteDetail from "@/pages/api/note/getNoteDetail"
 import { NoteDetail } from "@/types/note"
 
 type DetailNoteProps = {
-  todo: Todo
+  todo: SimpleTodo
+  noteId: number
 }
 
 const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
   ssr: false,
 })
 
-export default function DetailNote({ todo }: DetailNoteProps) {
+export default function DetailNote({ todo, noteId }: DetailNoteProps) {
   const [visibleLink, setVisibleLink] = useState(true)
-  const { done, goal, title, noteId } = todo
+  const { done, goal, title } = todo
 
   const { data: note, isLoading } = useQuery<NoteDetail>({
     queryKey: [QUERY_KEYS.getNoteDetail, noteId],

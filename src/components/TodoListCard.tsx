@@ -67,6 +67,9 @@ function TodoItem({ todo }: TodoItemProps) {
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
 
+  const { goal, id, title, done } = todo
+  const simpleTodo = { id, title, done, goal }
+
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
     onSuccess: () => {
@@ -93,7 +96,7 @@ function TodoItem({ todo }: TodoItemProps) {
       )}
       {rightSidebar.isOpen && (
         <RightSidebarContainer onClickClose={rightSidebar.close}>
-          <DetailNote todo={todo} />
+          <DetailNote todo={simpleTodo} noteId={todo.noteId} />
         </RightSidebarContainer>
       )}
       <li
