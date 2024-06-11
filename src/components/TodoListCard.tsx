@@ -11,6 +11,7 @@ import PopupContainer from "./modal/PopupContainer"
 import RightSidebarContainer from "./modal/RightSidebarContainer"
 import deleteTodo from "@/pages/api/todos/deleteTodo"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import DetailNote from "./DetailNote"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -66,6 +67,9 @@ function TodoItem({ todo }: TodoItemProps) {
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
 
+  const { goal, id, title, done } = todo
+  const simpleTodo = { id, title, done, goal }
+
   const deleteTodoMutation = useMutation({
     mutationFn: deleteTodo,
     onSuccess: () => {
@@ -92,7 +96,7 @@ function TodoItem({ todo }: TodoItemProps) {
       )}
       {rightSidebar.isOpen && (
         <RightSidebarContainer onClickClose={rightSidebar.close}>
-          <div className="bg-slate-100 h-full">사이드바</div>
+          <DetailNote todo={simpleTodo} noteId={todo.noteId} />
         </RightSidebarContainer>
       )}
       <li

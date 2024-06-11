@@ -17,10 +17,12 @@ export function useDetectClose({ ref }: { ref: RefObject<HTMLElement> }) {
 
     if (isOpen) {
       window.addEventListener("click", onClick)
+    } else {
+      window.removeEventListener("click", onClick)
     }
 
     return () => {
-      window.addEventListener("click", onClick)
+      window.removeEventListener("click", onClick)
     }
   }, [isOpen, ref])
 
