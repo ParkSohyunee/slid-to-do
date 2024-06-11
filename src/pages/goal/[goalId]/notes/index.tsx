@@ -31,7 +31,7 @@ function NoteListCards({ note }: NoteListCardsProps) {
       )}
       <div
         onClick={rightSidebar.open}
-        className="bg-white p-6 rounded-sm border border-slate-100 flex flex-col gap-4 cursor-pointer"
+        className="bg-white p-6 rounded-sm border border-slate-100 flex flex-col gap-4 cursor-pointer hover:shadow-xl"
       >
         <div className="flex justify-between items-center">
           <div className="bg-blue-100 rounded-[8px] w-[28px] h-[28px] px-[6px] py-[7px]">
