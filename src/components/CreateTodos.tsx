@@ -11,6 +11,7 @@ import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
 import UploadFile from "@/components/UploadFile"
+import GoalDropdownForTodos from "./GoalDropdownForTodos"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
@@ -98,6 +99,10 @@ export default function CreateTodos() {
                 validationRules={todosLinkUrlValidationRules}
               />
             )}
+          </div>
+          <div>
+            <Label htmlFor="title">목표</Label>
+            <GoalDropdownForTodos />
           </div>
         </div>
         <button
