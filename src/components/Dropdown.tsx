@@ -1,5 +1,7 @@
 import Image from "next/image"
 import { MouseEvent, useRef } from "react"
+import { useFormContext } from "react-hook-form"
+
 import { useDropdownContext } from "@/context/DropdownContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import { GoalDetail } from "@/types/goal"
@@ -13,10 +15,17 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
   const dropdownRef = useRef(null)
   const { selectedList, changeSelected } = useDropdownContext()
   const { isOpen, toggleHandler } = useDetectClose({ ref: dropdownRef })
+  const { setValue } = useFormContext()
 
   const changeSelectedList = (e: MouseEvent<HTMLUListElement>) => {
-    const target = (e.target as HTMLLIElement).id
-    changeSelected(target)
+    const { textContent, id } = e.target as HTMLLIElement
+    changeSelected(textContent as string)
+
+    if (id) {
+      setValue("goalId", Number(id))
+    } else {
+      setValue("goalId", null)
+    }
     toggleHandler()
   }
 
@@ -64,7 +73,7 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
           {list?.map((list) => (
             <li
               key={list.id}
-              id={list.title}
+              id={list.id + ""}
               className={`
               text-base font-normal text-basic 
               rounded-sm py-[10px] px-4

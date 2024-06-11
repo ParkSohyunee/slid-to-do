@@ -44,7 +44,7 @@ export default function CreateTodos() {
     }
 
     for (const key in data) {
-      if (data[key] !== "") {
+      if (data[key] && data[key] !== "") {
         filteredData[key] = data[key] as string | number
       }
     }
