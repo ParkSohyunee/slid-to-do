@@ -1,3 +1,9 @@
+/**
+ * 전역으로 모달 열림, 닫힘 상태를 관리하는 context
+ * 사이드바, 각 페이지, 하위 컴포넌트 등에서 모달을 열고 닫는 동작이 많아서
+ * 전역으로 관리하는 것보다 개별적으로 상태를 관리하는 것이 가독성과 유지보수에 더 용이할 것으로 판단하여
+ * 해당 contextext는 미사용
+ */
 import { ReactNode, createContext, useContext, useState } from "react"
 
 type ModalContextType = {
