@@ -41,6 +41,7 @@ export default function CreateTodos({
       linkUrl: todo?.linkUrl,
       fileUrl: todo?.fileUrl,
       goalId: todo?.goal?.id,
+      done: todo?.done ? "Done" : "To do",
     },
   })
   const { isValid } = methods.formState
@@ -110,6 +111,8 @@ export default function CreateTodos({
 
     if (
       todo.title === data.title &&
+      !todo.fileUrl &&
+      !uploadFile &&
       todo.fileUrl === data.fileUrl &&
       todo.linkUrl === data.linkUrl &&
       todo.goal?.id === data.goalId
@@ -122,7 +125,7 @@ export default function CreateTodos({
 
     /** 파일 업로드 url 생성 */
     if (selectedOption === "file") {
-      if (uploadFile && todo?.fileUrl !== data.fileUrl) {
+      if (uploadFile) {
         const uploadFileUrl = await uploadFiles({ file: uploadFile })
         filteredData["fileUrl"] = uploadFileUrl.url
       }
@@ -133,12 +136,12 @@ export default function CreateTodos({
     }
 
     for (const key in data) {
-      if (data[key] && todo[key] !== data[key]) {
+      if (data[key] && data[key] !== "") {
         filteredData[key] = data[key] as string | number
-      } else if (data[key] === "" || !data[key]) {
-        filteredData[key] = null
       }
     }
+
+    filteredData["done"] = data.done === "Done"
 
     editTodoMutation.mutate({
       todoId: todo?.id as number,
@@ -209,6 +212,31 @@ export default function CreateTodos({
             </DropdownProvider>
           </div>
         </div>
+        {edit && (
+          <div>
+            <Label htmlFor="done">To do / Done</Label>
+            <div className="flex gap-6 items-center">
+              <div className="flex gap-2 items-center">
+                <input
+                  {...methods.register("done")}
+                  type="radio"
+                  value="To do"
+                  defaultChecked={!todo?.done}
+                />
+                <label className="text-md text-basic font-medium">To do</label>
+              </div>
+              <div className="flex gap-2 items-center">
+                <input
+                  {...methods.register("done")}
+                  type="radio"
+                  value="Done"
+                  defaultChecked={todo?.done}
+                />
+                <label className="text-md text-basic font-medium">Done</label>
+              </div>
+            </div>
+          </div>
+        )}
         <button
           type="submit"
           disabled={createTodoMutation.isPending || editTodoMutation.isPending}
