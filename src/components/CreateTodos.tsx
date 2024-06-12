@@ -118,7 +118,7 @@ export default function CreateTodos({
       return
     }
 
-    const filteredData: Record<string, string | number | any> = {}
+    const filteredData: Record<string, unknown> = {}
 
     /** 파일 업로드 url 생성 */
     if (selectedOption === "file") {
@@ -133,12 +133,12 @@ export default function CreateTodos({
     }
 
     for (const key in data) {
-      if (data[key] && data[key] !== "" && todo[key] !== data[key]) {
+      if (data[key] && todo[key] !== data[key]) {
         filteredData[key] = data[key] as string | number
+      } else if (data[key] === "" || !data[key]) {
+        filteredData[key] = null
       }
     }
-
-    // filteredData["fileUrl"] = null
 
     editTodoMutation.mutate({
       todoId: todo?.id as number,
@@ -211,7 +211,7 @@ export default function CreateTodos({
         </div>
         <button
           type="submit"
-          disabled={createTodoMutation.isPending}
+          disabled={createTodoMutation.isPending || editTodoMutation.isPending}
           className={`
             py-3 flex 
             justify-center items-center 
@@ -223,7 +223,9 @@ export default function CreateTodos({
             transition-colors duration-500
             `}
         >
-          {createTodoMutation.isPending ? "저장중..." : "확인"}
+          {createTodoMutation.isPending || editTodoMutation.isPending
+            ? "저장중..."
+            : "확인"}
         </button>
       </form>
     </FormProvider>
