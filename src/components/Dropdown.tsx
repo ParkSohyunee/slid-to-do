@@ -1,22 +1,35 @@
 import Image from "next/image"
 import { MouseEvent, useRef } from "react"
+import { useFormContext } from "react-hook-form"
+
 import { useDropdownContext } from "@/context/DropdownContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
-import { GoalDetail } from "@/types/goal"
+import { useQuery } from "@tanstack/react-query"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getGoalList from "@/pages/api/goal/getGoalList"
 
-type DropdownProps = {
-  list: GoalDetail[]
-  defaultList: string
-}
+const DEFAUL_LIST = "목표를 선택해주세요"
 
-export default function Dropdown({ list, defaultList }: DropdownProps) {
+export default function Dropdown() {
   const dropdownRef = useRef(null)
   const { selectedList, changeSelected } = useDropdownContext()
   const { isOpen, toggleHandler } = useDetectClose({ ref: dropdownRef })
+  const { setValue } = useFormContext()
+
+  const { data } = useQuery({
+    queryKey: [QUERY_KEYS.getGoalList],
+    queryFn: getGoalList,
+  })
 
   const changeSelectedList = (e: MouseEvent<HTMLUListElement>) => {
-    const target = (e.target as HTMLLIElement).id
-    changeSelected(target)
+    const { textContent, id } = e.target as HTMLLIElement
+    changeSelected(textContent as string)
+
+    if (id) {
+      setValue("goalId", Number(id))
+    } else {
+      setValue("goalId", null)
+    }
     toggleHandler()
   }
 
@@ -27,7 +40,7 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
           defaultValue={selectedList}
           readOnly
           className={`
-          w-full px-6 py-3 
+          w-full px-6 py-3 truncate
           rounded-sm bg-slate-50 
           text-base font-normal text-basic placeholder:text-slate-400
           border focus:outline-none
@@ -36,7 +49,7 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
         `}
           type="text"
           autoComplete="off"
-          placeholder={defaultList}
+          placeholder={DEFAUL_LIST}
         />
         <Image
           className="absolute top-3 right-[20px] cursor-pointer"
@@ -49,7 +62,7 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
       {isOpen && (
         <ul
           onClick={changeSelectedList}
-          className="rounded-sm bg-gray-50 relative top-[5px]"
+          className="rounded-sm bg-gray-50 relative top-[5px] overflow-auto max-h-[132px]"
         >
           {selectedList && (
             <li
@@ -58,13 +71,13 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
               rounded-sm py-[10px] px-4 cursor-default
               `}
             >
-              {defaultList}
+              {DEFAUL_LIST}
             </li>
           )}
-          {list?.map((list) => (
+          {data?.goals.map((list) => (
             <li
               key={list.id}
-              id={list.title}
+              id={list.id + ""}
               className={`
               text-base font-normal text-basic 
               rounded-sm py-[10px] px-4

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
   todosLinkUrlValidationRules,
@@ -14,12 +15,33 @@ import UploadFile from "@/components/UploadFile"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
+import { useModal } from "@/context/ModalContext"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import { DropdownProvider } from "@/context/DropdownContext"
+import Dropdown from "./Dropdown"
 
 export default function CreateTodos() {
+  const queryClient = useQueryClient()
+  const { closeModal } = useModal()
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const [uploadFile, setUploadFile] = useState<File>()
   const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
   const { isValid } = methods.formState
+
+  const createTodoMutation = useMutation({
+    mutationFn: createTodos,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos],
+      })
+    },
+    onError: () => {
+      alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
+    },
+    onSettled: () => {
+      closeModal()
+    },
+  })
 
   /** 자료 첨부(파일 또는 링크) 옵션 선택 */
   const handleToggleSelect = (value: SelectedOption) => {
@@ -43,17 +65,11 @@ export default function CreateTodos() {
     }
 
     for (const key in data) {
-      if (data[key] !== "") {
+      if (data[key] && data[key] !== "") {
         filteredData[key] = data[key] as string | number
       }
     }
-
-    try {
-      const result = await createTodos(filteredData)
-      console.log(result)
-    } catch (error) {
-      console.log(error)
-    }
+    createTodoMutation.mutate(filteredData)
   }
 
   return (
@@ -99,9 +115,16 @@ export default function CreateTodos() {
               />
             )}
           </div>
+          <div>
+            <Label htmlFor="title">목표</Label>
+            <DropdownProvider>
+              <Dropdown />
+            </DropdownProvider>
+          </div>
         </div>
         <button
           type="submit"
+          disabled={createTodoMutation.isPending}
           className={`
             py-3 flex 
             justify-center items-center 
@@ -113,7 +136,7 @@ export default function CreateTodos() {
             transition-colors duration-500
             `}
         >
-          확인
+          {createTodoMutation.isPending ? "저장중..." : "확인"}
         </button>
       </form>
     </FormProvider>

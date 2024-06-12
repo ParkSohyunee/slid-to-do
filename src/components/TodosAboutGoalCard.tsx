@@ -1,5 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
+import { useRouter } from "next/router"
+import { MouseEvent } from "react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -7,6 +8,7 @@ import getAllTodos from "@/pages/api/todos/getAllTodos"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
 import ProgressBar from "./progress/ProgressBar"
 import TodoItem from "./item/TodoItem"
+import { useModal } from "@/context/ModalContext"
 
 type TodosAboutGoalCardProps = {
   goalId: number
@@ -19,6 +21,8 @@ export default function TodosAboutGoalCard({
   title,
   cardStyle,
 }: TodosAboutGoalCardProps) {
+  const { openModal } = useModal()
+  const router = useRouter()
   const isDone = [true, false]
   const results = useQueries({
     queries: isDone.map((done) => ({
@@ -39,6 +43,11 @@ export default function TodosAboutGoalCard({
     staleTime: 1000 * 60 * 5,
   })
 
+  const handleOpenModal = (e: MouseEvent) => {
+    e.stopPropagation()
+    openModal()
+  }
+
   /**
    * TODO
    * - [ ] 반응형 디자인
@@ -47,10 +56,10 @@ export default function TodosAboutGoalCard({
    */
 
   return (
-    <Link
-      href={`/goal/${goalId}`}
+    <div
+      onClick={() => router.push(`/goal/${goalId}`)}
       className={`
-        p-6 rounded-md bg-blue-50 
+        p-6 rounded-md bg-blue-50 cursor-pointer
         flex flex-col items-center gap-4 hover:shadow-2xl
         ${cardStyle && "lg:col-span-2"}
         `}
@@ -58,7 +67,7 @@ export default function TodosAboutGoalCard({
       <div className="flex flex-col items-start gap-2 self-stretch">
         <div className="flex justify-between items-center self-stretch">
           <h3 className="text-lg font-bold text-basic">{title}</h3>
-          <button className="flex gap-1 items-center">
+          <button onClick={handleOpenModal} className="flex gap-1 items-center">
             <Image
               src="/icons/plus-blue-small.svg"
               alt="할 일 추가 버튼"
@@ -113,6 +122,6 @@ export default function TodosAboutGoalCard({
           height={24}
         />
       </button>
-    </Link>
+    </div>
   )
 }
