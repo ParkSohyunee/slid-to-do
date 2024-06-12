@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
   todosLinkUrlValidationRules,
@@ -15,12 +16,31 @@ import GoalDropdownForTodos from "./GoalDropdownForTodos"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
+import { useModal } from "@/context/ModalContext"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
 export default function CreateTodos() {
+  const queryClient = useQueryClient()
+  const { closeModal } = useModal()
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const [uploadFile, setUploadFile] = useState<File>()
   const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
   const { isValid } = methods.formState
+
+  const createTodoMutation = useMutation({
+    mutationFn: createTodos,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos],
+      })
+    },
+    onError: () => {
+      alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
+    },
+    onSettled: () => {
+      closeModal()
+    },
+  })
 
   /** 자료 첨부(파일 또는 링크) 옵션 선택 */
   const handleToggleSelect = (value: SelectedOption) => {
@@ -48,13 +68,7 @@ export default function CreateTodos() {
         filteredData[key] = data[key] as string | number
       }
     }
-
-    try {
-      const result = await createTodos(filteredData)
-      console.log(result)
-    } catch (error) {
-      console.log(error)
-    }
+    createTodoMutation.mutate(filteredData)
   }
 
   return (
