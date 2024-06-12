@@ -164,7 +164,7 @@ export default function CreateTodos({
 
   return (
     <FormProvider {...methods}>
-      <h2 className="text-lg font-bold text-basic mb-6">할 일 생성</h2>
+      <h2 className="text-lg font-bold text-basic mb-6">{`${edit ? "할 일 수정" : "할 일 생성"}`}</h2>
       <form
         onSubmit={methods.handleSubmit(
           edit ? handleEditForm : handleSubmitForm,
