@@ -124,6 +124,7 @@ export default function CreateTodos() {
         </div>
         <button
           type="submit"
+          disabled={createTodoMutation.isPending}
           className={`
             py-3 flex 
             justify-center items-center 
@@ -135,7 +136,7 @@ export default function CreateTodos() {
             transition-colors duration-500
             `}
         >
-          확인
+          {createTodoMutation.isPending ? "저장중..." : "확인"}
         </button>
       </form>
     </FormProvider>
