@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react"
+import { useFormContext } from "react-hook-form"
 
 type UploadFileProps = {
   uploadFile?: File
@@ -13,6 +14,7 @@ export default function UploadFile({
   fileUrl,
 }: UploadFileProps) {
   const hiddenInputRef = useRef<HTMLInputElement>(null)
+  const { setValue } = useFormContext()
   const [visibleImage, setVisibleImage] = useState(true)
 
   /** 업로드 할 파일 url 변경 */
@@ -24,6 +26,7 @@ export default function UploadFile({
 
   const deleteFileImage = () => {
     setVisibleImage(false)
+    setValue("fileUrl", undefined)
   }
 
   return (

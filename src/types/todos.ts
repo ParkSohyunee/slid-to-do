@@ -18,6 +18,7 @@ export type SimpleTodo = {
 }
 
 export type Todo = {
+  [key: string]: unknown
   noteId: number
   done: boolean
   linkUrl: string

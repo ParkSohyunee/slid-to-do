@@ -16,6 +16,7 @@ import Dropdown from "./Dropdown"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
+import editTodos from "@/pages/api/todos/editTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import { DropdownProvider } from "@/context/DropdownContext"
 
@@ -44,8 +45,6 @@ export default function CreateTodos({
   })
   const { isValid } = methods.formState
 
-  console.log(todo)
-
   const createTodoMutation = useMutation({
     mutationFn: createTodos,
     onSuccess: () => {
@@ -55,6 +54,21 @@ export default function CreateTodos({
     },
     onError: () => {
       alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
+    },
+    onSettled: () => {
+      onClose()
+    },
+  })
+
+  const editTodoMutation = useMutation({
+    mutationFn: editTodos,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos],
+      })
+    },
+    onError: () => {
+      alert("할 일 수정에 실패했어요. 다시 시도해주세요.")
     },
     onSettled: () => {
       onClose()
@@ -87,17 +101,57 @@ export default function CreateTodos({
         filteredData[key] = data[key] as string | number
       }
     }
-    console.log(filteredData)
+    createTodoMutation.mutate(filteredData)
+  }
 
-    // createTodoMutation.mutate(filteredData)
+  /** 할 일 수정 이벤트 핸들러 */
+  const handleEditForm = async (data: TodosFormVaules) => {
+    if (!todo) return
+
+    if (
+      todo.title === data.title &&
+      todo.fileUrl === data.fileUrl &&
+      todo.linkUrl === data.linkUrl &&
+      todo.goal?.id === data.goalId
+    ) {
+      alert("수정한 내용이 없습니다.")
+      return
+    }
+
+    const filteredData: Record<string, string | number | any> = {}
+
+    /** 파일 업로드 url 생성 */
+    if (selectedOption === "file") {
+      if (uploadFile && todo?.fileUrl !== data.fileUrl) {
+        const uploadFileUrl = await uploadFiles({ file: uploadFile })
+        filteredData["fileUrl"] = uploadFileUrl.url
+      }
+    } else {
+      if (data.linkUrl) {
+        filteredData["linkUrl"] = data["linkUrl"]
+      }
+    }
+
+    for (const key in data) {
+      if (data[key] && data[key] !== "" && todo[key] !== data[key]) {
+        filteredData[key] = data[key] as string | number
+      }
+    }
+
+    // filteredData["fileUrl"] = null
+
+    editTodoMutation.mutate({
+      todoId: todo?.id as number,
+      data: filteredData,
+    })
   }
 
   useEffect(() => {
     if (todo) {
-      if (todo?.linkUrl) {
-        setSelectedOption("link")
-      } else if (todo?.fileUrl) {
+      if (todo?.fileUrl) {
         setSelectedOption("file")
+      } else if (todo?.linkUrl) {
+        setSelectedOption("link")
       }
     }
   }, [todo])
@@ -106,7 +160,9 @@ export default function CreateTodos({
     <FormProvider {...methods}>
       <h2 className="text-lg font-bold text-basic mb-6">할 일 생성</h2>
       <form
-        onSubmit={methods.handleSubmit(handleSubmitForm)}
+        onSubmit={methods.handleSubmit(
+          edit ? handleEditForm : handleSubmitForm,
+        )}
         className="flex flex-col gap-10"
       >
         <div className="flex flex-col gap-6">
