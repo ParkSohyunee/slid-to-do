@@ -6,12 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import useToggle from "@/hooks/useToggle"
-import { useModal } from "@/context/ModalContext"
 import PopupContainer from "./modal/PopupContainer"
 import RightSidebarContainer from "./modal/RightSidebarContainer"
 import deleteTodo from "@/pages/api/todos/deleteTodo"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import DetailNote from "./DetailNote"
+import ModalContainer from "./modal/ModalContainer"
+import CreateTodos from "./CreateTodos"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -63,7 +64,7 @@ function TodoItem({ todo }: TodoItemProps) {
   const { isOpen: popupIsOpen, toggleHandler } = useDetectClose({
     ref: popupRef,
   })
-  const { openModal } = useModal()
+  const editTodoModal = useToggle()
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
 
@@ -84,6 +85,11 @@ function TodoItem({ todo }: TodoItemProps) {
 
   return (
     <>
+      {editTodoModal.isOpen && (
+        <ModalContainer onClose={editTodoModal.close}>
+          <CreateTodos onClose={editTodoModal.close} />
+        </ModalContainer>
+      )}
       {confirmModal.isOpen && (
         <PopupContainer
           onClickClose={confirmModal.close}
@@ -192,7 +198,7 @@ function TodoItem({ todo }: TodoItemProps) {
           </div>
           {popupIsOpen && (
             <PopupMenu
-              onClickEdit={openModal}
+              onClickEdit={editTodoModal.open}
               onClickDelete={confirmModal.open}
             />
           )}
