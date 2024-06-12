@@ -12,16 +12,16 @@ import { useDetectClose } from "@/hooks/useDetectClose"
 import getUser from "@/pages/api/user/getUser"
 import createGoal from "@/pages/api/goal/createGoal"
 import getGoalList from "@/pages/api/goal/getGoalList"
-import { useModal } from "@/context/ModalContext"
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
+import useToggle from "@/hooks/useToggle"
 
 export default function Sidebar() {
   const queryClient = useQueryClient()
   const buttonRef = useRef(null)
   const [newGoal, setNewGoal] = useState("")
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
-  const { openModal, isOpen: modalIsOpen } = useModal()
+  const createTodoModal = useToggle()
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
@@ -63,8 +63,8 @@ export default function Sidebar() {
 
   return (
     <>
-      {modalIsOpen && (
-        <ModalContainer>
+      {createTodoModal.isOpen && (
+        <ModalContainer onClose={createTodoModal.close}>
           <CreateTodos />
         </ModalContainer>
       )}
@@ -117,7 +117,7 @@ export default function Sidebar() {
             </div>
           </div>
           <button
-            onClick={openModal}
+            onClick={createTodoModal.open}
             className="w-full flex h-12 rounded-sm bg-blue-500 gap-1 justify-center items-center"
           >
             <Image

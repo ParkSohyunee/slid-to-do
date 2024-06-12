@@ -1,24 +1,31 @@
 import Image from "next/image"
-import { ReactNode } from "react"
-
-import { useModal } from "@/context/ModalContext"
+import { MouseEvent, ReactNode } from "react"
 import ModalPortal from "@/components/ModalPortal"
 
 type ModalContainerProps = {
   children: ReactNode
+  onClose: () => void
 }
 
-export default function ModalContainer({ children }: ModalContainerProps) {
-  const { closeModal } = useModal()
+export default function ModalContainer({
+  children,
+  onClose,
+}: ModalContainerProps) {
+  const handleOutSideClick = (e: MouseEvent<HTMLElement>) => {
+    if (e.target === e.currentTarget) {
+      onClose()
+    }
+  }
 
   return (
     <ModalPortal>
       <section
+        onClick={handleOutSideClick}
         className={`
-      w-full h-full 
-      fixed top-0 left-0 
-      flex flex-col justify-center items-center 
-      bg-modal-background`}
+        w-full h-full 
+        fixed top-0 left-0 
+        flex flex-col justify-center items-center 
+        bg-modal-background`}
       >
         <div
           className={`
@@ -30,7 +37,7 @@ export default function ModalContainer({ children }: ModalContainerProps) {
           overflow-auto`}
         >
           <Image
-            onClick={closeModal}
+            onClick={onClose}
             src="/icons/close-icon.svg"
             alt="닫기 버튼"
             className="absolute top-6 right-6 cursor-pointer"

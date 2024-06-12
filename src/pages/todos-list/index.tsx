@@ -18,14 +18,14 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodoListCard from "@/components/TodoListCard"
 import ModalContainer from "@/components/modal/ModalContainer"
 import CreateTodos from "@/components/CreateTodos"
-import { useModal } from "@/context/ModalContext"
+import useToggle from "@/hooks/useToggle"
 
 const DEFAULT_VALUE = "All"
 
 export default function TodosPage() {
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_VALUE)
   const [isDone, setIsDone] = useState(false)
-  const { openModal, isOpen } = useModal()
+  const createTodoModal = useToggle()
   const { data, isLoading } = useQuery({
     queryKey:
       selectedCategory === DEFAULT_VALUE
@@ -57,8 +57,8 @@ export default function TodosPage() {
 
   return (
     <>
-      {isOpen && (
-        <ModalContainer>
+      {createTodoModal.isOpen && (
+        <ModalContainer onClose={createTodoModal.close}>
           <CreateTodos />
         </ModalContainer>
       )}
@@ -67,7 +67,10 @@ export default function TodosPage() {
           <h1 className="text-lg font-semibold text-slate-900">
             모든 할 일 {data?.totalCount ? `(${data.totalCount})` : ""}
           </h1>
-          <button onClick={openModal} className="flex gap-1 items-center">
+          <button
+            onClick={createTodoModal.open}
+            className="flex gap-1 items-center"
+          >
             <Image
               src="/icons/plus-blue-small.svg"
               alt="할 일 추가 버튼"

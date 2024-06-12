@@ -9,14 +9,14 @@ import ModalContainer from "@/components/modal/ModalContainer"
 import CreateTodos from "@/components/CreateTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
-import { useModal } from "@/context/ModalContext"
+import useToggle from "@/hooks/useToggle"
 
 /**
  * TODO
  * [ ] 각 할 일 카드 무한스크롤 적용
  */
 export default function GoalDetailPage() {
-  const { isOpen, openModal } = useModal()
+  const createTodoModal = useToggle()
   const router = useRouter()
   const goalId = Number(router.query.goalId)
 
@@ -36,8 +36,8 @@ export default function GoalDetailPage() {
 
   return (
     <>
-      {isOpen && (
-        <ModalContainer>
+      {createTodoModal.isOpen && (
+        <ModalContainer onClose={createTodoModal.close}>
           <CreateTodos />
         </ModalContainer>
       )}
@@ -85,7 +85,7 @@ export default function GoalDetailPage() {
                   </h3>
                   {index === 0 && (
                     <button
-                      onClick={openModal}
+                      onClick={createTodoModal.open}
                       className="flex gap-1 items-center"
                     >
                       <Image
