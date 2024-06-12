@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react"
 import Dropdown from "@/components/Dropdown"
 import { DropdownProvider } from "@/context/DropdownContext"
+import { FormProvider, useForm } from "react-hook-form"
 
 const meta = {
   title: "Dropdown/DropdownForTodos",
@@ -11,9 +12,11 @@ const meta = {
   tags: ["autodocs"],
   decorators: [
     (Story) => (
-      <DropdownProvider>
-        <Story />
-      </DropdownProvider>
+      <FormProvider {...useForm()}>
+        <DropdownProvider>
+          <Story />
+        </DropdownProvider>
+      </FormProvider>
     ),
   ],
   argTypes: {
