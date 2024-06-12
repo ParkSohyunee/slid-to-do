@@ -25,7 +25,7 @@ const DEFAULT_VALUE = "All"
 export default function TodosPage() {
   const [selectedCategory, setSelectedCategory] = useState(DEFAULT_VALUE)
   const [isDone, setIsDone] = useState(false)
-  const { openModal } = useModal()
+  const { openModal, isOpen } = useModal()
   const { data, isLoading } = useQuery({
     queryKey:
       selectedCategory === DEFAULT_VALUE
@@ -57,9 +57,11 @@ export default function TodosPage() {
 
   return (
     <>
-      <ModalContainer>
-        <CreateTodos />
-      </ModalContainer>
+      {isOpen && (
+        <ModalContainer>
+          <CreateTodos />
+        </ModalContainer>
+      )}
       <section className="h-full max-w-[792px] flex flex-col">
         <div className="flex justify-between items-center self-stretch mb-4">
           <h1 className="text-lg font-semibold text-slate-900">

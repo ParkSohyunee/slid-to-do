@@ -9,11 +9,7 @@ type ModalContainerProps = {
 }
 
 export default function ModalContainer({ children }: ModalContainerProps) {
-  const { isOpen, closeModal } = useModal()
-
-  if (!isOpen) {
-    return null
-  }
+  const { closeModal } = useModal()
 
   return (
     <ModalPortal>
