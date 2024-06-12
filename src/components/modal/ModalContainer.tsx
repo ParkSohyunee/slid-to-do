@@ -20,7 +20,15 @@ export default function ModalContainer({ children }: ModalContainerProps) {
       flex flex-col justify-center items-center 
       bg-modal-background`}
       >
-        <div className="relative w-[520px] p-6 rounded-sm bg-white">
+        <div
+          className={`
+          relative w-full h-full 
+          max-w-[520px] min-w-[375px]
+          max-h-[690px] max-tablet:max-h-[812px] 
+          p-4 tablet:p-6 
+          mobile:rounded-sm bg-white 
+          overflow-auto`}
+        >
           <Image
             onClick={closeModal}
             src="/icons/close-icon.svg"

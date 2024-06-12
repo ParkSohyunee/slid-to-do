@@ -62,7 +62,7 @@ export default function Dropdown() {
       {isOpen && (
         <ul
           onClick={changeSelectedList}
-          className="rounded-sm bg-gray-50 relative top-[5px]"
+          className="rounded-sm bg-gray-50 relative top-[5px] overflow-auto max-h-[132px]"
         >
           {selectedList && (
             <li
