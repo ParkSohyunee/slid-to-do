@@ -109,13 +109,16 @@ export default function CreateTodos({
   const handleEditForm = async (data: TodosFormVaules) => {
     if (!todo) return
 
+    const defaultValueOfDone = todo?.done ? "Done" : "To do"
+
     if (
       todo.title === data.title &&
       !todo.fileUrl &&
       !uploadFile &&
       todo.fileUrl === data.fileUrl &&
       todo.linkUrl === data.linkUrl &&
-      todo.goal?.id === data.goalId
+      todo.goal?.id === data.goalId &&
+      defaultValueOfDone === data.done
     ) {
       alert("수정한 내용이 없습니다.")
       return
