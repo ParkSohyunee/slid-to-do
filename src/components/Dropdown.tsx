@@ -40,7 +40,7 @@ export default function Dropdown() {
           defaultValue={selectedList}
           readOnly
           className={`
-          w-full px-6 py-3 
+          w-full px-6 py-3 truncate
           rounded-sm bg-slate-50 
           text-base font-normal text-basic placeholder:text-slate-400
           border focus:outline-none
