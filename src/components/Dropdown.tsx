@@ -4,18 +4,22 @@ import { useFormContext } from "react-hook-form"
 
 import { useDropdownContext } from "@/context/DropdownContext"
 import { useDetectClose } from "@/hooks/useDetectClose"
-import { GoalDetail } from "@/types/goal"
+import { useQuery } from "@tanstack/react-query"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getGoalList from "@/pages/api/goal/getGoalList"
 
-type DropdownProps = {
-  list: GoalDetail[]
-  defaultList: string
-}
+const DEFAUL_LIST = "목표를 선택해주세요"
 
-export default function Dropdown({ list, defaultList }: DropdownProps) {
+export default function Dropdown() {
   const dropdownRef = useRef(null)
   const { selectedList, changeSelected } = useDropdownContext()
   const { isOpen, toggleHandler } = useDetectClose({ ref: dropdownRef })
   const { setValue } = useFormContext()
+
+  const { data } = useQuery({
+    queryKey: [QUERY_KEYS.getGoalList],
+    queryFn: getGoalList,
+  })
 
   const changeSelectedList = (e: MouseEvent<HTMLUListElement>) => {
     const { textContent, id } = e.target as HTMLLIElement
@@ -45,7 +49,7 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
         `}
           type="text"
           autoComplete="off"
-          placeholder={defaultList}
+          placeholder={DEFAUL_LIST}
         />
         <Image
           className="absolute top-3 right-[20px] cursor-pointer"
@@ -67,10 +71,10 @@ export default function Dropdown({ list, defaultList }: DropdownProps) {
               rounded-sm py-[10px] px-4 cursor-default
               `}
             >
-              {defaultList}
+              {DEFAUL_LIST}
             </li>
           )}
-          {list?.map((list) => (
+          {data?.goals.map((list) => (
             <li
               key={list.id}
               id={list.id + ""}

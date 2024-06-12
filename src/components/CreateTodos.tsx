@@ -12,12 +12,13 @@ import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
 import UploadFile from "@/components/UploadFile"
-import GoalDropdownForTodos from "./GoalDropdownForTodos"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
 import { useModal } from "@/context/ModalContext"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import { DropdownProvider } from "@/context/DropdownContext"
+import Dropdown from "./Dropdown"
 
 export default function CreateTodos() {
   const queryClient = useQueryClient()
@@ -116,7 +117,9 @@ export default function CreateTodos() {
           </div>
           <div>
             <Label htmlFor="title">목표</Label>
-            <GoalDropdownForTodos />
+            <DropdownProvider>
+              <Dropdown />
+            </DropdownProvider>
           </div>
         </div>
         <button
