@@ -12,17 +12,19 @@ import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
 import Label from "@/components/Label"
 import UploadFile from "@/components/UploadFile"
+import Dropdown from "./Dropdown"
 
 import createTodos from "@/pages/api/todos/createTodos"
 import uploadFiles from "@/pages/api/todos/uploadFiles"
-import { useModal } from "@/context/ModalContext"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import { DropdownProvider } from "@/context/DropdownContext"
-import Dropdown from "./Dropdown"
 
-export default function CreateTodos() {
+type CreateTodosProps = {
+  onClose: () => void
+}
+
+export default function CreateTodos({ onClose }: CreateTodosProps) {
   const queryClient = useQueryClient()
-  const { closeModal } = useModal()
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const [uploadFile, setUploadFile] = useState<File>()
   const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
@@ -39,7 +41,7 @@ export default function CreateTodos() {
       alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
     },
     onSettled: () => {
-      closeModal()
+      onClose()
     },
   })
 

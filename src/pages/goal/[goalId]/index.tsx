@@ -38,7 +38,7 @@ export default function GoalDetailPage() {
     <>
       {createTodoModal.isOpen && (
         <ModalContainer onClose={createTodoModal.close}>
-          <CreateTodos />
+          <CreateTodos onClose={createTodoModal.close} />
         </ModalContainer>
       )}
       <section className="h-full max-w-1200 flex flex-col">

@@ -59,7 +59,7 @@ export default function TodosPage() {
     <>
       {createTodoModal.isOpen && (
         <ModalContainer onClose={createTodoModal.close}>
-          <CreateTodos />
+          <CreateTodos onClose={createTodoModal.close} />
         </ModalContainer>
       )}
       <section className="h-full max-w-[792px] flex flex-col">
