@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { ChangeEvent, Dispatch, SetStateAction, useRef } from "react"
+import { ChangeEvent, Dispatch, SetStateAction, useRef, useState } from "react"
 
 type UploadFileProps = {
   uploadFile?: File
@@ -13,6 +13,7 @@ export default function UploadFile({
   fileUrl,
 }: UploadFileProps) {
   const hiddenInputRef = useRef<HTMLInputElement>(null)
+  const [visibleImage, setVisibleImage] = useState(true)
 
   /** 업로드 할 파일 url 변경 */
   const handleChangeFile = async (e: ChangeEvent<HTMLInputElement>) => {
@@ -21,9 +22,13 @@ export default function UploadFile({
     }
   }
 
+  const deleteFileImage = () => {
+    setVisibleImage(false)
+  }
+
   return (
     <>
-      {fileUrl ? (
+      {fileUrl && visibleImage ? (
         <div
           className={`
         relative h-[184px] rounded-sm bg-slate-50 
@@ -31,9 +36,10 @@ export default function UploadFile({
         `}
         >
           <Image
+            onClick={deleteFileImage}
             className="absolute right-2 top-2 rotate-45 z-[1] cursor-pointer"
             src="/icons/close-large-white.svg"
-            alt="파일 업로드 버튼"
+            alt="이미지 삭제 버튼"
             width={24}
             height={24}
           />
