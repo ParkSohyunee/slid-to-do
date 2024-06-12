@@ -87,7 +87,7 @@ function TodoItem({ todo }: TodoItemProps) {
     <>
       {editTodoModal.isOpen && (
         <ModalContainer onClose={editTodoModal.close}>
-          <CreateTodos onClose={editTodoModal.close} />
+          <CreateTodos onClose={editTodoModal.close} edit={true} todo={todo} />
         </ModalContainer>
       )}
       {confirmModal.isOpen && (

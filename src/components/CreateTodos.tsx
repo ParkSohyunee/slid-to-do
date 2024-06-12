@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { FormProvider, useForm } from "react-hook-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
@@ -6,7 +6,7 @@ import {
   todosLinkUrlValidationRules,
   todosTitleValidationRules,
 } from "@/libs/utils/formInputValidationRules"
-import { SelectedOption, TodosFormVaules } from "@/types/todos"
+import { SelectedOption, Todo, TodosFormVaules } from "@/types/todos"
 
 import CheckBoxButton from "@/components/buttons/CheckBoxButton"
 import TextField from "@/components/TextField"
@@ -21,14 +21,30 @@ import { DropdownProvider } from "@/context/DropdownContext"
 
 type CreateTodosProps = {
   onClose: () => void
+  edit?: boolean
+  todo?: Todo
 }
 
-export default function CreateTodos({ onClose }: CreateTodosProps) {
+export default function CreateTodos({
+  onClose,
+  edit = false,
+  todo,
+}: CreateTodosProps) {
   const queryClient = useQueryClient()
   const [selectedOption, setSelectedOption] = useState<SelectedOption>("file")
   const [uploadFile, setUploadFile] = useState<File>()
-  const methods = useForm<TodosFormVaules>({ mode: "onBlur" })
+  const methods = useForm<TodosFormVaules>({
+    mode: "onBlur",
+    defaultValues: {
+      title: todo?.title,
+      linkUrl: todo?.linkUrl,
+      fileUrl: todo?.fileUrl,
+      goalId: todo?.goal?.id,
+    },
+  })
   const { isValid } = methods.formState
+
+  console.log(todo)
 
   const createTodoMutation = useMutation({
     mutationFn: createTodos,
@@ -71,8 +87,20 @@ export default function CreateTodos({ onClose }: CreateTodosProps) {
         filteredData[key] = data[key] as string | number
       }
     }
-    createTodoMutation.mutate(filteredData)
+    console.log(filteredData)
+
+    // createTodoMutation.mutate(filteredData)
   }
+
+  useEffect(() => {
+    if (todo) {
+      if (todo?.linkUrl) {
+        setSelectedOption("link")
+      } else if (todo?.fileUrl) {
+        setSelectedOption("file")
+      }
+    }
+  }, [todo])
 
   return (
     <FormProvider {...methods}>
@@ -108,6 +136,7 @@ export default function CreateTodos({ onClose }: CreateTodosProps) {
               <UploadFile
                 uploadFile={uploadFile}
                 setUploadFile={setUploadFile}
+                fileUrl={todo?.fileUrl}
               />
             ) : (
               <TextField
