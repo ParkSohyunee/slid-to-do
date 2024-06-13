@@ -96,7 +96,9 @@ function TodoItem({ todo }: TodoItemProps) {
           onClick={() => deleteTodoMutation.mutate(todo.id)}
         >
           <p className="text-center text-base font-medium text-basic">
-            할 일을 삭제할까요?
+            <div className="text-center">
+              {deleteTodoMutation.isPending ? "삭제중" : "할 일을 삭제할까요?"}
+            </div>
           </p>
         </PopupContainer>
       )}
