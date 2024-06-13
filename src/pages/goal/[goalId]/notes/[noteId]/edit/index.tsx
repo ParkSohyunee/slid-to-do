@@ -62,8 +62,8 @@ export default function EditNotePage() {
       // update defaultValues
       reset({
         title: note.title,
-        content: note.content,
-        linkUrl: JSON.stringify(raw),
+        content: JSON.stringify(raw),
+        linkUrl: note.linkUrl,
       })
     }
   }, [note, reset])
