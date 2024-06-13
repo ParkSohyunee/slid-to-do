@@ -1,16 +1,26 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { useState } from "react"
-import { EditorState } from "draft-js"
+import { useEffect, useState } from "react"
+import { EditorState, convertFromRaw } from "draft-js"
 import { useForm } from "react-hook-form"
+import { useQuery } from "@tanstack/react-query"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
-import { NoteFormData } from "@/types/note"
+import { NoteDetail, NoteFormData } from "@/types/note"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import getNoteDetail from "@/pages/api/note/getNoteDetail"
 
 export default function EditNotePage() {
   const router = useRouter()
   const { noteId } = router.query
+
+  const { data: note, isLoading } = useQuery<NoteDetail>({
+    queryKey: [QUERY_KEYS.getNoteDetail, Number(noteId)],
+    queryFn: () => getNoteDetail(Number(noteId)),
+    staleTime: 1000 * 60 * 5,
+    enabled: !!noteId,
+  })
 
   const {
     register,
@@ -19,7 +29,14 @@ export default function EditNotePage() {
     handleSubmit,
     trigger,
     setValue,
-  } = useForm<NoteFormData>({ mode: "onBlur" })
+  } = useForm<Omit<NoteFormData, "todoId">>({
+    mode: "onBlur",
+    defaultValues: {
+      title: note?.title,
+      content: note?.content,
+      linkUrl: note?.linkUrl,
+    },
+  })
 
   /** editor state */
   const [editorState, setEditorState] = useState(() =>
@@ -30,7 +47,17 @@ export default function EditNotePage() {
   const onClickSaveContents = () => {}
 
   /** 노트 수정하기 */
-  const onEditNote = () => {}
+  const onEditNote = (data: Omit<NoteFormData, "todoId">) => {
+    console.log(data)
+  }
+
+  useEffect(() => {
+    if (note && note.content) {
+      const contentState = convertFromRaw(JSON.parse(note.content))
+      const newEditorState = EditorState.createWithContent(contentState)
+      setEditorState(newEditorState)
+    }
+  }, [note])
 
   return (
     <form
@@ -38,7 +65,7 @@ export default function EditNotePage() {
       className="h-full max-w-1200 flex flex-col bg-white"
     >
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-lg font-semibold text-slate-900">노트 작성</h1>
+        <h1 className="text-lg font-semibold text-slate-900">노트 수정</h1>
         <div className="flex gap-2">
           <button
             type="button"
@@ -59,7 +86,7 @@ export default function EditNotePage() {
             }
             `}
           >
-            작성 완료
+            수정하기
           </button>
         </div>
       </div>
@@ -73,14 +100,14 @@ export default function EditNotePage() {
               width={16}
               height={16}
             />
-            목표 제목
+            {note?.goal.title}
           </h3>
           <div className="flex gap-2 items-center">
             <div className="text-xs font-medium text-slate-700 rounded-[4px] bg-slate-100 px-[3px] py-[2px]">
-              To do
+              {note?.todo.done ? "Done" : "To do"}
             </div>
             <span className="text-sm font-normal text-slate-700">
-              할 일 제목
+              {note?.todo.title}
             </span>
           </div>
         </div>
@@ -90,6 +117,7 @@ export default function EditNotePage() {
               {...register("title", noteTitleValidationRules)}
               placeholder="노트의 제목을 입력해주세요"
               autoFocus
+              defaultValue={note?.title}
               className={`
               text-lg font-medium text-basic w-full
               placeholder:text-slate-400 outline-none
