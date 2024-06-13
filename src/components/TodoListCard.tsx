@@ -6,12 +6,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import useToggle from "@/hooks/useToggle"
-import { useModal } from "@/context/ModalContext"
 import PopupContainer from "./modal/PopupContainer"
 import RightSidebarContainer from "./modal/RightSidebarContainer"
 import deleteTodo from "@/pages/api/todos/deleteTodo"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import DetailNote from "./DetailNote"
+import ModalContainer from "./modal/ModalContainer"
+import CreateTodos from "./CreateTodos"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -36,7 +37,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
     <div
       className={`
         absolute right-0 top-1/2 translate-y-1/4
-        flex flex-col 
+        flex flex-col border border-slate-100
         rounded-sm shadow-lg 
         text-sm font-normal text-slate-700 
         bg-white z-10`}
@@ -63,7 +64,7 @@ function TodoItem({ todo }: TodoItemProps) {
   const { isOpen: popupIsOpen, toggleHandler } = useDetectClose({
     ref: popupRef,
   })
-  const { openModal } = useModal()
+  const editTodoModal = useToggle()
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
 
@@ -84,13 +85,20 @@ function TodoItem({ todo }: TodoItemProps) {
 
   return (
     <>
+      {editTodoModal.isOpen && (
+        <ModalContainer onClose={editTodoModal.close}>
+          <CreateTodos onClose={editTodoModal.close} edit={true} todo={todo} />
+        </ModalContainer>
+      )}
       {confirmModal.isOpen && (
         <PopupContainer
           onClickClose={confirmModal.close}
           onClick={() => deleteTodoMutation.mutate(todo.id)}
         >
           <p className="text-center text-base font-medium text-basic">
-            할 일을 삭제할까요?
+            <div className="text-center">
+              {deleteTodoMutation.isPending ? "삭제중" : "할 일을 삭제할까요?"}
+            </div>
           </p>
         </PopupContainer>
       )}
@@ -102,7 +110,7 @@ function TodoItem({ todo }: TodoItemProps) {
       <li
         className={`
       text-sm font-normal text-basic relative 
-      flex items-center justify-between group
+      flex items-center justify-between group py-1
       `}
       >
         <div
@@ -192,7 +200,7 @@ function TodoItem({ todo }: TodoItemProps) {
           </div>
           {popupIsOpen && (
             <PopupMenu
-              onClickEdit={openModal}
+              onClickEdit={editTodoModal.open}
               onClickDelete={confirmModal.open}
             />
           )}
@@ -230,7 +238,7 @@ export default function TodoListCard({
       {isLoading ? (
         <div>로딩 중</div>
       ) : todos ? (
-        <ul className="flex flex-col justify-between gap-2">
+        <ul className="flex flex-col justify-between gap-1">
           {todos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}

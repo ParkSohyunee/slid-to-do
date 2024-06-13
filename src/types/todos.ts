@@ -3,11 +3,12 @@ import { GoalDetail } from "./goal"
 export type SelectedOption = "file" | "link"
 
 export type TodosFormVaules = {
-  [key: string]: string | number | undefined
+  [key: string]: unknown
   title: string
   fileUrl?: string
   linkUrl?: string
   goalId?: number
+  done?: string
 }
 
 export type SimpleTodo = {
@@ -18,6 +19,7 @@ export type SimpleTodo = {
 }
 
 export type Todo = {
+  [key: string]: unknown
   noteId: number
   done: boolean
   linkUrl: string
