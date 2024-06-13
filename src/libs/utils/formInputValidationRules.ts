@@ -75,4 +75,10 @@ const noteTitleValidationRules = {
     value: 30,
     message: "제목은 최대 30자 이하로 작성해 주세요.",
   },
+  validate: (value: string) => {
+    if (!!value.trim()) {
+      return true
+    }
+    return "노트 제목을 입력해 주세요."
+  },
 }
