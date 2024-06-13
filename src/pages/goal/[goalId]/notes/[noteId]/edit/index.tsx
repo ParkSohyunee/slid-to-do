@@ -61,7 +61,7 @@ export default function EditNotePage() {
 
   /** 노트 수정하기 */
   const onSubmitUpdateNote = (data: Omit<NoteFormData, "todoId">) => {
-    console.log(data)
+    if (!note) return
 
     const isContent =
       editorState.getCurrentContent().getPlainText("").trim().length > 0
@@ -79,9 +79,21 @@ export default function EditNotePage() {
       return
     }
 
+    const formData: Record<string, unknown> = {}
+
+    if (note.title !== data.title) {
+      formData["title"] = data.title
+    }
+    if (note.content !== data.content) {
+      formData["content"] = data.content
+    }
+    if (note.linkUrl !== data.linkUrl) {
+      formData["linkUrl"] = data.linkUrl
+    }
+
     updateNoteMutation.mutate({
       noteId: Number(noteId),
-      data,
+      data: formData,
     })
   }
 
