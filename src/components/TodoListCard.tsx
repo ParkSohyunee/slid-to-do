@@ -37,7 +37,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
     <div
       className={`
         absolute right-0 top-1/2 translate-y-1/4
-        flex flex-col 
+        flex flex-col border border-slate-100
         rounded-sm shadow-lg 
         text-sm font-normal text-slate-700 
         bg-white z-10`}
@@ -110,7 +110,7 @@ function TodoItem({ todo }: TodoItemProps) {
       <li
         className={`
       text-sm font-normal text-basic relative 
-      flex items-center justify-between group
+      flex items-center justify-between group py-1
       `}
       >
         <div
@@ -238,7 +238,7 @@ export default function TodoListCard({
       {isLoading ? (
         <div>로딩 중</div>
       ) : todos ? (
-        <ul className="flex flex-col justify-between gap-2">
+        <ul className="flex flex-col justify-between gap-1">
           {todos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
