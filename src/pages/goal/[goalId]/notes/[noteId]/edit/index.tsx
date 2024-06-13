@@ -16,6 +16,7 @@ export default function EditNotePage() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const { noteId } = router.query
+  const [visibleLink, setVisibleLink] = useState(true)
 
   const { data: note, isLoading } = useQuery<NoteDetail>({
     queryKey: [QUERY_KEYS.getNoteDetail, Number(noteId)],
@@ -185,6 +186,30 @@ export default function EditNotePage() {
             </div>
           </div>
           <p className="text-error">{errors.title && errors.title.message}</p>
+          {note?.linkUrl && visibleLink && (
+            <div className="rounded-[20px] bg-slate-200 flex justify-between items-center py-1 px-4 gap-1">
+              <button type="button" className="flex items-center gap-2">
+                <Image
+                  className="bg-blue-500 rounded-full cursor-pointer p-1 w-6 h-6"
+                  src="/icons/link-imbed.svg"
+                  alt="링크 임베드 버튼"
+                  width={24}
+                  height={24}
+                />
+                <div className="text-base font-normal text-basic hover:text-blue-500 truncate">
+                  {note.linkUrl}
+                </div>
+              </button>
+              <Image
+                onClick={() => setVisibleLink(false)}
+                className="bg-slate-500 rounded-full rotate-45 cursor-pointer"
+                src="/icons/close-small-white.svg"
+                alt="닫기 버튼"
+                width={18}
+                height={18}
+              />
+            </div>
+          )}
           <DefaultEditor
             setEditorState={setEditorState}
             editorState={editorState}
