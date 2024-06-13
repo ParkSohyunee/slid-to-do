@@ -3,15 +3,17 @@ import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import { useForm } from "react-hook-form"
-import { useQuery } from "@tanstack/react-query"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
 import { NoteDetail, NoteFormData } from "@/types/note"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteDetail from "@/pages/api/note/getNoteDetail"
+import updateNote from "@/pages/api/note/updateNote"
 
 export default function EditNotePage() {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const { noteId } = router.query
 
@@ -20,6 +22,16 @@ export default function EditNotePage() {
     queryFn: () => getNoteDetail(Number(noteId)),
     staleTime: 1000 * 60 * 5,
     enabled: !!noteId,
+  })
+
+  const updateNoteMutation = useMutation({
+    mutationFn: updateNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteList] })
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteDetail] })
+      alert("노트를 수정했습니다.")
+      router.back()
+    },
   })
 
   const {
@@ -48,8 +60,29 @@ export default function EditNotePage() {
   const onClickSaveContents = () => {}
 
   /** 노트 수정하기 */
-  const onEditNote = (data: Omit<NoteFormData, "todoId">) => {
+  const onSubmitUpdateNote = (data: Omit<NoteFormData, "todoId">) => {
     console.log(data)
+
+    const isContent =
+      editorState.getCurrentContent().getPlainText("").trim().length > 0
+    if (!isContent) {
+      alert("노트를 작성해주세요")
+      return
+    }
+
+    if (
+      note?.title === data.title &&
+      note.content === data.content &&
+      note.linkUrl === data.linkUrl
+    ) {
+      alert("수정한 내용이 없습니다.")
+      return
+    }
+
+    updateNoteMutation.mutate({
+      noteId: Number(noteId),
+      data,
+    })
   }
 
   useEffect(() => {
@@ -70,7 +103,7 @@ export default function EditNotePage() {
 
   return (
     <form
-      onSubmit={handleSubmit(onEditNote)}
+      onSubmit={handleSubmit(onSubmitUpdateNote)}
       className="h-full max-w-1200 flex flex-col bg-white"
     >
       <div className="flex justify-between items-center mb-4">
