@@ -9,8 +9,8 @@ import { NoteFormData } from "@/types/note"
 type DefaultEditorProps = {
   editorState: EditorState
   setEditorState: Dispatch<SetStateAction<EditorState>>
-  trigger: UseFormTrigger<NoteFormData>
-  setValue: UseFormSetValue<NoteFormData>
+  trigger: UseFormTrigger<NoteFormData & Omit<NoteFormData, "todoId">>
+  setValue: UseFormSetValue<NoteFormData & Omit<NoteFormData, "todoId">>
 }
 
 const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
