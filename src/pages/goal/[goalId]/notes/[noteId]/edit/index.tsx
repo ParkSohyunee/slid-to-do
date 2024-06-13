@@ -29,7 +29,7 @@ export default function EditNotePage() {
     handleSubmit,
     trigger,
     setValue,
-    getValues,
+    reset,
   } = useForm<Omit<NoteFormData, "todoId">>({
     mode: "onBlur",
     defaultValues: {
@@ -58,11 +58,15 @@ export default function EditNotePage() {
       const newEditorState = EditorState.createWithContent(contentState)
       setEditorState(newEditorState)
       const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
-      setValue("content", JSON.stringify(raw)) // register로 등록하지 않고, react-hook-form 값으로 넣어주기
-      setValue("title", note.title)
-      trigger() // 유효성검사 진행해서 수정하기 버튼이 활성화되도록
+
+      // update defaultValues
+      reset({
+        title: note.title,
+        content: note.content,
+        linkUrl: JSON.stringify(raw),
+      })
     }
-  }, [note, setValue, trigger])
+  }, [note, reset])
 
   return (
     <form
