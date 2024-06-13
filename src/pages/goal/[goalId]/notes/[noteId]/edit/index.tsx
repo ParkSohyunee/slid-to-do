@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useState } from "react"
-import { EditorState, convertFromRaw } from "draft-js"
+import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import { useForm } from "react-hook-form"
 import { useQuery } from "@tanstack/react-query"
 
@@ -29,6 +29,7 @@ export default function EditNotePage() {
     handleSubmit,
     trigger,
     setValue,
+    getValues,
   } = useForm<Omit<NoteFormData, "todoId">>({
     mode: "onBlur",
     defaultValues: {
@@ -52,12 +53,16 @@ export default function EditNotePage() {
   }
 
   useEffect(() => {
-    if (note && note.content) {
+    if (note) {
       const contentState = convertFromRaw(JSON.parse(note.content))
       const newEditorState = EditorState.createWithContent(contentState)
       setEditorState(newEditorState)
+      const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
+      setValue("content", JSON.stringify(raw)) // register로 등록하지 않고, react-hook-form 값으로 넣어주기
+      setValue("title", note.title)
+      trigger() // 유효성검사 진행해서 수정하기 버튼이 활성화되도록
     }
-  }, [note])
+  }, [note, setValue, trigger])
 
   return (
     <form
