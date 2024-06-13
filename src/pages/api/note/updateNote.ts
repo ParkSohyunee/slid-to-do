@@ -3,7 +3,7 @@ import { NoteFormData } from "@/types/note"
 
 type UpdateNoteProps = {
   noteId: number
-  data: Omit<NoteFormData, "todoId">
+  data: Partial<NoteFormData>
 }
 
 export default async function updateNote({ noteId, data }: UpdateNoteProps) {
