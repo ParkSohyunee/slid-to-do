@@ -16,6 +16,8 @@ export default function WriteNoteForTodoPage() {
   const router = useRouter()
   const { title: todoTitle, done, goal: goalTitle, todoId } = router.query
 
+  const methods = useForm<NoteFormData>({ mode: "onBlur" })
+
   const {
     register,
     formState: { errors, isValid },
@@ -24,7 +26,7 @@ export default function WriteNoteForTodoPage() {
     trigger,
     setValue,
     getValues,
-  } = useForm<NoteFormData>({ mode: "onBlur" }) // TODO useContextForm 사용해서 리팩토링 하기
+  } = methods
 
   /** editor state */
   const [editorState, setEditorState] = useState(() =>
@@ -184,8 +186,6 @@ export default function WriteNoteForTodoPage() {
           <DefaultEditor
             setEditorState={setEditorState}
             editorState={editorState}
-            trigger={trigger}
-            setValue={setValue}
           />
         </div>
       </div>
