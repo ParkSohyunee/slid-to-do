@@ -1,12 +1,16 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { MouseEvent, useRef } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
 import { useDetectClose } from "@/hooks/useDetectClose"
 import useToggle from "@/hooks/useToggle"
 import { CardAboutNoteList } from "@/types/note"
 import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import DetailNote from "@/components/DetailNote"
+import axiosInstance from "@/libs/axios/axiosInstance"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
 type NoteListCardsProps = {
   note: CardAboutNoteList
@@ -14,7 +18,7 @@ type NoteListCardsProps = {
 
 type PopupMenuProps = {
   onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void
-  onClickDelete: () => void
+  onClickDelete: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
@@ -44,6 +48,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
 }
 
 export default function NoteListCards({ note }: NoteListCardsProps) {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const rightSidebar = useToggle()
   const popupRef = useRef(null)
@@ -65,6 +70,18 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
   const handleMoveToEditPage = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     router.push(`/goal/${goal.id}/notes/${note.id}/edit`)
+  }
+
+  const handleDeleteNote = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    try {
+      await axiosInstance.delete(`/notes/${note.id}`)
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteList] })
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        alert("노트 삭제에 실패했어요. 다시 시도해 주세요.")
+      }
+    }
   }
 
   return (
@@ -102,7 +119,7 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
           {popupIsOpen && (
             <PopupMenu
               onClickEdit={handleMoveToEditPage}
-              onClickDelete={() => {}}
+              onClickDelete={handleDeleteNote}
             />
           )}
         </div>
