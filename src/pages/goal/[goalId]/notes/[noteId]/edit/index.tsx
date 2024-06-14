@@ -19,7 +19,6 @@ export default function EditNotePage() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const { noteId } = router.query
-  const visibleLink = useToggle()
   const visibleToast = useToggle()
 
   const { data: note, isLoading } = useQuery<NoteDetail>({
@@ -163,9 +162,6 @@ export default function EditNotePage() {
         content: JSON.stringify(raw),
         linkUrl: note.linkUrl,
       })
-      if (note.linkUrl) {
-        visibleLink.open()
-      }
     }
     /** 임시 저장된 수정중인 노트가 있다면 토스트 띄우기 */
     const rawContent = localStorage.getItem(`note-edit-${noteId}-content`)
@@ -255,30 +251,20 @@ export default function EditNotePage() {
               </div>
             </div>
             <p className="text-error">{errors.title && errors.title.message}</p>
-            {getValues("linkUrl") && visibleLink.isOpen && (
-              <div className="rounded-[20px] bg-slate-200 flex justify-between items-center py-1 px-4 gap-1">
-                <button type="button" className="flex items-center gap-2">
-                  <Image
-                    className="bg-blue-500 rounded-full cursor-pointer p-1 w-6 h-6"
-                    src="/icons/link-imbed.svg"
-                    alt="링크 임베드 버튼"
-                    width={24}
-                    height={24}
-                  />
-                  <div className="text-base font-normal text-basic hover:text-blue-500 truncate">
-                    {errors.linkUrl
-                      ? "링크 형식으로 입력해 주세요"
-                      : getValues("linkUrl")}
-                  </div>
-                </button>
+            {getValues("linkUrl") && (
+              <div className="rounded-[20px] bg-slate-200 flex items-center gap-2 py-1 px-4">
                 <Image
-                  onClick={visibleLink.close}
-                  className="bg-slate-500 rounded-full rotate-45 cursor-pointer"
-                  src="/icons/close-small-white.svg"
-                  alt="닫기 버튼"
-                  width={18}
-                  height={18}
+                  className="bg-blue-500 rounded-full cursor-pointer p-1 w-6 h-6"
+                  src="/icons/link-imbed.svg"
+                  alt="링크 임베드 버튼"
+                  width={24}
+                  height={24}
                 />
+                <span className="text-base font-normal text-basic hover:text-blue-500 truncate">
+                  {errors.linkUrl
+                    ? "링크 형식으로 입력해 주세요"
+                    : getValues("linkUrl")}
+                </span>
               </div>
             )}
             <DefaultEditor
