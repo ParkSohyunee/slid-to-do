@@ -5,6 +5,8 @@ import dynamic from "next/dynamic"
 import { UseFormSetValue, UseFormTrigger } from "react-hook-form"
 
 import { NoteFormData } from "@/types/note"
+import useToggle from "@/hooks/useToggle"
+import CreateLinkContainer from "../modal/CreateLinkModal"
 
 type DefaultEditorProps = {
   editorState: EditorState
@@ -23,6 +25,8 @@ export default function DefaultEditor({
   trigger,
   setValue,
 }: DefaultEditorProps) {
+  const linkPopup = useToggle()
+
   /** 노트 에디터 onChange 이벤트 핸들러 */
   const handleChangeEditor = (e: EditorState) => {
     setEditorState(e)
@@ -41,10 +45,16 @@ export default function DefaultEditor({
   }
 
   return (
-    <div className="flex flex-col gap-4 justify-between grow">
-      <div className="grow flex flex-col gap-2">
-        <p className="text-xs font-medium text-basic">
-          {`공백포함 : 총 ${editorState.getCurrentContent().getPlainText("").length}자 
+    <>
+      {linkPopup.isOpen && (
+        <CreateLinkContainer onClose={linkPopup.close} title="링크 업로드">
+          <div className="h-[272px]"></div>
+        </CreateLinkContainer>
+      )}
+      <div className="flex flex-col gap-4 justify-between grow">
+        <div className="grow flex flex-col gap-2">
+          <p className="text-xs font-medium text-basic">
+            {`공백포함 : 총 ${editorState.getCurrentContent().getPlainText("").length}자 
           | 공백제외 : 총 ${
             editorState
               .getCurrentContent()
@@ -53,41 +63,54 @@ export default function DefaultEditor({
               .split(" ")
               .join("").length
           }자`}
-        </p>
-        <Editor
-          editorState={editorState}
-          onChange={handleChangeEditor}
-          placeholder="이 곳을 클릭해 노트 작성을 시작해주세요"
-        />
-      </div>
-      <div className="flex py-[10px] px-4 items-start gap-4 rounded-[21.5px] border border-slate-200 shadow-sm">
-        <div className="flex gap-1">
-          <button type="button" onMouseDown={toggleInlineStyle("BOLD")}>
+          </p>
+          <Editor
+            editorState={editorState}
+            onChange={handleChangeEditor}
+            placeholder="이 곳을 클릭해 노트 작성을 시작해주세요"
+          />
+        </div>
+        <div className="flex justify-between py-[10px] px-4 items-start gap-4 rounded-[21.5px] border border-slate-200 shadow-sm">
+          <div className="flex gap-1">
+            <button type="button" onMouseDown={toggleInlineStyle("BOLD")}>
+              <Image
+                src="/icons/editor-bold.svg"
+                alt="bold"
+                width={24}
+                height={24}
+              />
+            </button>
+            <button type="button" onMouseDown={toggleInlineStyle("ITALIC")}>
+              <Image
+                src="/icons/editor-italic.svg"
+                alt="italic"
+                width={24}
+                height={24}
+              />
+            </button>
+            <button type="button" onMouseDown={toggleInlineStyle("UNDERLINE")}>
+              <Image
+                src="/icons/editor-underline.svg"
+                alt="underline"
+                width={24}
+                height={24}
+              />
+            </button>
+          </div>
+          <button
+            onClick={linkPopup.open}
+            type="button"
+            className="bg-slate-200 rounded-full w-6 h-6 p-[2px]"
+          >
             <Image
-              src="/icons/editor-bold.svg"
-              alt="bold"
-              width={24}
-              height={24}
-            />
-          </button>
-          <button type="button" onMouseDown={toggleInlineStyle("ITALIC")}>
-            <Image
-              src="/icons/editor-italic.svg"
-              alt="italic"
-              width={24}
-              height={24}
-            />
-          </button>
-          <button type="button" onMouseDown={toggleInlineStyle("UNDERLINE")}>
-            <Image
-              src="/icons/editor-underline.svg"
-              alt="underline"
-              width={24}
-              height={24}
+              src="/icons/link-editor.svg"
+              alt="link"
+              width={20}
+              height={20}
             />
           </button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
