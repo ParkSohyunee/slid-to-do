@@ -11,12 +11,15 @@ import { NoteDetail, NoteFormData } from "@/types/note"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteDetail from "@/pages/api/note/getNoteDetail"
 import updateNote from "@/pages/api/note/updateNote"
+import Toast from "@/components/popup/Toast"
+import useToggle from "@/hooks/useToggle"
 
 export default function EditNotePage() {
   const queryClient = useQueryClient()
   const router = useRouter()
   const { noteId } = router.query
-  const [visibleLink, setVisibleLink] = useState(true)
+  const visibleLink = useToggle()
+  const visibleToast = useToggle()
 
   const { data: note, isLoading } = useQuery<NoteDetail>({
     queryKey: [QUERY_KEYS.getNoteDetail, Number(noteId)],
@@ -42,6 +45,7 @@ export default function EditNotePage() {
     handleSubmit,
     trigger,
     setValue,
+    getValues,
     reset,
   } = useForm<Omit<NoteFormData, "todoId">>({
     mode: "onBlur",
@@ -58,7 +62,48 @@ export default function EditNotePage() {
   )
 
   /** 임시 저장하기 */
-  const onClickSaveContents = () => {}
+  const onClickSaveContents = () => {
+    const titleValidation =
+      !!getValues("title") && getValues("title").trim().length > 0
+
+    if (!titleValidation) {
+      alert("노트 제목을 입력해주세요")
+      return
+    }
+
+    if (!note) return
+
+    if (
+      note?.title === getValues("title") &&
+      note.content === getValues("content") &&
+      note.linkUrl === getValues("linkUrl")
+    ) {
+      alert("수정한 내용이 없습니다.")
+      return
+    }
+
+    const contentState = editorState.getCurrentContent() // editor의 현재 contents를 반환
+    const raw = convertToRaw(contentState) // convert ContentState Object to a raw structure
+    localStorage.setItem(`note-edit-${noteId}-content`, JSON.stringify(raw))
+    localStorage.setItem(`note-edit-${noteId}-title`, getValues("title").trim())
+    alert("임시 저장되었습니다.") // TODO 토스트 메세지로 변경하기
+  }
+
+  /** 임시 저장된 데이터 불러오기 */
+  const onClickGetSavedContents = () => {
+    const rawContent = localStorage.getItem(`note-edit-${noteId}-content`)
+    if (rawContent) {
+      const contentState = convertFromRaw(JSON.parse(rawContent)) // convert raw state to a ContentState
+      const newEditorState = EditorState.createWithContent(contentState)
+      setEditorState(newEditorState)
+      setValue("content", rawContent)
+    }
+    const title = localStorage.getItem(`note-edit-${noteId}-title`)
+    if (title) {
+      setValue("title", title)
+    }
+    visibleToast.close()
+  }
 
   /** 노트 수정하기 */
   const onSubmitUpdateNote = (data: Omit<NoteFormData, "todoId">) => {
@@ -112,7 +157,12 @@ export default function EditNotePage() {
         linkUrl: note.linkUrl,
       })
     }
-  }, [note, reset])
+    /** 임시 저장된 수정중인 노트가 있다면 토스트 띄우기 */
+    const rawContent = localStorage.getItem(`note-edit-${noteId}-content`)
+    if (rawContent) {
+      visibleToast.open()
+    }
+  }, [note, reset, noteId])
 
   return (
     <form
@@ -166,6 +216,13 @@ export default function EditNotePage() {
             </span>
           </div>
         </div>
+        {visibleToast.isOpen && (
+          <Toast
+            message="임시 저장된 노트가 있어요. 저장된 노트를 불러오시겠어요?"
+            onClose={visibleToast.close}
+            onClickToast={onClickGetSavedContents}
+          />
+        )}
         <div className="flex flex-col gap-3 grow justify-between">
           <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
             <input
@@ -186,7 +243,7 @@ export default function EditNotePage() {
             </div>
           </div>
           <p className="text-error">{errors.title && errors.title.message}</p>
-          {note?.linkUrl && visibleLink && (
+          {note?.linkUrl && visibleLink.isOpen && (
             <div className="rounded-[20px] bg-slate-200 flex justify-between items-center py-1 px-4 gap-1">
               <button type="button" className="flex items-center gap-2">
                 <Image
@@ -201,7 +258,7 @@ export default function EditNotePage() {
                 </div>
               </button>
               <Image
-                onClick={() => setVisibleLink(false)}
+                onClick={visibleLink.close}
                 className="bg-slate-500 rounded-full rotate-45 cursor-pointer"
                 src="/icons/close-small-white.svg"
                 alt="닫기 버튼"
