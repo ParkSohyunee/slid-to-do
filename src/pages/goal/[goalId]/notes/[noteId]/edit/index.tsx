@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import { FormProvider, useForm } from "react-hook-form"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
@@ -35,6 +36,11 @@ export default function EditNotePage() {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteDetail] })
       alert("노트를 수정했습니다.")
       router.back()
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        alert(error.response?.data.message)
+      }
     },
   })
 
@@ -186,6 +192,7 @@ export default function EditNotePage() {
             </button>
             <button
               type="submit"
+              disabled={!isValid}
               className={`
             text-sm font-semibold text-white py-3 px-6 rounded-sm 
             ${
@@ -259,7 +266,9 @@ export default function EditNotePage() {
                     height={24}
                   />
                   <div className="text-base font-normal text-basic hover:text-blue-500 truncate">
-                    {getValues("linkUrl")}
+                    {errors.linkUrl
+                      ? "링크 형식으로 입력해 주세요"
+                      : getValues("linkUrl")}
                   </div>
                 </button>
                 <Image

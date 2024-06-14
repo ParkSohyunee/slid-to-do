@@ -24,14 +24,19 @@ export default function DefaultEditor({
   editorState,
   setEditorState,
 }: DefaultEditorProps) {
-  const { trigger, setValue } = useFormContext<
-    NoteFormData & Omit<NoteFormData, "todoId">
-  >()
+  const {
+    trigger,
+    setValue,
+    formState: { errors },
+  } = useFormContext<NoteFormData & Omit<NoteFormData, "todoId">>()
   const linkPopup = useToggle()
 
+  /** 링크 저장하기 */
   const handleSaveLink = () => {
-    trigger("linkUrl")
-    linkPopup.close()
+    if (!errors.linkUrl) {
+      trigger("linkUrl")
+      linkPopup.close()
+    }
   }
 
   /** 노트 에디터 onChange 이벤트 핸들러 */
