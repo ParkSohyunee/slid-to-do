@@ -3,7 +3,7 @@ import { FormProvider, useForm } from "react-hook-form"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import {
-  todosLinkUrlValidationRules,
+  linkUrlValidationRules,
   todosTitleValidationRules,
 } from "@/libs/utils/formInputValidationRules"
 import { SelectedOption, Todo, TodosFormVaules } from "@/types/todos"
@@ -204,7 +204,7 @@ export default function CreateTodos({
               <TextField
                 field="linkUrl"
                 placeholder="영상이나 글, 파일의 링크를 넣어주세요"
-                validationRules={todosLinkUrlValidationRules}
+                validationRules={linkUrlValidationRules}
               />
             )}
           </div>

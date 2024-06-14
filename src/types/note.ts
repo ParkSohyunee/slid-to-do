@@ -2,10 +2,10 @@ import { GoalDetail } from "./goal"
 import { Todo } from "./todos"
 
 export type NoteFormData = {
-  todoId: number
+  todoId?: number
   title: string
   content: string
-  linkUrl?: string
+  linkUrl: string
 }
 
 export type CardAboutNoteList = {

@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { MouseEvent, useRef } from "react"
 
 import { useDetectClose } from "@/hooks/useDetectClose"
@@ -12,7 +13,7 @@ type NoteListCardsProps = {
 }
 
 type PopupMenuProps = {
-  onClickEdit: () => void
+  onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void
   onClickDelete: () => void
 }
 
@@ -43,6 +44,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
 }
 
 export default function NoteListCards({ note }: NoteListCardsProps) {
+  const router = useRouter()
   const rightSidebar = useToggle()
   const popupRef = useRef(null)
   const { isOpen: popupIsOpen, toggleHandler } = useDetectClose({
@@ -58,6 +60,11 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
   const handlePopupMenu = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     toggleHandler()
+  }
+
+  const handleMoveToEditPage = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    router.push(`/goal/${goal.id}/notes/${note.id}/edit`)
   }
 
   return (
@@ -93,7 +100,10 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
             />
           </button>
           {popupIsOpen && (
-            <PopupMenu onClickEdit={() => {}} onClickDelete={() => {}} />
+            <PopupMenu
+              onClickEdit={handleMoveToEditPage}
+              onClickDelete={() => {}}
+            />
           )}
         </div>
         <div className="flex flex-col gap-3">

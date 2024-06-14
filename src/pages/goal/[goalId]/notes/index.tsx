@@ -1,18 +1,32 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { useEffect, useMemo } from "react"
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query"
+import {
+  useInfiniteQuery,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteList from "@/pages/api/note/getNoteList"
 import { NoteList } from "@/types/note"
 import NoteListCards from "@/components/card/NoteListCards"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
+import getGoalDetail from "@/pages/api/goal/getGoalDetail"
 
 export default function NoteListAboutGoalPage() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const { query } = useRouter()
   const goalId = Number(query.goalId)
+
+  const { data: goal, isError } = useQuery({
+    queryKey: [QUERY_KEYS.getGoalDetail, goalId],
+    queryFn: () => getGoalDetail(goalId),
+    enabled: !!goalId,
+    retry: 1,
+    staleTime: 1000 * 60 * 5,
+  })
 
   const { data, hasNextPage, isLoading, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery<NoteList>({
@@ -46,6 +60,12 @@ export default function NoteListAboutGoalPage() {
     }
   }, [goalId, queryClient])
 
+  if (isError) {
+    alert("목표를 찾을 수 없어요.")
+    router.push("/dashboard")
+    return
+  }
+
   return (
     <section className="h-full max-w-1200 flex flex-col gap-4">
       <h1 className="text-lg font-semibold text-slate-900">노트 모아보기</h1>
@@ -57,9 +77,7 @@ export default function NoteListAboutGoalPage() {
           width={24}
           height={24}
         />
-        <h3 className="text-sm font-semibold text-basic">
-          {notes[0]?.goal.title}
-        </h3>
+        <h3 className="text-sm font-semibold text-basic">{goal?.title}</h3>
       </div>
       {isLoading ? (
         <div className="text-sm font-normal text-slate-500 h-full flex items-center justify-center">

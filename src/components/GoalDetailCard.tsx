@@ -70,6 +70,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     queryFn: () => getGoalDetail(goalId),
     enabled: !!goalId,
     retry: 1,
+    staleTime: 1000 * 60 * 5,
   })
 
   const { data: progressForGoal } = useQuery({

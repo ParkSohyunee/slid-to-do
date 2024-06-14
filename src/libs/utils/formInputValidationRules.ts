@@ -2,10 +2,11 @@ export {
   emailValidationRules,
   passwordValidationRules,
   todosTitleValidationRules,
-  todosLinkUrlValidationRules,
+  linkUrlValidationRules,
   noteTitleValidationRules,
   nameValidationRules,
   passwordForSignUpValidationRules,
+  noteLinkUrlValidationRules,
 }
 
 export type ValidationRules = {
@@ -61,7 +62,7 @@ const todosTitleValidationRules = {
   },
 }
 
-const todosLinkUrlValidationRules = {
+const linkUrlValidationRules = {
   pattern: {
     value:
       /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/,
@@ -74,5 +75,20 @@ const noteTitleValidationRules = {
   maxLength: {
     value: 30,
     message: "제목은 최대 30자 이하로 작성해 주세요.",
+  },
+  validate: (value: string) => {
+    if (!!value.trim()) {
+      return true
+    }
+    return "노트 제목을 입력해 주세요."
+  },
+}
+
+const noteLinkUrlValidationRules = {
+  required: "링크를 추가해 주세요.",
+  pattern: {
+    value:
+      /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/,
+    message: "링크 형식으로 입력해 주세요.",
   },
 }
