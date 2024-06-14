@@ -2,17 +2,18 @@ import Image from "next/image"
 import { Dispatch, MouseEvent, SetStateAction } from "react"
 import { EditorState, RichUtils, convertToRaw } from "draft-js"
 import dynamic from "next/dynamic"
-import { UseFormSetValue, UseFormTrigger } from "react-hook-form"
+import { useFormContext } from "react-hook-form"
 
 import { NoteFormData } from "@/types/note"
 import useToggle from "@/hooks/useToggle"
-import CreateLinkContainer from "../modal/CreateLinkModal"
+import CreateLinkContainer from "@/components/modal/CreateLinkModal"
+import Label from "@/components/Label"
+import TextField from "@/components/TextField"
+import { linkUrlValidationRules } from "@/libs/utils/formInputValidationRules"
 
 type DefaultEditorProps = {
   editorState: EditorState
   setEditorState: Dispatch<SetStateAction<EditorState>>
-  trigger: UseFormTrigger<NoteFormData & Omit<NoteFormData, "todoId">>
-  setValue: UseFormSetValue<NoteFormData & Omit<NoteFormData, "todoId">>
 }
 
 const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
@@ -22,10 +23,16 @@ const Editor = dynamic(() => import("draft-js").then((mod) => mod.Editor), {
 export default function DefaultEditor({
   editorState,
   setEditorState,
-  trigger,
-  setValue,
 }: DefaultEditorProps) {
+  const { trigger, setValue } = useFormContext<
+    NoteFormData & Omit<NoteFormData, "todoId">
+  >()
   const linkPopup = useToggle()
+
+  const handleSaveLink = () => {
+    trigger("linkUrl")
+    linkPopup.close()
+  }
 
   /** 노트 에디터 onChange 이벤트 핸들러 */
   const handleChangeEditor = (e: EditorState) => {
@@ -48,7 +55,32 @@ export default function DefaultEditor({
     <>
       {linkPopup.isOpen && (
         <CreateLinkContainer onClose={linkPopup.close} title="링크 업로드">
-          <div className="h-[272px]"></div>
+          <div className="flex flex-col gap-10">
+            <div>
+              <Label htmlFor="linkUrl">링크</Label>
+              <TextField
+                field="linkUrl"
+                placeholder="영상이나 글, 파일의 링크를 넣어주세요"
+                validationRules={linkUrlValidationRules}
+              />
+            </div>
+            <button
+              onClick={handleSaveLink}
+              type="button"
+              className={`
+            py-3 flex 
+            justify-center items-center 
+            self-stretch rounded-sm 
+            text-white text-base font-semibold
+            outline-none
+            hover:bg-blue-600 active:bg-blue-800
+            bg-blue-500
+            transition-colors duration-500
+            `}
+            >
+              확인
+            </button>
+          </div>
         </CreateLinkContainer>
       )}
       <div className="flex flex-col gap-4 justify-between grow">

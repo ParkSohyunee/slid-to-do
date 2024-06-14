@@ -35,7 +35,7 @@ export default function CreateLinkContainer({
       >
         <div
           className={`
-          w-full p-4 flex flex-col gap-6
+          w-full p-6 flex flex-col gap-6
           max-w-[520px] min-w-[311px]
           mobile:rounded-sm bg-white 
           `}

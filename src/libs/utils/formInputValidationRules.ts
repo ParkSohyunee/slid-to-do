@@ -2,7 +2,7 @@ export {
   emailValidationRules,
   passwordValidationRules,
   todosTitleValidationRules,
-  todosLinkUrlValidationRules,
+  linkUrlValidationRules,
   noteTitleValidationRules,
   nameValidationRules,
   passwordForSignUpValidationRules,
@@ -61,7 +61,7 @@ const todosTitleValidationRules = {
   },
 }
 
-const todosLinkUrlValidationRules = {
+const linkUrlValidationRules = {
   pattern: {
     value:
       /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/,
