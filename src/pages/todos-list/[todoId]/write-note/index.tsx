@@ -46,13 +46,13 @@ export default function WriteNoteForTodoPage() {
       return
     }
 
-    /** linkUrl은 추후 Optional 값이 될 예정이므로 지금은 하드코딩으로 넣어둔 상태 */
+    /** linkUrl은 추후 Optional 값이 될 예정 */
     try {
       await axiosInstance.post("/notes", {
         todoId: Number(todoId),
         title: data.title,
         content: data.content,
-        linkUrl: "https://www.npmjs.com/",
+        linkUrl: data.linkUrl,
       })
       router.push("/todos-list")
     } catch (error) {
@@ -120,6 +120,7 @@ export default function WriteNoteForTodoPage() {
             </button>
             <button
               type="submit"
+              disabled={!isValid}
               className={`
             text-sm font-semibold text-white py-3 px-6 rounded-sm 
             ${
@@ -183,22 +184,22 @@ export default function WriteNoteForTodoPage() {
               </div>
             </div>
             <p className="text-error">{errors.title && errors.title.message}</p>
-            {getValues("linkUrl") && (
-              <div className="rounded-[20px] bg-slate-200 flex items-center gap-2 py-1 px-4">
-                <Image
-                  className="bg-blue-500 rounded-full cursor-pointer p-1 w-6 h-6"
-                  src="/icons/link-imbed.svg"
-                  alt="링크 임베드 버튼"
-                  width={24}
-                  height={24}
-                />
-                <span className="text-base font-normal text-basic hover:text-blue-500 truncate">
-                  {errors.linkUrl
-                    ? "링크 형식으로 입력해 주세요"
-                    : getValues("linkUrl")}
-                </span>
-              </div>
-            )}
+            <div className="rounded-[20px] bg-slate-200 flex items-center gap-2 p-2">
+              <Image
+                className="bg-blue-500 rounded-full cursor-pointer p-1 w-6 h-6"
+                src="/icons/link-imbed.svg"
+                alt="링크 임베드 버튼"
+                width={24}
+                height={24}
+              />
+              <span className="text-base font-normal text-basic hover:text-blue-500 truncate cursor-default">
+                {getValues("linkUrl")
+                  ? errors.linkUrl
+                    ? errors.linkUrl.message
+                    : getValues("linkUrl")
+                  : "참고할 콘텐츠의 링크를 넣어주세요"}
+              </span>
+            </div>
             <DefaultEditor
               setEditorState={setEditorState}
               editorState={editorState}

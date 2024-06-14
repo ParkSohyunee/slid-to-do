@@ -9,7 +9,7 @@ import useToggle from "@/hooks/useToggle"
 import CreateLinkContainer from "@/components/modal/CreateLinkModal"
 import Label from "@/components/Label"
 import TextField from "@/components/TextField"
-import { linkUrlValidationRules } from "@/libs/utils/formInputValidationRules"
+import { noteLinkUrlValidationRules } from "@/libs/utils/formInputValidationRules"
 
 type DefaultEditorProps = {
   editorState: EditorState
@@ -66,7 +66,7 @@ export default function DefaultEditor({
               <TextField
                 field="linkUrl"
                 placeholder="영상이나 글, 파일의 링크를 넣어주세요"
-                validationRules={linkUrlValidationRules}
+                validationRules={noteLinkUrlValidationRules}
               />
             </div>
             <button
