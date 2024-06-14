@@ -8,7 +8,12 @@ type LayoutProps = {
 
 export default function Layout({ children }: LayoutProps) {
   const hiddenLayoutPath = ["/login", "/signup"]
-  const bgWhiteStyle = ["/todos-list/[todoId]/write-note"]
+  const bgWhiteStyle = [
+    "/todos-list/[todoId]/write-note",
+    "/goal/[goalId]/notes/[noteId]/edit",
+    "/login",
+    "/signup",
+  ]
   const router = useRouter()
   const isHiddenSideBar = hiddenLayoutPath.includes(router.asPath)
   const bgColor = bgWhiteStyle.includes(router.pathname)
