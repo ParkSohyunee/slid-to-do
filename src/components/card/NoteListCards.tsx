@@ -1,12 +1,17 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import { MouseEvent, useRef } from "react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { AxiosError } from "axios"
 
 import { useDetectClose } from "@/hooks/useDetectClose"
 import useToggle from "@/hooks/useToggle"
 import { CardAboutNoteList } from "@/types/note"
 import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import DetailNote from "@/components/DetailNote"
+import PopupContainer from "@/components/modal/PopupContainer"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import deleteNote from "@/pages/api/note/deleteNote"
 
 type NoteListCardsProps = {
   note: CardAboutNoteList
@@ -14,7 +19,7 @@ type NoteListCardsProps = {
 
 type PopupMenuProps = {
   onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void
-  onClickDelete: () => void
+  onClickDelete: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
@@ -25,7 +30,7 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
         flex flex-col 
         rounded-sm shadow-lg 
         text-sm font-normal text-slate-700 
-        bg-white z-10`}
+        bg-white`}
     >
       <button
         onClick={onClickEdit}
@@ -44,8 +49,10 @@ function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
 }
 
 export default function NoteListCards({ note }: NoteListCardsProps) {
+  const queryClient = useQueryClient()
   const router = useRouter()
   const rightSidebar = useToggle()
+  const confirmModal = useToggle()
   const popupRef = useRef(null)
   const { isOpen: popupIsOpen, toggleHandler } = useDetectClose({
     ref: popupRef,
@@ -57,6 +64,24 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
   } = note
   const simpleTodo = { id, title, done, goal }
 
+  const deleteNoteMutation = useMutation({
+    mutationFn: deleteNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteList] })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos, goal.id],
+      })
+    },
+    onError: (error) => {
+      if (error instanceof AxiosError) {
+        alert("노트 삭제에 실패했어요. 다시 시도해 주세요.")
+      }
+    },
+    onSettled: () => {
+      toggleHandler()
+    },
+  })
+
   const handlePopupMenu = (e: MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation()
     toggleHandler()
@@ -67,12 +92,31 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
     router.push(`/goal/${goal.id}/notes/${note.id}/edit`)
   }
 
+  const handleDeleteNote = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    confirmModal.open()
+  }
+
   return (
     <>
       {rightSidebar.isOpen && (
         <RightSidebarContainer onClickClose={rightSidebar.close}>
           <DetailNote todo={simpleTodo} noteId={noteId} />
         </RightSidebarContainer>
+      )}
+      {confirmModal.isOpen && (
+        <PopupContainer
+          onClickClose={confirmModal.close}
+          onClick={() => deleteNoteMutation.mutate(noteId)}
+        >
+          <p className="text-center text-base font-medium text-basic">
+            <div className="text-center">
+              {deleteNoteMutation.isPending || deleteNoteMutation.isSuccess
+                ? "삭제중"
+                : `${note.title} 노트를 삭제할까요?`}
+            </div>
+          </p>
+        </PopupContainer>
       )}
       <div
         onClick={rightSidebar.open}
@@ -102,7 +146,7 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
           {popupIsOpen && (
             <PopupMenu
               onClickEdit={handleMoveToEditPage}
-              onClickDelete={() => {}}
+              onClickDelete={handleDeleteNote}
             />
           )}
         </div>
