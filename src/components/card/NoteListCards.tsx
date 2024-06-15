@@ -10,8 +10,8 @@ import { CardAboutNoteList } from "@/types/note"
 import RightSidebarContainer from "@/components/modal/RightSidebarContainer"
 import DetailNote from "@/components/DetailNote"
 import PopupContainer from "@/components/modal/PopupContainer"
-import axiosInstance from "@/libs/axios/axiosInstance"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import deleteNote from "@/pages/api/note/deleteNote"
 
 type NoteListCardsProps = {
   note: CardAboutNoteList
@@ -65,9 +65,12 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
   const simpleTodo = { id, title, done, goal }
 
   const deleteNoteMutation = useMutation({
-    mutationFn: () => axiosInstance.delete(`/notes/${note.id}`),
+    mutationFn: deleteNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getNoteList] })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodos, goal.id],
+      })
     },
     onError: (error) => {
       if (error instanceof AxiosError) {
@@ -104,7 +107,7 @@ export default function NoteListCards({ note }: NoteListCardsProps) {
       {confirmModal.isOpen && (
         <PopupContainer
           onClickClose={confirmModal.close}
-          onClick={() => deleteNoteMutation.mutate()}
+          onClick={() => deleteNoteMutation.mutate(noteId)}
         >
           <p className="text-center text-base font-medium text-basic">
             <div className="text-center">
