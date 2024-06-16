@@ -183,7 +183,7 @@ export default function Sidebar() {
                       placeholder="목표를 입력해주세요"
                       className="outline-none placeholder:text-slate-400 placeholder:font-normal"
                       onChange={handleChangeInput}
-                      onKeyUp={onSubmit}
+                      onKeyDown={onSubmit}
                       onCompositionStart={() => setIsComposing(true)}
                       onCompositionEnd={() => setIsComposing(false)}
                     />
