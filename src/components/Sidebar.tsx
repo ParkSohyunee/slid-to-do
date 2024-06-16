@@ -52,7 +52,11 @@ export default function Sidebar() {
     setNewGoal(e.target.value)
   }
 
-  const onSubmit = async (e: KeyboardEvent) => {
+  const onSubmit = async (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.nativeEvent.isComposing) {
+      return
+    }
+
     if (e.code === "Enter") {
       if (!newGoal) return
       createGoalMutation.mutate({
@@ -172,7 +176,7 @@ export default function Sidebar() {
                       placeholder="목표를 입력해주세요"
                       className="outline-none placeholder:text-slate-400 placeholder:font-normal"
                       onChange={handleChangeInput}
-                      onKeyUp={onSubmit}
+                      onKeyDown={onSubmit}
                     />
                   </li>
                 )}
