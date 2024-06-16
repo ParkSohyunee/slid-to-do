@@ -130,6 +130,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   const handleDeleteGoal = (goalId: number) => async () => {
     try {
       await axiosInstance.delete(`/goals/${goalId}`)
+      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getGoalList] })
       router.back()
       handleCloseConfirmModal()
     } catch (error) {
