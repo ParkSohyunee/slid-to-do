@@ -60,7 +60,7 @@ export default function Sidebar() {
     // }
 
     /** 리액트 composition 이벤트 핸들러를 사용하는 방법 */
-    if (isComposing) {
+    if (isComposing || createGoalMutation.isPending) {
       return
     }
 
