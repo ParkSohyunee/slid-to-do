@@ -19,6 +19,7 @@ import useToggle from "@/hooks/useToggle"
 export default function Sidebar() {
   const queryClient = useQueryClient()
   const buttonRef = useRef(null)
+  const [isComposing, setIsComposing] = useState(false)
   const [newGoal, setNewGoal] = useState("")
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
   const createTodoModal = useToggle()
@@ -52,7 +53,17 @@ export default function Sidebar() {
     setNewGoal(e.target.value)
   }
 
-  const onSubmit = async (e: KeyboardEvent) => {
+  const onSubmit = async (e: KeyboardEvent<HTMLInputElement>) => {
+    /** 브라우저 original DOM 이벤트 객체 프로퍼티를 이용하는 방법 (onKeyDown)  */
+    // if (e.nativeEvent.isComposing) {
+    //   return
+    // }
+
+    /** 리액트 composition 이벤트 핸들러를 사용하는 방법 */
+    if (isComposing || createGoalMutation.isPending) {
+      return
+    }
+
     if (e.code === "Enter") {
       if (!newGoal) return
       createGoalMutation.mutate({
@@ -172,7 +183,9 @@ export default function Sidebar() {
                       placeholder="목표를 입력해주세요"
                       className="outline-none placeholder:text-slate-400 placeholder:font-normal"
                       onChange={handleChangeInput}
-                      onKeyUp={onSubmit}
+                      onKeyDown={onSubmit}
+                      onCompositionStart={() => setIsComposing(true)}
+                      onCompositionEnd={() => setIsComposing(false)}
                     />
                   </li>
                 )}
