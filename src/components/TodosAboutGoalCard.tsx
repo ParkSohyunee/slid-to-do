@@ -36,6 +36,7 @@ export default function TodosAboutGoalCard({
           goalId,
           done,
         }),
+      staleTime: 1000 * 60 * 5,
       enabled: !!goalId,
     })),
   })
