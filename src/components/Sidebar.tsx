@@ -32,7 +32,7 @@ export default function Sidebar() {
 
   const { data } = useQuery<GoalList>({
     queryKey: [QUERY_KEYS.getGoalList],
-    queryFn: getGoalList,
+    queryFn: () => getGoalList(),
     staleTime: 1000 * 60 * 5,
   })
 
