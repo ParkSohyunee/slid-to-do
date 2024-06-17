@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import Link from "next/link"
-import { useQueries } from "@tanstack/react-query"
+import { useInfiniteQuery } from "@tanstack/react-query"
 
 import GoalDetailCard from "@/components/GoalDetailCard"
 import TodoItem from "@/components/item/TodoItem"
@@ -10,6 +10,9 @@ import CreateTodos from "@/components/CreateTodos"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import useToggle from "@/hooks/useToggle"
+import { AllTodos } from "@/types/todos"
+import useIntersectionObserver from "@/hooks/useIntersectionObserver"
+import { useMemo } from "react"
 
 /**
  * TODO
@@ -19,20 +22,83 @@ export default function GoalDetailPage() {
   const createTodoModal = useToggle()
   const router = useRouter()
   const goalId = Number(router.query.goalId)
-
   const isDone = [false, true]
-  const results = useQueries({
-    queries: isDone.map((done) => ({
-      queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
-      queryFn: () =>
-        getAllTodos({
-          goalId,
-          done,
-        }),
-      enabled: !!goalId,
-      staleTime: 1000 * 60 * 5,
-    })),
+
+  /** 기존 useQueries를 사용하여 두개의 쿼리를 불러오는 방법 */
+  // const results = useQueries({
+  //   queries: isDone.map((done) => ({
+  //     queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
+  //     queryFn: () =>
+  //       getAllTodos({
+  //         goalId,
+  //         done,
+  //       }),
+  //     enabled: !!goalId,
+  //     staleTime: 1000 * 60 * 5,
+  //   })),
+  // })
+
+  /** 무한스크롤을 적용하면서 각각의 쿼리를 불러오는 방법으로 수정 */
+  const {
+    data: todoList,
+    isLoading: todoListLoading,
+    hasNextPage: todoListHasNextPage,
+    isFetchingNextPage: todoListIsFetchingNextPage,
+    fetchNextPage: todoListFetchNextPage,
+  } = useInfiniteQuery<AllTodos>({
+    queryKey: [QUERY_KEYS.getAllTodosInfinite, false],
+    queryFn: ({ pageParam }) =>
+      getAllTodos({
+        cursor: pageParam as number,
+        size: 10,
+        done: false,
+      }),
+    initialPageParam: null,
+    getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
+    staleTime: 1000 * 60 * 5,
   })
+
+  const {
+    data: doneList,
+    isLoading: doneListLoading,
+    hasNextPage: doneListHasNextPage,
+    isFetchingNextPage: doneListIsFetchingNextPage,
+    fetchNextPage: doneListFetchNextPage,
+  } = useInfiniteQuery<AllTodos>({
+    queryKey: [QUERY_KEYS.getAllTodosInfinite, true],
+    queryFn: ({ pageParam }) =>
+      getAllTodos({
+        cursor: pageParam as number,
+        size: 10,
+        done: true,
+      }),
+    initialPageParam: null,
+    getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
+    staleTime: 1000 * 60 * 5,
+  })
+
+  const todoListRef = useIntersectionObserver(() => {
+    if (todoListHasNextPage && !todoListIsFetchingNextPage) {
+      todoListFetchNextPage()
+    }
+  })
+
+  const doneListRef = useIntersectionObserver(() => {
+    if (doneListHasNextPage && !doneListIsFetchingNextPage) {
+      doneListFetchNextPage()
+    }
+  })
+
+  const todoLists = useMemo(() => {
+    return todoList ? todoList.pages.flatMap((data) => data.todos) : []
+  }, [todoList])
+
+  const doneLists = useMemo(() => {
+    return doneList ? doneList.pages.flatMap((data) => data.todos) : []
+  }, [doneList])
+
+  console.log(doneLists) // 삭제 예정
+  console.log(todoLists) // 삭제 예정
 
   return (
     <>
@@ -70,7 +136,7 @@ export default function GoalDetailPage() {
             />
           </Link>
           <div className="grid gap-6 grid-cols-2">
-            {results.map(({ data, isLoading }, index) => (
+            {isDone.map((value, index) => (
               <ul
                 key={index}
                 className={`
@@ -81,9 +147,9 @@ export default function GoalDetailPage() {
               >
                 <div className="flex justify-between items-center">
                   <h3 className="text-lg font-bold text-basic">
-                    {index === 0 ? "To do" : "Done"}
+                    {value ? "Done" : "To do"}
                   </h3>
-                  {index === 0 && (
+                  {!value && (
                     <button
                       onClick={createTodoModal.open}
                       className="flex gap-1 items-center"
@@ -100,21 +166,43 @@ export default function GoalDetailPage() {
                     </button>
                   )}
                 </div>
-                {isLoading ? (
+                {value ? (
+                  // done
+                  doneListLoading ? (
+                    <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
+                      로딩중
+                    </p>
+                  ) : doneLists.length !== 0 ? (
+                    <div className="flex flex-col items-start gap-2 self-stretch overflow-scroll">
+                      {doneLists.map((todo) => (
+                        <TodoItem todo={todo} key={todo.id} />
+                      ))}
+                      <div ref={doneListRef} className="h-[1px]">
+                        {doneListIsFetchingNextPage && "로딩중"}
+                      </div>
+                    </div>
+                  ) : (
+                    <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
+                      아직 다 한 일이 없어요
+                    </p>
+                  )
+                ) : // todo
+                todoListLoading ? (
                   <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
                     로딩중
                   </p>
-                ) : data?.todos.length !== 0 ? (
-                  <div className="flex flex-col items-start gap-2 self-stretch">
-                    {data?.todos.map((todo) => (
+                ) : todoLists.length !== 0 ? (
+                  <div className="flex flex-col items-start gap-2 self-stretch overflow-scroll">
+                    {todoLists.map((todo) => (
                       <TodoItem todo={todo} key={todo.id} />
                     ))}
+                    <div ref={todoListRef} className="h-[1px]">
+                      {todoListIsFetchingNextPage && "로딩중"}
+                    </div>
                   </div>
                 ) : (
                   <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
-                    {index === 0
-                      ? "아직 해야할 일이 없어요"
-                      : "아직 다 한 일이 없어요"}
+                    아직 해야할 일이 없어요
                   </p>
                 )}
               </ul>
