@@ -11,7 +11,7 @@ import { GoalList } from "@/types/goal"
 export default function TodosAboutGoalContainer() {
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery<GoalList>({
-      queryKey: [QUERY_KEYS.getGoalList],
+      queryKey: [QUERY_KEYS.getGoalInfiniteList],
       queryFn: ({ pageParam }) =>
         getGoalList({
           cursor: pageParam as number,
