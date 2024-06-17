@@ -1,17 +1,35 @@
+import { useMemo } from "react"
 import Image from "next/image"
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery } from "@tanstack/react-query"
 
 import getGoalList from "@/pages/api/goal/getGoalList"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodosAboutGoalCard from "./TodosAboutGoalCard"
+import useIntersectionObserver from "@/hooks/useIntersectionObserver"
+import { GoalList } from "@/types/goal"
 
 export default function TodosAboutGoalContainer() {
-  // TODO 목표 무한스크롤 구현 (stale time 등 캐시 적용 고려)
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+    useInfiniteQuery<GoalList>({
+      queryKey: [QUERY_KEYS.getGoalInfiniteList],
+      queryFn: ({ pageParam }) =>
+        getGoalList({
+          cursor: pageParam as number,
+          size: 3,
+        }),
+      initialPageParam: null,
+      getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
+    })
 
-  const { data: goalList } = useQuery({
-    queryKey: [QUERY_KEYS.getGoalList],
-    queryFn: getGoalList,
+  const ref = useIntersectionObserver(() => {
+    if (hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
   })
+
+  const goalList = useMemo(() => {
+    return data ? data.pages.flatMap((data) => data.goals) : []
+  }, [data])
 
   return (
     <div
@@ -33,9 +51,9 @@ export default function TodosAboutGoalContainer() {
           </span>
         </div>
       </div>
-      {goalList?.goals ? (
+      {goalList ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {goalList?.goals.map((goal, index) => (
+          {goalList.map((goal, index) => (
             <TodosAboutGoalCard
               key={goal.id}
               goalId={goal.id}
@@ -43,6 +61,9 @@ export default function TodosAboutGoalContainer() {
               cardStyle={(index + 1) % 3 === 0}
             />
           ))}
+          <div ref={ref} className="h-[1px] lg:col-span-2">
+            {isFetchingNextPage && "로딩중"}
+          </div>
         </div>
       ) : (
         <div

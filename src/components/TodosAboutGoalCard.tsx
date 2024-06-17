@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { MouseEvent } from "react"
+import { MouseEvent, useState } from "react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -25,8 +25,9 @@ export default function TodosAboutGoalCard({
   cardStyle,
 }: TodosAboutGoalCardProps) {
   const createTodoModal = useToggle()
+  const [controlItemVisible, setControlItemVisible] = useState(false)
   const router = useRouter()
-  const isDone = [true, false]
+  const isDone = [false, true]
   const results = useQueries({
     queries: isDone.map((done) => ({
       queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
@@ -35,6 +36,7 @@ export default function TodosAboutGoalCard({
           goalId,
           done,
         }),
+      staleTime: 1000 * 60 * 5,
       enabled: !!goalId,
     })),
   })
@@ -51,11 +53,13 @@ export default function TodosAboutGoalCard({
     createTodoModal.open()
   }
 
+  const handleFetchTodoItem = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setControlItemVisible((prev) => !prev)
+  }
+
   /**
-   * TODO
-   * - [ ] 반응형 디자인
-   * - [ ] 더보기 버튼 클릭시 더 보여주기
-   * - [ ] 새 할 일 버튼을 클릭 시, 할일 생성 페이지로 이동하고, 목표란은 해당 목표로 자동 입력
+   * TODO 새 할 일 버튼을 클릭 시, 할일 생성 페이지로 이동하고, 목표란은 해당 목표로 자동 입력
    */
 
   return (
@@ -95,7 +99,12 @@ export default function TodosAboutGoalCard({
         </div>
         <div className="flex max-sm:flex-col gap-6 self-stretch">
           {results.map(({ data, isLoading }, index) => (
-            <ul key={index} className="flex flex-col gap-3 grow-[1]">
+            <ul
+              key={index}
+              className={`
+              flex flex-col gap-3 grow-[1]
+              ${controlItemVisible ? "max-h-[280px]" : "max-h-[184px]"}`}
+            >
               <p className="text-sm font-semibold text-basic">
                 {index === 0 ? "To do" : "Done"}
               </p>
@@ -104,7 +113,11 @@ export default function TodosAboutGoalCard({
                   로딩중
                 </p>
               ) : data?.todos.length !== 0 ? (
-                <div className="flex flex-col items-start gap-2 self-stretch">
+                <div
+                  className={`
+                  flex flex-col items-start gap-2 self-stretch 
+                  ${controlItemVisible ? "max-h-[248px] overflow-scroll" : "max-h-[152px] overflow-hidden"}`}
+                >
                   {data?.todos.map((todo) => (
                     <TodoItem todo={todo} key={todo.id} />
                   ))}
@@ -120,12 +133,13 @@ export default function TodosAboutGoalCard({
           ))}
         </div>
         <button
+          onClick={handleFetchTodoItem}
           className={`
           flex gap-[2px] items-center justify-center
           rounded-basic bg-white p-1 w-[120px] 
           text-sm font-semibold text-slate-700`}
         >
-          <span>더보기</span>
+          <span>{controlItemVisible ? "접기" : "더보기"}</span>
           <Image
             className="rotate-90"
             src="/icons/arrow-right.svg"
