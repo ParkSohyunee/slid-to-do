@@ -46,7 +46,7 @@ export default function GoalDetailPage() {
     isFetchingNextPage: todoListIsFetchingNextPage,
     fetchNextPage: todoListFetchNextPage,
   } = useInfiniteQuery<AllTodos>({
-    queryKey: [QUERY_KEYS.getAllTodosInfinite, false],
+    queryKey: [QUERY_KEYS.getAllTodosInfinite, goalId, false],
     queryFn: ({ pageParam }) =>
       getAllTodos({
         cursor: pageParam as number,
@@ -65,7 +65,7 @@ export default function GoalDetailPage() {
     isFetchingNextPage: doneListIsFetchingNextPage,
     fetchNextPage: doneListFetchNextPage,
   } = useInfiniteQuery<AllTodos>({
-    queryKey: [QUERY_KEYS.getAllTodosInfinite, true],
+    queryKey: [QUERY_KEYS.getAllTodosInfinite, goalId, true],
     queryFn: ({ pageParam }) =>
       getAllTodos({
         cursor: pageParam as number,
