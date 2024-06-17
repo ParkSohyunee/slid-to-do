@@ -9,7 +9,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
   return (
     <li
       className={`
-      text-sm font-normal text-basic 
+      text-sm font-normal text-basic
       flex items-center gap-2 
       ${todo.done && "line-through"}
       `}
@@ -24,7 +24,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
         width={24}
         height={24}
       />
-      {todo.title}
+      <span className="truncate">{todo.title}</span>
       {todo.noteId && (
         <Image
           src="/icons/note-view.svg"
