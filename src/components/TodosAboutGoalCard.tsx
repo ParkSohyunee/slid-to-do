@@ -1,6 +1,6 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
-import { MouseEvent } from "react"
+import { MouseEvent, useState } from "react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
@@ -25,6 +25,7 @@ export default function TodosAboutGoalCard({
   cardStyle,
 }: TodosAboutGoalCardProps) {
   const createTodoModal = useToggle()
+  const [controlItemVisible, setControlItemVisible] = useState(false)
   const router = useRouter()
   const isDone = [false, true]
   const results = useQueries({
@@ -49,6 +50,11 @@ export default function TodosAboutGoalCard({
   const handleOpenModal = (e: MouseEvent) => {
     e.stopPropagation()
     createTodoModal.open()
+  }
+
+  const handleFetchTodoItem = (e: MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation()
+    setControlItemVisible((prev) => !prev)
   }
 
   /**
@@ -95,7 +101,12 @@ export default function TodosAboutGoalCard({
         </div>
         <div className="flex max-sm:flex-col gap-6 self-stretch">
           {results.map(({ data, isLoading }, index) => (
-            <ul key={index} className="flex flex-col gap-3 grow-[1]">
+            <ul
+              key={index}
+              className={`
+              flex flex-col gap-3 grow-[1]
+              ${controlItemVisible ? "max-h-[280px]" : "max-h-[184px]"}`}
+            >
               <p className="text-sm font-semibold text-basic">
                 {index === 0 ? "To do" : "Done"}
               </p>
@@ -104,7 +115,11 @@ export default function TodosAboutGoalCard({
                   로딩중
                 </p>
               ) : data?.todos.length !== 0 ? (
-                <div className="flex flex-col items-start gap-2 self-stretch">
+                <div
+                  className={`
+                  flex flex-col items-start gap-2 self-stretch 
+                  ${controlItemVisible ? "max-h-[248px] overflow-scroll" : "max-h-[152px] overflow-hidden"}`}
+                >
                   {data?.todos.map((todo) => (
                     <TodoItem todo={todo} key={todo.id} />
                   ))}
@@ -120,12 +135,13 @@ export default function TodosAboutGoalCard({
           ))}
         </div>
         <button
+          onClick={handleFetchTodoItem}
           className={`
           flex gap-[2px] items-center justify-center
           rounded-basic bg-white p-1 w-[120px] 
           text-sm font-semibold text-slate-700`}
         >
-          <span>더보기</span>
+          <span>{controlItemVisible ? "접기" : "더보기"}</span>
           <Image
             className="rotate-90"
             src="/icons/arrow-right.svg"
