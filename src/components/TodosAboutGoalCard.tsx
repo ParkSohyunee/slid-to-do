@@ -26,7 +26,7 @@ export default function TodosAboutGoalCard({
 }: TodosAboutGoalCardProps) {
   const createTodoModal = useToggle()
   const router = useRouter()
-  const isDone = [true, false]
+  const isDone = [false, true]
   const results = useQueries({
     queries: isDone.map((done) => ({
       queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
