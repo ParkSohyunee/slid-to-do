@@ -3,6 +3,7 @@ export const QUERY_KEYS = {
   getGoalInfiniteList: "getGoalInfiniteList",
   getGoalDetail: "getGoalDetail",
   getAllTodos: "getAllTodos",
+  getAllTodosInfinite: "getAllTodosInfinite",
   getProgressForTodos: "getProgressForTodos",
   getUser: "getUser",
   getNoteList: "getNoteList",
