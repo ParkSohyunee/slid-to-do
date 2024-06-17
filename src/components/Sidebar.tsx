@@ -15,6 +15,7 @@ import getGoalList from "@/pages/api/goal/getGoalList"
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
 import useToggle from "@/hooks/useToggle"
+import { GoalList } from "@/types/goal"
 
 export default function Sidebar() {
   const queryClient = useQueryClient()
@@ -29,7 +30,7 @@ export default function Sidebar() {
     queryFn: getUser,
   })
 
-  const { data } = useQuery({
+  const { data } = useQuery<GoalList>({
     queryKey: [QUERY_KEYS.getGoalList],
     queryFn: getGoalList,
     staleTime: 1000 * 60 * 5,
