@@ -14,31 +14,15 @@ import { AllTodos } from "@/types/todos"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import { useMemo } from "react"
 
-/**
- * TODO
- * [ ] 각 할 일 카드 무한스크롤 적용
- */
 export default function GoalDetailPage() {
   const createTodoModal = useToggle()
   const router = useRouter()
   const goalId = Number(router.query.goalId)
   const isDone = [false, true]
 
-  /** 기존 useQueries를 사용하여 두개의 쿼리를 불러오는 방법 */
-  // const results = useQueries({
-  //   queries: isDone.map((done) => ({
-  //     queryKey: [QUERY_KEYS.getAllTodos, goalId, done],
-  //     queryFn: () =>
-  //       getAllTodos({
-  //         goalId,
-  //         done,
-  //       }),
-  //     enabled: !!goalId,
-  //     staleTime: 1000 * 60 * 5,
-  //   })),
-  // })
-
-  /** 무한스크롤을 적용하면서 각각의 쿼리를 불러오는 방법으로 수정 */
+  /**
+   * 기존 useQueries를 사용하여 두개의 쿼리를 불러오는 방법에서
+   * 무한스크롤을 적용하면서 각각의 쿼리를 불러오는 방법으로 수정 */
   const {
     data: todoList,
     isLoading: todoListLoading,
@@ -96,9 +80,6 @@ export default function GoalDetailPage() {
   const doneLists = useMemo(() => {
     return doneList ? doneList.pages.flatMap((data) => data.todos) : []
   }, [doneList])
-
-  console.log(doneLists) // 삭제 예정
-  console.log(todoLists) // 삭제 예정
 
   return (
     <>

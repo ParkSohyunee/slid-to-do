@@ -1,14 +1,3 @@
-/**
- * TODO
- * [x] 모든 할 일 조회 API 연동
- * [x] 카테고리(필터링) 컴포넌트 구현
- * [x] 카테고리 클릭 시 API 쿼리 로직
- * [x] 수정, 삭제 팝업 메뉴
- * [ ] 수정, 삭제 기능
- * [x] 노트보기 클릭시 우측 노트 사이드메뉴
- * [ ] 무한스크롤 기능
- * [ ] 반응형 UI
- */
 import Image from "next/image"
 import { MouseEvent, useMemo, useState } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
