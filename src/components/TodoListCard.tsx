@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { MouseEvent, useRef } from "react"
+import { MouseEvent, MutableRefObject, useRef } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 
 import { Todo } from "@/types/todos"
@@ -19,6 +19,8 @@ type TodoListCardProps = {
   selectedCategory: string
   todos?: Todo[]
   isLoading: boolean
+  observerRef: MutableRefObject<null>
+  isFetchingNextPage: boolean
 }
 
 type TodoItemProps = {
@@ -215,6 +217,8 @@ export default function TodoListCard({
   selectedCategory,
   todos,
   isLoading,
+  observerRef,
+  isFetchingNextPage,
 }: TodoListCardProps) {
   return (
     <div className="rounded-sm border border-slate-100 bg-white p-6 grow flex flex-col gap-4">
@@ -242,6 +246,9 @@ export default function TodoListCard({
           {todos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
+          <div ref={observerRef} className="h-[2px]">
+            {isFetchingNextPage && "로딩중"}
+          </div>
         </ul>
       ) : (
         <div>데이터가 없어요.</div>

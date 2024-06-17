@@ -107,8 +107,9 @@ export default function TodosPage() {
           isLoading={isLoading}
           handleTodoListOfStatus={handleTodoListOfStatus}
           selectedCategory={selectedCategory}
+          observerRef={ref}
+          isFetchingNextPage={isFetchingNextPage}
         />
-        <div ref={ref} className="h-[1px] bg-red-300"></div>
       </section>
     </>
   )
