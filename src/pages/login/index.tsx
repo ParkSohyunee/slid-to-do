@@ -90,9 +90,8 @@ export default function LoginPage() {
               rounded-sm 
               bg-slate-50 
               text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.email ? "border-error hover:border-error" : ""}
+              border focus:border-blue-500 focus:outline-none
+              ${!!errors.email ? "border-error hover:border-error" : "border-slate-50 hover:border-blue-300"}
               `}
                 type="text"
                 autoComplete="off"
@@ -119,9 +118,8 @@ export default function LoginPage() {
               rounded-sm 
               bg-slate-50 
               text-base font-normal text-basic placeholder:text-slate-400
-              border border-slate-50 hover:border-blue-300
-              focus:border-blue-500 focus:outline-none
-              ${!!errors.password ? "border-error hover:border-error" : ""}
+              border focus:border-blue-500 focus:outline-none
+              ${!!errors.password ? "border-error hover:border-error" : "border-slate-50 hover:border-blue-300"}
               `}
                   type={visiblePassword ? "text" : "password"}
                   autoComplete="off"
