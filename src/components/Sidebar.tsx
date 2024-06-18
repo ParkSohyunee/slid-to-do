@@ -216,9 +216,9 @@ export default function Sidebar() {
       ) : (
         <article
           className={`
-            bg-white border border-r-slate-200 
+            bg-white border border-r-slate-200
             fixed left-0 h-full
-            w-[60px] z-[1]
+            w-[60px]
             max-mobile:h-12
           `}
         >

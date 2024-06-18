@@ -1,6 +1,8 @@
 import { useRouter } from "next/router"
 import { ReactNode } from "react"
 import Sidebar from "./Sidebar"
+import { ModalContextProvider } from "@/context/ModalContext"
+import ModalPortal from "./ModalPortal"
 
 type LayoutProps = {
   children: ReactNode
@@ -21,13 +23,17 @@ export default function Layout({ children }: LayoutProps) {
     : "bg-slate-100"
 
   return (
-    <section
-      className={`flex wrapper ${bgColor} max-mobile:flex-col min-h-screen`}
-    >
-      {!isHiddenSideBar && <Sidebar />}
-      <main className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 xl:pl-20"}`}>
-        {children}
-      </main>
-    </section>
+    <ModalContextProvider>
+      <section
+        className={`flex wrapper ${bgColor} max-mobile:flex-col min-h-screen`}
+      >
+        {!isHiddenSideBar && <Sidebar />}
+        <main
+          className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 tablet:pl-[84px] xl:pl-20"}`}
+        >
+          {children}
+        </main>
+      </section>
+    </ModalContextProvider>
   )
 }
