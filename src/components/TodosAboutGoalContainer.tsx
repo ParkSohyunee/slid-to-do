@@ -35,7 +35,7 @@ export default function TodosAboutGoalContainer() {
     <div
       className={`
         bg-white border border-slate-100 
-        rounded-sm flex flex-col p-6
+        rounded-sm flex flex-col p-4 tablet:p-6
         `}
     >
       <div className="flex items-center justify-between pb-4">

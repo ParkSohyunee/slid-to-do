@@ -79,7 +79,9 @@ export default function TodosAboutGoalCard({
       >
         <div className="flex flex-col items-start gap-2 self-stretch">
           <div className="flex justify-between items-center self-stretch">
-            <h3 className="text-lg font-bold text-basic">{title}</h3>
+            <h3 className="text-base tablet:text-lg font-bold text-basic">
+              {title}
+            </h3>
             <button
               onClick={handleOpenModal}
               className="flex gap-1 items-center"
@@ -90,14 +92,14 @@ export default function TodosAboutGoalCard({
                 width={16}
                 height={16}
               />
-              <span className="text-sm font-semibold text-blue-500">
+              <span className="text-sm font-semibold text-blue-500 whitespace-nowrap">
                 할일 추가
               </span>
             </button>
           </div>
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
-        <div className="grid grid-cols-2 max-sm:flex-col gap-6 lg:gap-4 w-full">
+        <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 lg:gap-4 w-full">
           {results.map(({ data, isLoading }, index) => (
             <ul
               key={index}
