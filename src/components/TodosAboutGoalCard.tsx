@@ -97,12 +97,13 @@ export default function TodosAboutGoalCard({
           </div>
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
-        <div className="flex max-sm:flex-col gap-6 self-stretch">
+        <div className="grid grid-cols-2 max-sm:flex-col gap-6 lg:gap-4 w-full">
           {results.map(({ data, isLoading }, index) => (
             <ul
               key={index}
               className={`
-              flex flex-col gap-3 grow-[1]
+              flex flex-col gap-3
+              transiton-height duration-100
               ${controlItemVisible ? "max-h-[280px]" : "max-h-[184px]"}`}
             >
               <p className="text-sm font-semibold text-basic">
@@ -115,8 +116,8 @@ export default function TodosAboutGoalCard({
               ) : data?.todos.length !== 0 ? (
                 <div
                   className={`
-                  flex flex-col items-start gap-2 self-stretch 
-                  ${controlItemVisible ? "max-h-[248px] overflow-scroll" : "max-h-[152px] overflow-hidden"}`}
+                  flex flex-col items-start gap-2 self-stretch overflow-x-hidden
+                  ${controlItemVisible ? "max-h-[248px] overflow-y-scroll" : "max-h-[152px] overflow-hidden"}`}
                 >
                   {data?.todos.map((todo) => (
                     <TodoItem todo={todo} key={todo.id} />
@@ -132,22 +133,24 @@ export default function TodosAboutGoalCard({
             </ul>
           ))}
         </div>
-        <button
-          onClick={handleFetchTodoItem}
-          className={`
-          flex gap-[2px] items-center justify-center
-          rounded-basic bg-white p-1 w-[120px] 
-          text-sm font-semibold text-slate-700`}
-        >
-          <span>{controlItemVisible ? "접기" : "더보기"}</span>
-          <Image
-            className="rotate-90"
-            src="/icons/arrow-right.svg"
-            alt="더보기 버튼"
-            width={24}
-            height={24}
-          />
-        </button>
+        {results.some(({ data }) => data && data?.totalCount > 5) && (
+          <button
+            onClick={handleFetchTodoItem}
+            className={`
+            flex gap-[2px] items-center justify-center
+            rounded-basic bg-white p-1 w-[120px] 
+            text-sm font-semibold text-slate-700`}
+          >
+            <span>{controlItemVisible ? "접기" : "더보기"}</span>
+            <Image
+              className={`transition-rotate duration-300 ${controlItemVisible ? "-rotate-90" : "rotate-90"}`}
+              src="/icons/arrow-right.svg"
+              alt="더보기 버튼"
+              width={24}
+              height={24}
+            />
+          </button>
+        )}
       </div>
     </>
   )
