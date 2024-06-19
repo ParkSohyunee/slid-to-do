@@ -88,8 +88,8 @@ export default function Sidebar() {
           <article
             className={`
             bg-white border border-r-slate-200 
-            fixed left-0 h-full
-            w-[280px]
+            fixed left-0 h-full w-full overflow-y-auto
+            mobile:w-[280px]
             `}
           >
             <div className="p-6 border-b border-slate-200">
@@ -218,11 +218,22 @@ export default function Sidebar() {
           className={`
             bg-white border border-r-slate-200
             fixed left-0 h-full
-            w-[60px]
-            max-mobile:h-12
+            w-[60px] py-3 px-4
+            max-sm:h-12 max-sm:w-full max-sm:z-[1]
           `}
         >
-          <div className="flex flex-col pt-4 gap-4 items-center">
+          <div className="flex gap-4 items-center sm:hidden">
+            <button onClick={sidebarModal.openModal}>
+              <Image
+                src="/icons/hamburger-menu.svg"
+                alt="logo"
+                width={24}
+                height={24}
+              />
+            </button>
+            <h3 className="text-base font-semibold text-slate-900">대시보드</h3>
+          </div>
+          <div className="flex flex-col gap-4 items-center max-sm:hidden">
             <Image
               src="/logo/logo-small.svg"
               alt="logo"

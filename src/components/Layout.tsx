@@ -2,7 +2,6 @@ import { useRouter } from "next/router"
 import { ReactNode } from "react"
 import Sidebar from "./Sidebar"
 import { ModalContextProvider } from "@/context/ModalContext"
-import ModalPortal from "./ModalPortal"
 
 type LayoutProps = {
   children: ReactNode
@@ -29,7 +28,7 @@ export default function Layout({ children }: LayoutProps) {
       >
         {!isHiddenSideBar && <Sidebar />}
         <main
-          className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 tablet:pl-[84px] xl:pl-20"}`}
+          className={`grow ${!isHiddenSideBar && "p-4 sm:p-6 sm:pl-[84px] xl:pl-20"}`}
         >
           {children}
         </main>
