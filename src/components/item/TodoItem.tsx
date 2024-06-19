@@ -9,7 +9,7 @@ export default function TodoItem({ todo }: TodoItemProps) {
   return (
     <li
       className={`
-      text-sm font-normal text-basic
+      text-sm font-normal text-basic w-full
       flex items-center gap-2 
       ${todo.done && "line-through"}
       `}

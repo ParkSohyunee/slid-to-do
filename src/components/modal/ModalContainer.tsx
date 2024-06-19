@@ -25,7 +25,7 @@ export default function ModalContainer({
         w-full h-full 
         fixed top-0 left-0 
         flex flex-col justify-center items-center 
-        bg-modal-background`}
+        bg-modal-background z-[2]`}
       >
         <div
           className={`
