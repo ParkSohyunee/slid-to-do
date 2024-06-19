@@ -3,6 +3,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { ChangeEvent, useState, KeyboardEvent, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
@@ -20,6 +21,7 @@ import { useModal } from "@/context/ModalContext"
 import SidebarContainer from "./modal/SidebarContainer"
 
 export default function Sidebar() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const buttonRef = useRef(null)
   const [isComposing, setIsComposing] = useState(false)
@@ -27,6 +29,16 @@ export default function Sidebar() {
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
   const createTodoModal = useToggle()
   const sidebarModal = useModal()
+
+  /** 사이드바 title에 들어갈 페이지 pathname */
+  const matchedPageName: Record<string, string> = {
+    "/dashboard": "대시보드",
+    "/todos-list": "모든 할 일",
+    "/goal/[goalId]": "목표",
+    "/goal/[goalId]/notes": "노트 모아보기",
+    "/todos-list/[todoId]/write-note": "노트 작성",
+    "/goal/[goalId]/notes/[noteId]/edit": "노트 수정",
+  }
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
@@ -231,7 +243,9 @@ export default function Sidebar() {
                 height={24}
               />
             </button>
-            <h3 className="text-base font-semibold text-slate-900">대시보드</h3>
+            <h3 className="text-base font-semibold text-slate-900">
+              {matchedPageName[router.pathname]}
+            </h3>
           </div>
           <div className="flex flex-col gap-4 items-center max-sm:hidden">
             <Image
