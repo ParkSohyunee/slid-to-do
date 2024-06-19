@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils/shadcn-ui"
 
-function Skeleton({
+export function Skeleton({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -15,7 +15,7 @@ function Skeleton({
   )
 }
 
-function WhiteBgSkeleton({
+export function WhiteBgSkeleton({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
