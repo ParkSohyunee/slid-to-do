@@ -60,6 +60,6 @@ const config: Config = {
       "max-width": "max-width",
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 export default config
