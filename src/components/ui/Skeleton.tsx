@@ -15,6 +15,21 @@ function Skeleton({
   )
 }
 
+function WhiteBgSkeleton({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+  return (
+    <div
+      className={cn(
+        "animate-pulse rounded-md bg-white dark:bg-slate-800",
+        className,
+      )}
+      {...props}
+    />
+  )
+}
+
 export function ItemSkeleton() {
   return (
     <div className="space-y-2">
@@ -22,6 +37,15 @@ export function ItemSkeleton() {
       <Skeleton className="h-4 w-1/2" />
       <Skeleton className="h-4 w-2/3" />
       <Skeleton className="h-4 w-1/2" />
+    </div>
+  )
+}
+
+export function CardItemSkeleton() {
+  return (
+    <div className="space-y-2">
+      <WhiteBgSkeleton className="h-4 w-2/3" />
+      <WhiteBgSkeleton className="h-3 w-1/2" />
     </div>
   )
 }

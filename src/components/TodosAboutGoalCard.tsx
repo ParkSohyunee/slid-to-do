@@ -11,6 +11,7 @@ import ProgressBar from "./progress/ProgressBar"
 import TodoItem from "./item/TodoItem"
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
+import { CardItemSkeleton } from "./ui/Skeleton"
 
 type TodosAboutGoalCardProps = {
   goalId: number
@@ -97,9 +98,7 @@ export default function TodosAboutGoalCard({
               {index === 0 ? "To do" : "Done"}
             </p>
             {isLoading ? (
-              <p className="text-sm font-normal text-slate-500 text-center">
-                로딩중
-              </p>
+              <CardItemSkeleton />
             ) : data?.todos.length !== 0 ? (
               <div
                 className={`
