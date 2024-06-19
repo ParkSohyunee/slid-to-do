@@ -1,6 +1,6 @@
 import { cn } from "@/libs/utils/shadcn-ui"
 
-export default function Skeleton({
+function Skeleton({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
@@ -12,5 +12,28 @@ export default function Skeleton({
       )}
       {...props}
     />
+  )
+}
+
+export function ItemSkeleton() {
+  return (
+    <div className="space-y-2">
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-4 w-1/2" />
+      <Skeleton className="h-4 w-2/3" />
+      <Skeleton className="h-4 w-1/2" />
+    </div>
+  )
+}
+
+export function CardSkeleton() {
+  return (
+    <div className="flex flex-col space-y-3">
+      <Skeleton className="h-[125px] w-full rounded-xl" />
+      <div className="space-y-2">
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-4 w-1/2" />
+      </div>
+    </div>
   )
 }

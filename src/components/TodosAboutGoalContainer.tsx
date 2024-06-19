@@ -7,9 +7,10 @@ import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import TodosAboutGoalCard from "./TodosAboutGoalCard"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import { GoalList } from "@/types/goal"
+import { CardSkeleton } from "./ui/Skeleton"
 
 export default function TodosAboutGoalContainer() {
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } =
+  const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery<GoalList>({
       queryKey: [QUERY_KEYS.getGoalInfiniteList],
       queryFn: ({ pageParam }) =>
@@ -51,29 +52,36 @@ export default function TodosAboutGoalContainer() {
           </span>
         </div>
       </div>
-      {goalList ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {goalList.map((goal, index) => (
-            <TodosAboutGoalCard
-              key={goal.id}
-              goalId={goal.id}
-              title={goal.title}
-              cardStyle={(index + 1) % 3 === 0}
-            />
-          ))}
-          <div ref={ref} className="h-[1px] lg:col-span-2">
-            {isFetchingNextPage && "로딩중"}
-          </div>
-        </div>
-      ) : (
-        <div
-          className={`
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        {isLoading ? (
+          <>
+            <CardSkeleton />
+            <CardSkeleton />
+          </>
+        ) : goalList ? (
+          <>
+            {goalList.map((goal, index) => (
+              <TodosAboutGoalCard
+                key={goal.id}
+                goalId={goal.id}
+                title={goal.title}
+                cardStyle={(index + 1) % 3 === 0}
+              />
+            ))}
+            <div ref={ref} className="h-[1px] lg:col-span-2">
+              {isFetchingNextPage && "로딩중"}
+            </div>
+          </>
+        ) : (
+          <div
+            className={`
           flex flex-col items-center justify-center 
           text-sm font-normal text-slate-500 h-full`}
-        >
-          등록한 목표가 없어요
-        </div>
-      )}
+          >
+            등록한 목표가 없어요
+          </div>
+        )}
+      </div>
     </div>
   )
 }

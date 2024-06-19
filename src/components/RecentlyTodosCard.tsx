@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import { Todo } from "@/types/todos"
+import { ItemSkeleton } from "./ui/Skeleton"
 
 type RecentlyTodoListProps = {
   todoList: Todo
@@ -75,13 +76,7 @@ export default function RecentlyTodosCard() {
         </button>
       </div>
       {isLoading ? (
-        <div
-          className={`
-          text-sm font-normal text-slate-500 
-          flex justify-center items-center grow`}
-        >
-          로딩중
-        </div>
+        <ItemSkeleton />
       ) : data?.todos ? (
         <ul className="flex flex-col justify-between gap-2 overflow-auto">
           {data?.todos
