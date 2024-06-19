@@ -10,6 +10,7 @@ import getDateFormat from "@/libs/utils/getDateFormat"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getNoteDetail from "@/pages/api/note/getNoteDetail"
 import { NoteDetail } from "@/types/note"
+import { NoteSkeleton } from "./ui/Skeleton"
 
 type DetailNoteProps = {
   todo: SimpleTodo
@@ -46,7 +47,7 @@ export default function DetailNote({ todo, noteId }: DetailNoteProps) {
   }, [note])
 
   if (isLoading) {
-    return <div>로딩중</div> // TODO 스켈레톤 UI로 변경하기
+    return <NoteSkeleton />
   }
 
   return (

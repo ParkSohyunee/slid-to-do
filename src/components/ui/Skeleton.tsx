@@ -61,3 +61,30 @@ export function CardSkeleton() {
     </div>
   )
 }
+
+export function NoteSkeleton() {
+  return (
+    <div className="flex flex-col gap-6 h-full">
+      <div className="flex flex-col gap-3">
+        <Skeleton className="h-8 rounded-[8px]" />
+        <div className="flex justify-between">
+          <Skeleton className="h-6 w-[250px] rounded-[8px]" />
+          <Skeleton className="h-6 w-[100px] rounded-[8px]" />
+        </div>
+      </div>
+      <div className="pt-3 pb-3 border-t border-b border-slate-200 flex items-center justify-between">
+        <Skeleton className="h-8 w-[300px] rounded-[8px]" />
+      </div>
+      <div className="flex flex-col space-y-3">
+        <Skeleton className="h-8 rounded-[8px]" />
+        <div className="flex flex-col space-y-3">
+          <Skeleton className="h-[100px] rounded-xl" />
+          <div className="space-y-2">
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-6 w-1/2" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
