@@ -33,6 +33,7 @@ export default function GoalDetailPage() {
     queryKey: [QUERY_KEYS.getAllTodosInfinite, goalId, false],
     queryFn: ({ pageParam }) =>
       getAllTodos({
+        goalId,
         cursor: pageParam as number,
         size: 10,
         done: false,
