@@ -1,5 +1,6 @@
 import { useMemo } from "react"
 import Image from "next/image"
+import { useRouter } from "next/router"
 import { useInfiniteQuery } from "@tanstack/react-query"
 
 import getGoalList from "@/pages/api/goal/getGoalList"
@@ -10,6 +11,7 @@ import { GoalList } from "@/types/goal"
 import { CardSkeleton } from "./ui/Skeleton"
 
 export default function TodosAboutGoalContainer() {
+  const router = useRouter()
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } =
     useInfiniteQuery<GoalList>({
       queryKey: [QUERY_KEYS.getGoalInfiniteList],
@@ -61,16 +63,29 @@ export default function TodosAboutGoalContainer() {
         ) : goalList ? (
           <>
             {goalList.map((goal, index) => (
-              <TodosAboutGoalCard
+              <div
                 key={goal.id}
-                goalId={goal.id}
-                title={goal.title}
-                cardStyle={(index + 1) % 3 === 0}
-              />
+                onClick={() => router.push(`/goal/${goal.id}`)}
+                className={`
+                p-6 rounded-md bg-blue-50 cursor-pointer
+                flex flex-col items-center gap-4 hover:shadow-2xl
+                ${(index + 1) % 3 === 0 && "lg:col-span-2"}
+                `}
+              >
+                <TodosAboutGoalCard
+                  key={goal.id}
+                  goalId={goal.id}
+                  title={goal.title}
+                />
+              </div>
             ))}
-            <div ref={ref} className="h-[1px] lg:col-span-2">
-              {isFetchingNextPage && "로딩중"}
-            </div>
+            {isFetchingNextPage && (
+              <>
+                <CardSkeleton />
+                <CardSkeleton />
+              </>
+            )}
+            <div ref={ref} className="h-[1px] lg:col-span-2"></div>
           </>
         ) : (
           <div
