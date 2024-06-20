@@ -22,17 +22,17 @@ export default function Layout({ children }: LayoutProps) {
     : "bg-slate-100"
 
   return (
-    <ModalContextProvider>
-      <section
-        className={`flex wrapper ${bgColor} max-mobile:flex-col min-h-screen`}
-      >
+    <section
+      className={`flex wrapper ${bgColor} max-mobile:flex-col min-h-screen`}
+    >
+      <ModalContextProvider>
         {!isHiddenSideBar && <Sidebar />}
-        <main
-          className={`grow ${!isHiddenSideBar && "p-4 sm:p-6 sm:pl-[84px] xl:pl-20"}`}
-        >
-          {children}
-        </main>
-      </section>
-    </ModalContextProvider>
+      </ModalContextProvider>
+      <main
+        className={`grow ${!isHiddenSideBar && "p-4 sm:p-6 sm:pl-[84px] xl:pl-20"}`}
+      >
+        {children}
+      </main>
+    </section>
   )
 }
