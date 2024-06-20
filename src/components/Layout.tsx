@@ -1,13 +1,14 @@
 import { useRouter } from "next/router"
 import { ReactNode } from "react"
 import Sidebar from "./Sidebar"
+import { ModalContextProvider } from "@/context/ModalContext"
 
 type LayoutProps = {
   children: ReactNode
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const hiddenLayoutPath = ["/login", "/signup"]
+  const hiddenLayoutPath = ["/login", "/signup", "/"]
   const bgWhiteStyle = [
     "/todos-list/[todoId]/write-note",
     "/goal/[goalId]/notes/[noteId]/edit",
@@ -24,8 +25,12 @@ export default function Layout({ children }: LayoutProps) {
     <section
       className={`flex wrapper ${bgColor} max-mobile:flex-col min-h-screen`}
     >
-      {!isHiddenSideBar && <Sidebar />}
-      <main className={`grow ${!isHiddenSideBar && "p-4 tablet:p-6 xl:pl-20"}`}>
+      <ModalContextProvider>
+        {!isHiddenSideBar && <Sidebar />}
+      </ModalContextProvider>
+      <main
+        className={`grow ${!isHiddenSideBar && "p-4 sm:p-6 sm:pl-[84px] xl:pl-20"}`}
+      >
         {children}
       </main>
     </section>

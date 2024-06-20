@@ -28,7 +28,9 @@ export default function ProgressForTodosCard() {
           height={40}
         />
         <div className="flex flex-col items-start gap-1 text-white">
-          <span className="text-lg font-semibold">내 진행 상황</span>
+          <span className="text-base tablet:text-lg font-semibold">
+            내 진행 상황
+          </span>
           <div className="flex gap-1 items-center">
             <span className="text-3xl font-bold">
               {data?.progress ? data.progress : 0}

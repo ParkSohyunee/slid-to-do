@@ -11,6 +11,7 @@ import axiosInstance from "@/libs/axios/axiosInstance"
 import { useDetectClose } from "@/hooks/useDetectClose"
 import PopupContainer from "@/components/modal/PopupContainer"
 import ProgressBar from "@/components/progress/ProgressBar"
+import { Skeleton } from "@/components/ui/Skeleton"
 
 type GoalDetailCardProps = {
   goalId: number
@@ -65,7 +66,11 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     setIsOpenConfirmModal(false)
   }
 
-  const { data: goal, isError } = useQuery({
+  const {
+    data: goal,
+    isError,
+    isLoading,
+  } = useQuery({
     queryKey: [QUERY_KEYS.getGoalDetail, goalId],
     queryFn: () => getGoalDetail(goalId),
     enabled: !!goalId,
@@ -174,6 +179,8 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
                 onChange={handleChangeTitle}
                 onKeyUp={handleEditGoalTitle}
               />
+            ) : isLoading ? (
+              <Skeleton className="h-8 w-[200px] rounded-[8px]" />
             ) : (
               <h3 className="text-lg font-semibold text-basic outline-none grow">
                 {goal?.title}

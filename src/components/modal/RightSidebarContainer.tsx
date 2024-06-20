@@ -19,7 +19,7 @@ export default function RightSidebarContainer({
         w-full h-full 
         fixed top-0 left-0 
         flex flex-col justify-center items-center 
-        bg-popup-background`}
+        bg-popup-background z-[1]`}
       >
         <div
           className={`

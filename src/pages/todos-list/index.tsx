@@ -72,7 +72,7 @@ export default function TodosPage() {
         </ModalContainer>
       )}
       <section className="h-full max-w-[792px] flex flex-col">
-        <div className="flex justify-between items-center self-stretch mb-4">
+        <div className="flex justify-between items-center self-stretch mb-4 max-sm:pt-12">
           <h1 className="text-lg font-semibold text-slate-900">
             모든 할 일{data ? `(${data.pages[0].totalCount})` : ""}
           </h1>

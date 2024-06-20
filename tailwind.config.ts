@@ -13,8 +13,8 @@ const config: Config = {
           "linear-gradient(0deg, #FFF 0%, rgba(255, 255, 255, 0.00) 100%)",
       },
       screens: {
-        mobile: "375px",
-        tablet: "744px",
+        mobile: "376px",
+        tablet: "745px",
         desktop: "1920px",
       },
       fontFamily: {
@@ -34,7 +34,7 @@ const config: Config = {
         "bland-blue": "#3182F6",
         error: "#B91C1C", // red
         basic: "#1E293B", // slate-800
-        "modal-background": "rgba(0, 0, 0, 0.80)",
+        "modal-background": "rgba(0, 0, 0, 0.50)",
         "popup-background": "rgba(0, 0, 0, 0.50)",
       },
       borderRadius: {
@@ -60,6 +60,6 @@ const config: Config = {
       "max-width": "max-width",
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 }
 export default config

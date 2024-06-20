@@ -1,18 +1,24 @@
 import Image from "next/image"
 import { useRouter } from "next/router"
 import Link from "next/link"
+import { useMemo } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
 
 import GoalDetailCard from "@/components/GoalDetailCard"
 import TodoItem from "@/components/item/TodoItem"
 import ModalContainer from "@/components/modal/ModalContainer"
 import CreateTodos from "@/components/CreateTodos"
+import {
+  ItemSkeleton,
+  Skeleton,
+  WhiteBgSkeleton,
+} from "@/components/ui/Skeleton"
+
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import getAllTodos from "@/pages/api/todos/getAllTodos"
 import useToggle from "@/hooks/useToggle"
 import { AllTodos } from "@/types/todos"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
-import { useMemo } from "react"
 
 export default function GoalDetailPage() {
   const createTodoModal = useToggle()
@@ -33,6 +39,7 @@ export default function GoalDetailPage() {
     queryKey: [QUERY_KEYS.getAllTodosInfinite, goalId, false],
     queryFn: ({ pageParam }) =>
       getAllTodos({
+        goalId,
         cursor: pageParam as number,
         size: 10,
         done: false,
@@ -40,6 +47,7 @@ export default function GoalDetailPage() {
     initialPageParam: null,
     getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
     staleTime: 1000 * 60 * 5,
+    enabled: !!goalId,
   })
 
   const {
@@ -52,6 +60,7 @@ export default function GoalDetailPage() {
     queryKey: [QUERY_KEYS.getAllTodosInfinite, goalId, true],
     queryFn: ({ pageParam }) =>
       getAllTodos({
+        goalId,
         cursor: pageParam as number,
         size: 10,
         done: true,
@@ -59,6 +68,7 @@ export default function GoalDetailPage() {
     initialPageParam: null,
     getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
     staleTime: 1000 * 60 * 5,
+    enabled: !!goalId,
   })
 
   const todoListRef = useIntersectionObserver(() => {
@@ -90,7 +100,7 @@ export default function GoalDetailPage() {
       )}
       <section className="h-full max-w-1200 flex flex-col">
         <h1 className="mb-4 text-lg font-semibold text-slate-900">목표</h1>
-        <div className="flex flex-col gap-6 h-full">
+        <div className="flex flex-col gap-4 tablet:gap-6 h-full">
           <GoalDetailCard goalId={goalId} />
           <Link
             href={`/goal/${goalId}/notes`}
@@ -116,7 +126,7 @@ export default function GoalDetailPage() {
               height={24}
             />
           </Link>
-          <div className="grid gap-6 grid-cols-2">
+          <div className="grid gap-4 tablet:gap-6 grid-cols-1 tablet:grid-cols-2">
             {isDone.map((value, index) => (
               <ul
                 key={index}
@@ -150,17 +160,19 @@ export default function GoalDetailPage() {
                 {value ? (
                   // done
                   doneListLoading ? (
-                    <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
-                      로딩중
-                    </p>
+                    <ItemSkeleton />
                   ) : doneLists.length !== 0 ? (
                     <div className="flex flex-col items-start gap-2 self-stretch overflow-scroll">
                       {doneLists.map((todo) => (
                         <TodoItem todo={todo} key={todo.id} />
                       ))}
-                      <div ref={doneListRef} className="h-[1px]">
-                        {doneListIsFetchingNextPage && "로딩중"}
-                      </div>
+                      {doneListIsFetchingNextPage && (
+                        <div className="space-y-2 w-full">
+                          <WhiteBgSkeleton className="h-4 w-2/3" />
+                          <WhiteBgSkeleton className="h-4 w-1/2" />
+                        </div>
+                      )}
+                      <div ref={doneListRef} className="h-[1px]"></div>
                     </div>
                   ) : (
                     <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
@@ -169,17 +181,19 @@ export default function GoalDetailPage() {
                   )
                 ) : // todo
                 todoListLoading ? (
-                  <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">
-                    로딩중
-                  </p>
+                  <ItemSkeleton />
                 ) : todoLists.length !== 0 ? (
                   <div className="flex flex-col items-start gap-2 self-stretch overflow-scroll">
                     {todoLists.map((todo) => (
                       <TodoItem todo={todo} key={todo.id} />
                     ))}
-                    <div ref={todoListRef} className="h-[1px]">
-                      {todoListIsFetchingNextPage && "로딩중"}
-                    </div>
+                    {todoListIsFetchingNextPage && (
+                      <div className="space-y-2 w-full">
+                        <Skeleton className="h-4 w-2/3" />
+                        <Skeleton className="h-4 w-1/2" />
+                      </div>
+                    )}
+                    <div ref={todoListRef} className="h-[1px]"></div>
                   </div>
                 ) : (
                   <p className="text-sm font-normal text-slate-500 text-center flex items-center justify-center h-full">

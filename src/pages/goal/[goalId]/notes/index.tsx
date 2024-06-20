@@ -13,6 +13,7 @@ import { NoteList } from "@/types/note"
 import NoteListCards from "@/components/card/NoteListCards"
 import useIntersectionObserver from "@/hooks/useIntersectionObserver"
 import getGoalDetail from "@/pages/api/goal/getGoalDetail"
+import { CardSkeleton } from "@/components/ui/Skeleton"
 
 export default function NoteListAboutGoalPage() {
   const router = useRouter()
@@ -80,16 +81,25 @@ export default function NoteListAboutGoalPage() {
         <h3 className="text-sm font-semibold text-basic">{goal?.title}</h3>
       </div>
       {isLoading ? (
-        <div className="text-sm font-normal text-slate-500 h-full flex items-center justify-center">
-          로딩 중
-        </div>
+        <>
+          <div className="bg-white p-6 rounded-sm border border-slate-100">
+            <CardSkeleton />
+          </div>
+          <div className="bg-white p-6 rounded-sm border border-slate-100">
+            <CardSkeleton />
+          </div>
+        </>
       ) : notes && notes.length > 0 ? (
         <>
           {notes.map((note) => (
             <NoteListCards key={note.id} note={note} />
           ))}
+          {isFetchingNextPage && (
+            <div className="bg-white p-6 rounded-sm border border-slate-100">
+              <CardSkeleton />
+            </div>
+          )}
           <div ref={ref} className="h-[1px]"></div>
-          {isFetchingNextPage && <div>로딩중</div>}
         </>
       ) : (
         <div className="text-sm font-normal text-slate-500 h-full flex items-center justify-center">

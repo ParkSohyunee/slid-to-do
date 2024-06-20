@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { useRouter } from "next/router"
+import Link from "next/link"
 import { MouseEvent, useState } from "react"
 import { useQueries, useQuery } from "@tanstack/react-query"
 
@@ -12,6 +12,7 @@ import ProgressBar from "./progress/ProgressBar"
 import TodoItem from "./item/TodoItem"
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
+import { CardItemSkeleton } from "./ui/Skeleton"
 
 type TodosAboutGoalCardProps = {
   goalId: number
@@ -26,7 +27,6 @@ export default function TodosAboutGoalCard({
 }: TodosAboutGoalCardProps) {
   const createTodoModal = useToggle()
   const [controlItemVisible, setControlItemVisible] = useState(false)
-  const router = useRouter()
   const isDone = [false, true]
   const results = useQueries({
     queries: isDone.map((done) => ({
@@ -49,7 +49,7 @@ export default function TodosAboutGoalCard({
   })
 
   const handleOpenModal = (e: MouseEvent) => {
-    e.stopPropagation()
+    e.preventDefault()
     createTodoModal.open()
   }
 
@@ -69,8 +69,8 @@ export default function TodosAboutGoalCard({
           <CreateTodos onClose={createTodoModal.close} />
         </ModalContainer>
       )}
-      <div
-        onClick={() => router.push(`/goal/${goalId}`)}
+      <Link
+        href={`/goal/${goalId}`}
         className={`
         p-6 rounded-md bg-blue-50 cursor-pointer
         flex flex-col items-center gap-4 hover:shadow-2xl
@@ -79,7 +79,9 @@ export default function TodosAboutGoalCard({
       >
         <div className="flex flex-col items-start gap-2 self-stretch">
           <div className="flex justify-between items-center self-stretch">
-            <h3 className="text-lg font-bold text-basic">{title}</h3>
+            <h3 className="text-base tablet:text-lg font-bold text-basic">
+              {title}
+            </h3>
             <button
               onClick={handleOpenModal}
               className="flex gap-1 items-center"
@@ -90,33 +92,32 @@ export default function TodosAboutGoalCard({
                 width={16}
                 height={16}
               />
-              <span className="text-sm font-semibold text-blue-500">
+              <span className="text-sm font-semibold text-blue-500 whitespace-nowrap">
                 할일 추가
               </span>
             </button>
           </div>
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
-        <div className="flex max-sm:flex-col gap-6 self-stretch">
+        <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 lg:gap-4 w-full">
           {results.map(({ data, isLoading }, index) => (
             <ul
               key={index}
               className={`
-              flex flex-col gap-3 grow-[1]
+              flex flex-col gap-3
+              transiton-height duration-100
               ${controlItemVisible ? "max-h-[280px]" : "max-h-[184px]"}`}
             >
               <p className="text-sm font-semibold text-basic">
                 {index === 0 ? "To do" : "Done"}
               </p>
               {isLoading ? (
-                <p className="text-sm font-normal text-slate-500 text-center">
-                  로딩중
-                </p>
+                <CardItemSkeleton />
               ) : data?.todos.length !== 0 ? (
                 <div
                   className={`
-                  flex flex-col items-start gap-2 self-stretch 
-                  ${controlItemVisible ? "max-h-[248px] overflow-scroll" : "max-h-[152px] overflow-hidden"}`}
+                  flex flex-col items-start gap-2 self-stretch overflow-x-hidden
+                  ${controlItemVisible ? "max-h-[248px] overflow-y-scroll" : "max-h-[152px] overflow-hidden"}`}
                 >
                   {data?.todos.map((todo) => (
                     <TodoItem todo={todo} key={todo.id} />
@@ -132,23 +133,25 @@ export default function TodosAboutGoalCard({
             </ul>
           ))}
         </div>
-        <button
-          onClick={handleFetchTodoItem}
-          className={`
-          flex gap-[2px] items-center justify-center
-          rounded-basic bg-white p-1 w-[120px] 
-          text-sm font-semibold text-slate-700`}
-        >
-          <span>{controlItemVisible ? "접기" : "더보기"}</span>
-          <Image
-            className="rotate-90"
-            src="/icons/arrow-right.svg"
-            alt="더보기 버튼"
-            width={24}
-            height={24}
-          />
-        </button>
-      </div>
+        {results.some(({ data }) => data && data?.totalCount > 5) && (
+          <button
+            onClick={handleFetchTodoItem}
+            className={`
+            flex gap-[2px] items-center justify-center
+            rounded-basic bg-white p-1 w-[120px] 
+            text-sm font-semibold text-slate-700`}
+          >
+            <span>{controlItemVisible ? "접기" : "더보기"}</span>
+            <Image
+              className={`transition-rotate duration-300 ${controlItemVisible ? "-rotate-90" : "rotate-90"}`}
+              src="/icons/arrow-right.svg"
+              alt="더보기 버튼"
+              width={24}
+              height={24}
+            />
+          </button>
+        )}
+      </Link>
     </>
   )
 }
