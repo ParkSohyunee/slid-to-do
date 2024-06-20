@@ -14,6 +14,7 @@ import { AxiosError } from "axios"
 
 import Label from "@/components/Label"
 import TextField from "@/components/TextField"
+import { BeatLoader } from "react-spinners"
 
 type SignUpFormVaules = {
   email: string
@@ -68,11 +69,17 @@ export default function SignUpPage() {
       className={`
       h-full
       flex flex-col items-center 
-      py-[120px] 
+      py-[60px] 
       max-tablet:pt-[64px] max-mobile:pt-[48px] 
       px-[52px] max-tablet:px-4
     `}
     >
+      {isSubmitting && (
+        <BeatLoader
+          color="#3B82F6"
+          className="absolute top-1/2 right-1/2 translate-x-1/2 z-[1]"
+        />
+      )}
       <div className="mb-10">
         <Image
           src={"/logo/img_logo.svg"}
@@ -87,7 +94,7 @@ export default function SignUpPage() {
           onSubmit={handleSubmit(handleSubmitForm)}
           className="flex flex-col gap-12 max-w-[640px] w-full"
         >
-          <div className="flex flex-col gap-11">
+          <div className="flex flex-col gap-10">
             <div>
               <Label htmlFor="name">이름</Label>
               <TextField
@@ -160,7 +167,7 @@ export default function SignUpPage() {
             text-white text-base font-semibold
             outline-none
             hover:bg-blue-600 active:bg-blue-800
-            ${isValid ? "bg-blue-500" : "bg-slate-400"}
+            ${isValid && !isSubmitting ? "bg-blue-500" : "bg-slate-400"}
             transition-colors duration-500
             `}
             >
