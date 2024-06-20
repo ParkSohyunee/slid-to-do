@@ -63,21 +63,12 @@ export default function TodosAboutGoalContainer() {
         ) : goalList ? (
           <>
             {goalList.map((goal, index) => (
-              <div
+              <TodosAboutGoalCard
                 key={goal.id}
-                onClick={() => router.push(`/goal/${goal.id}`)}
-                className={`
-                p-6 rounded-md bg-blue-50 cursor-pointer
-                flex flex-col items-center gap-4 hover:shadow-2xl
-                ${(index + 1) % 3 === 0 && "lg:col-span-2"}
-                `}
-              >
-                <TodosAboutGoalCard
-                  key={goal.id}
-                  goalId={goal.id}
-                  title={goal.title}
-                />
-              </div>
+                goalId={goal.id}
+                title={goal.title}
+                cardStyle={(index + 1) % 3 === 0}
+              />
             ))}
             {isFetchingNextPage && (
               <>
