@@ -8,7 +8,7 @@ type LayoutProps = {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const hiddenLayoutPath = ["/login", "/signup"]
+  const hiddenLayoutPath = ["/login", "/signup", "/"]
   const bgWhiteStyle = [
     "/todos-list/[todoId]/write-note",
     "/goal/[goalId]/notes/[noteId]/edit",
