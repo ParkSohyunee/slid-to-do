@@ -5,10 +5,10 @@ import {
   ToastProvider,
   ToastTitle,
   ToastViewport,
-} from "./Toast"
+} from "./ToastUI"
 import { useToast } from "@/hooks/useToast"
 
-export function Toaster() {
+export function ToastContainer() {
   const { toasts } = useToast()
 
   return (
