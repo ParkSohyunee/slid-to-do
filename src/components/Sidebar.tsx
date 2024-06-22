@@ -8,21 +8,23 @@ import { ChangeEvent, useState, KeyboardEvent, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import matchedPageName from "@/libs/constants/pathName"
+import { removeCookie } from "@/libs/utils/cookie"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import useToggle from "@/hooks/useToggle"
+import { useToast } from "@/hooks/useToast"
+
+import { useModal } from "@/context/ModalContext"
+import { GoalList } from "@/types/goal"
 
 import getUser from "@/pages/api/user/getUser"
 import createGoal from "@/pages/api/goal/createGoal"
 import getGoalList from "@/pages/api/goal/getGoalList"
+
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
-import useToggle from "@/hooks/useToggle"
-import { GoalList } from "@/types/goal"
-import { useModal } from "@/context/ModalContext"
 import SidebarContainer from "./modal/SidebarContainer"
-import matchedPageName from "@/libs/constants/pathName"
-import { removeCookie } from "@/libs/utils/cookie"
 import PopupContainer from "./modal/PopupContainer"
-import { useToast } from "@/hooks/useToast"
 
 export default function Sidebar() {
   const router = useRouter()
