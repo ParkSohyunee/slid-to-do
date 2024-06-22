@@ -22,6 +22,7 @@ import SidebarContainer from "./modal/SidebarContainer"
 import matchedPageName from "@/libs/constants/pathName"
 import { removeCookie } from "@/libs/utils/cookie"
 import PopupContainer from "./modal/PopupContainer"
+import { useToast } from "@/hooks/useToast"
 
 export default function Sidebar() {
   const router = useRouter()
@@ -29,10 +30,12 @@ export default function Sidebar() {
   const buttonRef = useRef(null)
   const [isComposing, setIsComposing] = useState(false)
   const [newGoal, setNewGoal] = useState("")
+
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
   const createTodoModal = useToggle()
   const confirmPopup = useToggle()
   const sidebarModal = useModal()
+  const { toast } = useToast()
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
@@ -87,7 +90,11 @@ export default function Sidebar() {
     removeCookie("accessToken")
     removeCookie("refreshToken")
     router.push("/login")
+    confirmPopup.close()
     sidebarModal.closeModal()
+    toast({
+      description: "✅ 로그아웃 되었어요.",
+    })
   }
 
   return (
