@@ -87,6 +87,7 @@ export default function Sidebar() {
     removeCookie("accessToken")
     removeCookie("refreshToken")
     router.push("/login")
+    sidebarModal.closeModal()
   }
 
   return (
