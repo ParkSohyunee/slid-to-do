@@ -84,7 +84,9 @@ export default function Sidebar() {
 
   /** 로그아웃 이벤트 핸들러 */
   const handleLogout = () => {
-    // 로그아웃
+    removeCookie("accessToken")
+    removeCookie("refreshToken")
+    router.push("/login")
   }
 
   return (
