@@ -20,6 +20,8 @@ import { GoalList } from "@/types/goal"
 import { useModal } from "@/context/ModalContext"
 import SidebarContainer from "./modal/SidebarContainer"
 import matchedPageName from "@/libs/constants/pathName"
+import { removeCookie } from "@/libs/utils/cookie"
+import PopupContainer from "./modal/PopupContainer"
 
 export default function Sidebar() {
   const router = useRouter()
@@ -29,6 +31,7 @@ export default function Sidebar() {
   const [newGoal, setNewGoal] = useState("")
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
   const createTodoModal = useToggle()
+  const confirmPopup = useToggle()
   const sidebarModal = useModal()
 
   const { data: user } = useQuery({
@@ -79,12 +82,27 @@ export default function Sidebar() {
     }
   }
 
+  /** 로그아웃 이벤트 핸들러 */
+  const handleLogout = () => {
+    // 로그아웃
+  }
+
   return (
     <>
       {createTodoModal.isOpen && (
         <ModalContainer onClose={createTodoModal.close}>
           <CreateTodos onClose={createTodoModal.close} />
         </ModalContainer>
+      )}
+      {confirmPopup.isOpen && (
+        <PopupContainer
+          onClick={handleLogout}
+          onClickClose={confirmPopup.close}
+        >
+          <div className="text-center text-base font-medium text-basic">
+            <p className="text-center">로그아웃 하시겠어요?</p>
+          </div>
+        </PopupContainer>
       )}
       {sidebarModal.isOpen ? (
         <SidebarContainer>
@@ -126,7 +144,10 @@ export default function Sidebar() {
                   <p className="text-sm font-medium text-slate-600">
                     {user?.email}
                   </p>
-                  <button className="text-xs font-normal text-slate-400">
+                  <button
+                    onClick={confirmPopup.open}
+                    className="text-xs font-normal text-slate-400"
+                  >
                     로그아웃
                   </button>
                 </div>
