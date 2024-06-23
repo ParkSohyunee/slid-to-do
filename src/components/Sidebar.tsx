@@ -8,18 +8,23 @@ import { ChangeEvent, useState, KeyboardEvent, useRef } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
 
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+import matchedPageName from "@/libs/constants/pathName"
+import { removeCookie } from "@/libs/utils/cookie"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import useToggle from "@/hooks/useToggle"
+import { useToast } from "@/hooks/useToast"
+
+import { useModal } from "@/context/ModalContext"
+import { GoalList } from "@/types/goal"
 
 import getUser from "@/pages/api/user/getUser"
 import createGoal from "@/pages/api/goal/createGoal"
 import getGoalList from "@/pages/api/goal/getGoalList"
+
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
-import useToggle from "@/hooks/useToggle"
-import { GoalList } from "@/types/goal"
-import { useModal } from "@/context/ModalContext"
 import SidebarContainer from "./modal/SidebarContainer"
-import matchedPageName from "@/libs/constants/pathName"
+import PopupContainer from "./modal/PopupContainer"
 
 export default function Sidebar() {
   const router = useRouter()
@@ -27,9 +32,12 @@ export default function Sidebar() {
   const buttonRef = useRef(null)
   const [isComposing, setIsComposing] = useState(false)
   const [newGoal, setNewGoal] = useState("")
+
   const { toggleHandler, isOpen } = useDetectClose({ ref: buttonRef })
   const createTodoModal = useToggle()
+  const confirmPopup = useToggle()
   const sidebarModal = useModal()
+  const { toast } = useToast()
 
   const { data: user } = useQuery({
     queryKey: [QUERY_KEYS.getUser],
@@ -79,12 +87,34 @@ export default function Sidebar() {
     }
   }
 
+  /** 로그아웃 이벤트 핸들러 */
+  const handleLogout = () => {
+    removeCookie("accessToken")
+    removeCookie("refreshToken")
+    router.push("/login")
+    confirmPopup.close()
+    sidebarModal.closeModal()
+    toast({
+      description: "✅ 로그아웃 되었어요.",
+    })
+  }
+
   return (
     <>
       {createTodoModal.isOpen && (
         <ModalContainer onClose={createTodoModal.close}>
           <CreateTodos onClose={createTodoModal.close} />
         </ModalContainer>
+      )}
+      {confirmPopup.isOpen && (
+        <PopupContainer
+          onClick={handleLogout}
+          onClickClose={confirmPopup.close}
+        >
+          <div className="text-center text-base font-medium text-basic">
+            <p className="text-center">로그아웃 하시겠어요?</p>
+          </div>
+        </PopupContainer>
       )}
       {sidebarModal.isOpen ? (
         <SidebarContainer>
@@ -126,7 +156,10 @@ export default function Sidebar() {
                   <p className="text-sm font-medium text-slate-600">
                     {user?.email}
                   </p>
-                  <button className="text-xs font-normal text-slate-400">
+                  <button
+                    onClick={confirmPopup.open}
+                    className="text-xs font-normal text-slate-400"
+                  >
                     로그아웃
                   </button>
                 </div>

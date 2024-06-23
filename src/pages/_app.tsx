@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { CookiesProvider } from "react-cookie"
 import Layout from "@/components/Layout"
+import { ToastContainer } from "@/components/ui/ToastContainer"
 
 const queryClient = new QueryClient()
 
@@ -15,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Layout>
           <Component {...pageProps} />
         </Layout>
+        <ToastContainer />
         <ReactQueryDevtools
           initialIsOpen={false}
           buttonPosition="bottom-left"
