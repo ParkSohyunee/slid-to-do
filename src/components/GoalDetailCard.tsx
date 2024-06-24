@@ -2,13 +2,17 @@ import Image from "next/image"
 import { useRouter } from "next/router"
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react"
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { BeatLoader } from "react-spinners"
 
 import getGoalDetail from "@/pages/api/goal/getGoalDetail"
 import patchGoal from "@/pages/api/goal/patchGoal"
 import getProgressForTodos from "@/pages/api/todos/getProgressForTodos"
+import deleteGoal from "@/pages/api/goal/deleteGoal"
+
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
-import axiosInstance from "@/libs/axios/axiosInstance"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import useToggle from "@/hooks/useToggle"
+
 import PopupContainer from "@/components/modal/PopupContainer"
 import ProgressBar from "@/components/progress/ProgressBar"
 import { Skeleton } from "@/components/ui/Skeleton"
@@ -55,21 +59,13 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   const { isOpen, toggleHandler } = useDetectClose({ ref: popupRef })
   const [title, setTitle] = useState("")
   const [isEdit, setIsEdit] = useState(false)
-
-  const [isOpenConfirmModal, setIsOpenConfirmModal] = useState(false)
-
-  const handleOpenConfirmModal = () => {
-    setIsOpenConfirmModal(true)
-  }
-
-  const handleCloseConfirmModal = () => {
-    setIsOpenConfirmModal(false)
-  }
+  const confirmModal = useToggle()
 
   const {
     data: goal,
     isError,
     isLoading,
+    isFetching,
   } = useQuery({
     queryKey: [QUERY_KEYS.getGoalDetail, goalId],
     queryFn: () => getGoalDetail(goalId),
@@ -92,6 +88,9 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
         queryKey: [QUERY_KEYS.getGoalList],
       })
       queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getGoalInfiniteList],
+      })
+      queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getGoalDetail, goalId],
       })
       setTitle("")
@@ -100,6 +99,23 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
     },
     onError: () => {
       alert("목표 수정에 실패했어요. 다시 시도해주세요.")
+    },
+  })
+
+  const deleteGoalMutation = useMutation({
+    mutationFn: () => deleteGoal(goalId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getGoalList],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getGoalInfiniteList],
+      })
+      router.back()
+      confirmModal.close()
+    },
+    onError: () => {
+      alert("목표 삭제에 실패했어요. 다시 시도해주세요.")
     },
   })
 
@@ -132,15 +148,8 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
   }
 
   /** 목표 삭제 이벤트 핸들러 */
-  const handleDeleteGoal = (goalId: number) => async () => {
-    try {
-      await axiosInstance.delete(`/goals/${goalId}`)
-      queryClient.invalidateQueries({ queryKey: [QUERY_KEYS.getGoalList] })
-      router.back()
-      handleCloseConfirmModal()
-    } catch (error) {
-      alert("목표 삭제에 실패했어요. 다시 시도해주세요.")
-    }
+  const handleDeleteGoal = () => {
+    deleteGoalMutation.mutate()
   }
 
   /** 각 목표 상세 페이지가 mount될 때마다 상태 초기화 */
@@ -179,7 +188,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
                 onChange={handleChangeTitle}
                 onKeyUp={handleEditGoalTitle}
               />
-            ) : isLoading ? (
+            ) : isLoading || isFetching ? (
               <Skeleton className="h-8 w-[200px] rounded-[8px]" />
             ) : (
               <h3 className="text-lg font-semibold text-basic outline-none grow">
@@ -203,7 +212,7 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
         {isOpen && (
           <PopupMenu
             onClickEdit={handleEditInput}
-            onClickDelete={handleOpenConfirmModal}
+            onClickDelete={confirmModal.open}
           />
         )}
         <div className="flex flex-col gap-2">
@@ -211,16 +220,22 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
       </div>
-      {isOpenConfirmModal && (
-        <PopupContainer
-          onClick={handleDeleteGoal(goalId)}
-          onClickClose={handleCloseConfirmModal}
-        >
-          <p className="text-center text-base font-medium text-basic">
-            목표를 삭제할까요?
-          </p>
-        </PopupContainer>
-      )}
+      {confirmModal.isOpen &&
+        (deleteGoalMutation.isPending ? (
+          <BeatLoader
+            color="#3B82F6"
+            className="absolute top-1/2 right-1/2 translate-x-1/2 z-10"
+          />
+        ) : (
+          <PopupContainer
+            onClick={handleDeleteGoal}
+            onClickClose={confirmModal.close}
+          >
+            <p className="text-center text-base font-medium text-basic">
+              목표를 삭제할까요?
+            </p>
+          </PopupContainer>
+        ))}
     </div>
   )
 }
