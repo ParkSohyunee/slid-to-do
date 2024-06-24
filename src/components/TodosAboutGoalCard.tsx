@@ -54,7 +54,7 @@ export default function TodosAboutGoalCard({
   }
 
   const handleFetchTodoItem = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
+    e.preventDefault()
     setControlItemVisible((prev) => !prev)
   }
 
