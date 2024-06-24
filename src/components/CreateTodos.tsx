@@ -119,8 +119,6 @@ export default function CreateTodos({
 
     if (
       todo.title === data.title &&
-      !todo.fileUrl &&
-      !uploadFile &&
       todo.fileUrl === data.fileUrl &&
       todo.linkUrl === data.linkUrl &&
       todo.goal?.id === data.goalId &&
@@ -132,25 +130,48 @@ export default function CreateTodos({
 
     const filteredData: Record<string, unknown> = {}
 
-    /** 파일 업로드 url 생성 */
-    if (selectedOption === "file") {
+    if (data["title"] !== todo.title) {
+      filteredData["title"] = data.title
+    }
+    if (data["goalId"] !== todo.goal?.id) {
+      filteredData["goalId"] = data.goalId
+    }
+    if (data["done"] !== defaultValueOfDone) {
+      filteredData["done"] = data.done === "Done"
+    }
+
+    if (todo.linkUrl) {
+      // 기존 링크가 있는데 수정하는 경우
+      if (data["linkUrl"] !== todo.linkUrl) {
+        filteredData["linkUrl"] = data.linkUrl
+      }
+      if (!data.linkUrl) {
+        filteredData["linkUrl"] = null
+      }
+    } else {
+      // 기존 링크가 없는데 추가하는 경우
+      if (data["linkUrl"] !== todo.linkUrl) {
+        filteredData["linkUrl"] = data.linkUrl
+      }
+    }
+
+    // 기존 파일이 있는데 수정하는 경우
+    if (todo.fileUrl) {
       if (uploadFile) {
         const uploadFileUrl = await uploadFiles({ file: uploadFile })
         filteredData["fileUrl"] = uploadFileUrl.url
       }
+      // 기존 파일이 있는데 없애는 경우
+      if (!data.fileUrl) {
+        filteredData["fileUrl"] = null
+      }
     } else {
-      if (data.linkUrl) {
-        filteredData["linkUrl"] = data["linkUrl"]
+      // 기존 파일이 없는데 추가하는 경우
+      if (uploadFile) {
+        const uploadFileUrl = await uploadFiles({ file: uploadFile })
+        filteredData["fileUrl"] = uploadFileUrl.url
       }
     }
-
-    for (const key in data) {
-      if (data[key] && data[key] !== "") {
-        filteredData[key] = data[key] as string | number
-      }
-    }
-
-    filteredData["done"] = data.done === "Done"
 
     editTodoMutation.mutate({
       todoId: todo?.id as number,
