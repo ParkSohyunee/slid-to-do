@@ -85,7 +85,6 @@ const noteTitleValidationRules = {
 }
 
 const noteLinkUrlValidationRules = {
-  required: "링크를 추가해 주세요.",
   pattern: {
     value:
       /^(https?:\/\/)?([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/[^\s]*)?(\?[^\s]*)?(#[^\s]*)?$/,

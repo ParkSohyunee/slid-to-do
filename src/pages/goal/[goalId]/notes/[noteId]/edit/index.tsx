@@ -123,7 +123,7 @@ export default function EditNotePage() {
     }
 
     if (
-      note?.title === data.title &&
+      note.title === data.title &&
       note.content === data.content &&
       note.linkUrl === data.linkUrl
     ) {
