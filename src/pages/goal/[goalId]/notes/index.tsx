@@ -54,13 +54,6 @@ export default function NoteListAboutGoalPage() {
     return data ? data?.pages.flatMap((data) => data.notes) : []
   }, [data])
 
-  /** 마운트 될 때 기존 캐시를 삭제하여 무한스크롤이 실행되도록 */
-  useEffect(() => {
-    return () => {
-      queryClient.removeQueries({ queryKey: [QUERY_KEYS.getNoteList, goalId] })
-    }
-  }, [goalId, queryClient])
-
   if (isError) {
     alert("목표를 찾을 수 없어요.")
     router.push("/dashboard")
