@@ -52,6 +52,9 @@ export default function CreateTodos({
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getAllTodos],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite],
+      })
     },
     onError: () => {
       alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
@@ -66,6 +69,9 @@ export default function CreateTodos({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getAllTodos],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite],
       })
     },
     onError: () => {
