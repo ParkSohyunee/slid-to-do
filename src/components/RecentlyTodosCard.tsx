@@ -81,7 +81,7 @@ export default function RecentlyTodosCard() {
       ) : data?.todos ? (
         <ul className="flex flex-col justify-between gap-2 overflow-auto">
           {data?.todos
-            .filter((_, index) => index < 4)
+            .filter((_, index) => index < 10)
             .map((todo) => <RecentlyTodoList key={todo.id} todoList={todo} />)}
           <div className="absolute inset-x-0 h-[51px] bottom-5 bg-custom-gradient"></div>
         </ul>
