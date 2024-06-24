@@ -20,6 +20,7 @@ export default function TodosAboutGoalContainer() {
         }),
       initialPageParam: null,
       getNextPageParam: ({ nextCursor }) => (nextCursor ? nextCursor : null),
+      staleTime: 1000 * 60 * 5,
     })
 
   const ref = useIntersectionObserver(() => {

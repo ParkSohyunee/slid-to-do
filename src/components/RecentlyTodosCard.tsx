@@ -36,9 +36,10 @@ function RecentlyTodoList({ todoList }: RecentlyTodoListProps) {
 
 export default function RecentlyTodosCard() {
   const router = useRouter()
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetching } = useQuery({
     queryKey: [QUERY_KEYS.getAllTodos],
     queryFn: () => getAllTodos(),
+    staleTime: 1000 * 60 * 5,
   })
 
   return (
@@ -75,7 +76,7 @@ export default function RecentlyTodosCard() {
           />
         </button>
       </div>
-      {isLoading ? (
+      {isLoading || isFetching ? (
         <ItemSkeleton />
       ) : data?.todos ? (
         <ul className="flex flex-col justify-between gap-2 overflow-auto">
