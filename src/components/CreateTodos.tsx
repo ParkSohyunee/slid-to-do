@@ -52,6 +52,9 @@ export default function CreateTodos({
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getAllTodos],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite],
+      })
     },
     onError: () => {
       alert("할 일 생성에 실패했어요. 다시 시도해주세요.")
@@ -66,6 +69,9 @@ export default function CreateTodos({
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getAllTodos],
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite],
       })
     },
     onError: () => {
@@ -126,25 +132,30 @@ export default function CreateTodos({
 
     const filteredData: Record<string, unknown> = {}
 
-    /** 파일 업로드 url 생성 */
-    if (selectedOption === "file") {
-      if (uploadFile) {
-        const uploadFileUrl = await uploadFiles({ file: uploadFile })
-        filteredData["fileUrl"] = uploadFileUrl.url
-      }
-    } else {
-      if (data.linkUrl) {
-        filteredData["linkUrl"] = data["linkUrl"]
-      }
+    if (data["title"] !== todo.title) {
+      filteredData["title"] = data.title
+    }
+    if (data["goalId"] !== todo.goal?.id) {
+      filteredData["goalId"] = data.goalId
+    }
+    if (data["done"] !== defaultValueOfDone) {
+      filteredData["done"] = data.done === "Done"
     }
 
-    for (const key in data) {
-      if (data[key] && data[key] !== "") {
-        filteredData[key] = data[key] as string | number
-      }
+    if (data["linkUrl"] !== todo.linkUrl) {
+      filteredData["linkUrl"] = data.linkUrl
+    }
+    if (todo.linkUrl && !data.linkUrl) {
+      filteredData["linkUrl"] = null
     }
 
-    filteredData["done"] = data.done === "Done"
+    if (todo.fileUrl && !data.fileUrl) {
+      filteredData["fileUrl"] = null
+    }
+    if (uploadFile) {
+      const uploadFileUrl = await uploadFiles({ file: uploadFile })
+      filteredData["fileUrl"] = uploadFileUrl.url
+    }
 
     editTodoMutation.mutate({
       todoId: todo?.id as number,

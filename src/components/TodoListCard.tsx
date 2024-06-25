@@ -2,19 +2,21 @@ import Image from "next/image"
 import Link from "next/link"
 import { MouseEvent, MutableRefObject, useRef } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { BeatLoader } from "react-spinners"
 
 import { Todo } from "@/types/todos"
 import { useDetectClose } from "@/hooks/useDetectClose"
+import { useToast } from "@/hooks/useToast"
 import useToggle from "@/hooks/useToggle"
-import PopupContainer from "./modal/PopupContainer"
-import RightSidebarContainer from "./modal/RightSidebarContainer"
 import deleteTodo from "@/pages/api/todos/deleteTodo"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
+
+import RightSidebarContainer from "./modal/RightSidebarContainer"
+import PopupContainer from "./modal/PopupContainer"
 import DetailNote from "./DetailNote"
 import ModalContainer from "./modal/ModalContainer"
 import CreateTodos from "./CreateTodos"
 import { Skeleton } from "./ui/Skeleton"
-import { BeatLoader } from "react-spinners"
 
 type TodoListCardProps = {
   handleTodoListOfStatus: (e: MouseEvent<HTMLDivElement>) => void
@@ -71,6 +73,7 @@ function TodoItem({ todo }: TodoItemProps) {
   const editTodoModal = useToggle()
   const confirmModal = useToggle()
   const rightSidebar = useToggle()
+  const { toast } = useToast()
 
   const { goal, id, title, done } = todo
   const simpleTodo = { id, title, done, goal }
@@ -81,9 +84,15 @@ function TodoItem({ todo }: TodoItemProps) {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getAllTodos],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite],
+      })
+      confirmModal.close()
     },
     onSettled: () => {
-      alert("삭제가 완료되었습니다.")
+      toast({
+        title: "✅ 성공적으로 삭제 되었어요.",
+      })
     },
   })
 
@@ -94,18 +103,22 @@ function TodoItem({ todo }: TodoItemProps) {
           <CreateTodos onClose={editTodoModal.close} edit={true} todo={todo} />
         </ModalContainer>
       )}
-      {confirmModal.isOpen && (
-        <PopupContainer
-          onClickClose={confirmModal.close}
-          onClick={() => deleteTodoMutation.mutate(todo.id)}
-        >
-          <p className="text-center text-base font-medium text-basic">
-            <div className="text-center">
-              {deleteTodoMutation.isPending ? "삭제중" : "할 일을 삭제할까요?"}
-            </div>
-          </p>
-        </PopupContainer>
-      )}
+      {confirmModal.isOpen &&
+        (deleteTodoMutation.isPending ? (
+          <BeatLoader
+            color="#3B82F6"
+            className="absolute top-1/2 right-1/2 translate-x-1/2 z-10"
+          />
+        ) : (
+          <PopupContainer
+            onClickClose={confirmModal.close}
+            onClick={() => deleteTodoMutation.mutate(todo.id)}
+          >
+            <p className="text-center text-base font-medium text-basic">
+              <div className="text-center">할 일을 삭제할까요?</div>
+            </p>
+          </PopupContainer>
+        ))}
       {rightSidebar.isOpen && (
         <RightSidebarContainer onClickClose={rightSidebar.close}>
           <DetailNote todo={simpleTodo} noteId={todo.noteId} />

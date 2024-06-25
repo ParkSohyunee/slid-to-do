@@ -26,7 +26,7 @@ export default function UploadFile({
 
   const deleteFileImage = () => {
     setVisibleImage(false)
-    setValue("fileUrl", undefined)
+    setValue("fileUrl", null)
   }
 
   return (

@@ -4,14 +4,17 @@ import { useEffect, useState } from "react"
 import { EditorState, convertFromRaw, convertToRaw } from "draft-js"
 import { FormProvider, useForm } from "react-hook-form"
 import { AxiosError } from "axios"
+import { useQueryClient } from "@tanstack/react-query"
 
 import DefaultEditor from "@/components/editor/DefaultEditor"
 import Toast from "@/components/popup/Toast"
 import { noteTitleValidationRules } from "@/libs/utils/formInputValidationRules"
 import { NoteFormData } from "@/types/note"
 import axiosInstance from "@/libs/axios/axiosInstance"
+import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 
 export default function WriteNoteForTodoPage() {
+  const queryClient = useQueryClient()
   const [isShowToast, setIsShowToast] = useState(false)
   const router = useRouter()
   const { title: todoTitle, done, goal: goalTitle, todoId } = router.query
@@ -46,13 +49,15 @@ export default function WriteNoteForTodoPage() {
       return
     }
 
-    /** linkUrl은 추후 Optional 값이 될 예정 */
     try {
       await axiosInstance.post("/notes", {
         todoId: Number(todoId),
         title: data.title,
         content: data.content,
         linkUrl: data.linkUrl,
+      })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getAllTodosInfinite], // TODO 해당 할 일만 업데이트 하기
       })
       router.push("/todos-list")
     } catch (error) {

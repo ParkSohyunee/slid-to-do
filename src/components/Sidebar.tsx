@@ -56,6 +56,9 @@ export default function Sidebar() {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.getGoalList],
       })
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.getGoalInfiniteList],
+      })
       setNewGoal("")
       toggleHandler()
     },
@@ -210,7 +213,7 @@ export default function Sidebar() {
                       >
                         <Link
                           href={`/goal/${goal.id}`}
-                          className="w-full list-item p-2"
+                          className="w-full list-item p-2 truncate"
                         >
                           {goal.title}
                         </Link>

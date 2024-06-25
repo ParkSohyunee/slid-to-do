@@ -123,7 +123,7 @@ export default function EditNotePage() {
     }
 
     if (
-      note?.title === data.title &&
+      note.title === data.title &&
       note.content === data.content &&
       note.linkUrl === data.linkUrl
     ) {
@@ -139,8 +139,12 @@ export default function EditNotePage() {
     if (note.content !== data.content) {
       formData["content"] = data.content
     }
-    if (note.linkUrl !== data.linkUrl) {
-      formData["linkUrl"] = data.linkUrl
+    if (data.linkUrl) {
+      if (note.linkUrl !== data.linkUrl) {
+        formData["linkUrl"] = data.linkUrl
+      }
+    } else if (data.linkUrl === "") {
+      formData["linkUrl"] = null
     }
 
     updateNoteMutation.mutate({

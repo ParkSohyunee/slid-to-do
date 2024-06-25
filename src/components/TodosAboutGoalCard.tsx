@@ -54,7 +54,7 @@ export default function TodosAboutGoalCard({
   }
 
   const handleFetchTodoItem = (e: MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation()
+    e.preventDefault()
     setControlItemVisible((prev) => !prev)
   }
 
@@ -100,7 +100,7 @@ export default function TodosAboutGoalCard({
           <ProgressBar progress={progressForGoal?.progress} />
         </div>
         <div className="grid grid-cols-2 max-sm:grid-cols-1 gap-6 lg:gap-4 w-full">
-          {results.map(({ data, isLoading }, index) => (
+          {results.map(({ data, isLoading, isFetching }, index) => (
             <ul
               key={index}
               className={`
@@ -111,7 +111,7 @@ export default function TodosAboutGoalCard({
               <p className="text-sm font-semibold text-basic">
                 {index === 0 ? "To do" : "Done"}
               </p>
-              {isLoading ? (
+              {isLoading || isFetching ? (
                 <CardItemSkeleton />
               ) : data?.todos.length !== 0 ? (
                 <div
