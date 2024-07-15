@@ -16,40 +16,10 @@ import useToggle from "@/hooks/useToggle"
 import PopupContainer from "@/components/modal/PopupContainer"
 import ProgressBar from "@/components/progress/ProgressBar"
 import { Skeleton } from "@/components/ui/Skeleton"
+import PopupMenu from "@/components/popup/PopupMenu"
 
 type GoalDetailCardProps = {
   goalId: number
-}
-
-type PopupMenuProps = {
-  onClickEdit: () => void
-  onClickDelete: () => void
-}
-
-function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
-  return (
-    <div
-      className={`
-      absolute right-0 top-1/2 -translate-x-1/4 
-      flex flex-col 
-      rounded-sm shadow-lg 
-      text-sm font-normal text-slate-700 
-      bg-white z-10`}
-    >
-      <button
-        onClick={onClickEdit}
-        className="rounded-t-sm px-4 pt-2 pb-[6px] hover:bg-slate-50"
-      >
-        수정하기
-      </button>
-      <button
-        onClick={onClickDelete}
-        className="rounded-b-sm px-4 pb-2 pt-[6px] hover:bg-slate-50"
-      >
-        삭제하기
-      </button>
-    </div>
-  )
 }
 
 export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
@@ -168,8 +138,8 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
 
   return (
     <div>
-      <div className="bg-white px-6 py-4 border border-slate-100 rounded-sm relative">
-        <div className="flex justify-between items-center pb-6">
+      <div className="bg-white px-6 py-4 border border-slate-100 rounded-sm">
+        <div className="flex justify-between items-center pb-6 relative">
           <div className="flex items-center gap-2 w-full">
             <Image
               className="w-10 h-10 rounded-[15px] bg-slate-800 p-2"
@@ -208,13 +178,13 @@ export default function GoalDetailCard({ goalId }: GoalDetailCardProps) {
               height={24}
             />
           </div>
+          {isOpen && (
+            <PopupMenu
+              onClickEdit={handleEditInput}
+              onClickDelete={confirmModal.open}
+            />
+          )}
         </div>
-        {isOpen && (
-          <PopupMenu
-            onClickEdit={handleEditInput}
-            onClickDelete={confirmModal.open}
-          />
-        )}
         <div className="flex flex-col gap-2">
           <p className="text-xs font-semibold text-slate-900">Progress</p>
           <ProgressBar progress={progressForGoal?.progress} />
