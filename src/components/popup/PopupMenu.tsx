@@ -1,6 +1,8 @@
+import { MouseEvent } from "react"
+
 type PopupMenuProps = {
-  onClickEdit: () => void
-  onClickDelete: () => void
+  onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void
+  onClickDelete: (e: MouseEvent<HTMLButtonElement>) => void
 }
 
 export default function PopupMenu({

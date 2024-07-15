@@ -12,40 +12,10 @@ import DetailNote from "@/components/DetailNote"
 import PopupContainer from "@/components/modal/PopupContainer"
 import { QUERY_KEYS } from "@/libs/constants/queryKeys"
 import deleteNote from "@/pages/api/note/deleteNote"
+import PopupMenu from "@/components/popup/PopupMenu"
 
 type NoteListCardsProps = {
   note: CardAboutNoteList
-}
-
-type PopupMenuProps = {
-  onClickEdit: (e: MouseEvent<HTMLButtonElement>) => void
-  onClickDelete: (e: MouseEvent<HTMLButtonElement>) => void
-}
-
-function PopupMenu({ onClickEdit, onClickDelete }: PopupMenuProps) {
-  return (
-    <div
-      className={`
-        absolute right-0 top-1/2 translate-y-1/4
-        flex flex-col 
-        rounded-sm shadow-lg 
-        text-sm font-normal text-slate-700 
-        bg-white`}
-    >
-      <button
-        onClick={onClickEdit}
-        className="rounded-t-sm px-4 pt-2 pb-[6px] hover:bg-slate-50"
-      >
-        수정하기
-      </button>
-      <button
-        onClick={onClickDelete}
-        className="rounded-b-sm px-4 pb-2 pt-[6px] hover:bg-slate-50"
-      >
-        삭제하기
-      </button>
-    </div>
-  )
 }
 
 export default function NoteListCards({ note }: NoteListCardsProps) {
