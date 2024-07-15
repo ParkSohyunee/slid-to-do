@@ -51,7 +51,7 @@ export default function TodoListCard({
           className="flex justify-center grow items-center"
         />
       ) : todos && todos?.length > 0 ? (
-        <ul className="flex flex-col justify-between gap-1 grow">
+        <ul className="flex flex-col gap-1 grow">
           {todos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
